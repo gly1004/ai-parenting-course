@@ -1,0 +1,18 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(start \"\" \"C:\\\\Users\\\\gly10\\\\Desktop\\\\16강_AI시대 부모\\\\strength_test.html\")",
+      "Bash(gh auth:*)",
+      "Bash(git init:*)",
+      "Bash(git add:*)",
+      "Bash(git commit:*)",
+      "Bash(gh repo create:*)",
+      "Bash(gh api:*)",
+      "WebFetch(domain:gly1004.github.io)",
+      "Bash(git push:*)",
+      "Bash(start:*)",
+      "Bash(copy \"꿈의_안내자_테스트.html\" \"index.html\")",
+      "Bash(curl:*)"
+    ]
+  }
+}

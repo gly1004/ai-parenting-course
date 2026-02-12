@@ -1,0 +1,11 @@
+{
+  "rewrites": [
+    { "source": "/(.*)", "destination": "/index.html" }
+  ],
+  "functions": {
+    "api/generate.js": {
+      "memory": 1024,
+      "maxDuration": 30
+    }
+  }
+}

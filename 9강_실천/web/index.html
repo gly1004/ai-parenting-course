@@ -1,0 +1,770 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>자녀의 실천 역량 테스트</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+            min-height: 100vh;
+            color: #fff;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        header {
+            text-align: center;
+            padding: 40px 20px;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 20px;
+            margin-bottom: 30px;
+        }
+
+        header h1 {
+            font-size: 2.2rem;
+            color: #4ecdc4;
+            margin-bottom: 15px;
+        }
+
+        header p {
+            color: #aaa;
+            font-size: 1rem;
+        }
+
+        .question-card {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 15px;
+            padding: 25px;
+            margin-bottom: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: all 0.3s ease;
+        }
+
+        .question-card:hover {
+            border-color: #4ecdc4;
+            transform: translateY(-2px);
+        }
+
+        .question-card.answered {
+            border-color: #4ecdc4;
+            background: rgba(78, 205, 196, 0.05);
+        }
+
+        .question-text {
+            font-size: 1.1rem;
+            margin-bottom: 20px;
+            color: #fff;
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+        }
+
+        .question-number {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            background: #4ecdc4;
+            color: #1a1a2e;
+            min-width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            font-weight: bold;
+            font-size: 0.95rem;
+            flex-shrink: 0;
+        }
+
+        .options {
+            display: flex;
+            flex-wrap: nowrap;
+            gap: 8px;
+            justify-content: center;
+        }
+
+        .option {
+            width: calc(20% - 7px);
+        }
+
+        .option input {
+            display: none;
+        }
+
+        .option label {
+            display: block;
+            padding: 14px 10px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 2px solid rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 0.9rem;
+        }
+
+        .option label:hover {
+            border-color: #4ecdc4;
+            background: rgba(78, 205, 196, 0.1);
+        }
+
+        .option input:checked + label {
+            background: #4ecdc4;
+            border-color: #4ecdc4;
+            color: #1a1a2e;
+            font-weight: bold;
+        }
+
+        .submit-btn {
+            display: block;
+            width: 100%;
+            padding: 18px;
+            background: linear-gradient(135deg, #4ecdc4, #44a08d);
+            border: none;
+            border-radius: 15px;
+            color: #fff;
+            font-size: 1.2rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 30px;
+        }
+
+        .submit-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 30px rgba(78, 205, 196, 0.3);
+        }
+
+        .submit-btn:disabled {
+            background: #555;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        /* Result Section */
+        .result-section {
+            display: none;
+        }
+
+        .result-section.show {
+            display: block;
+            animation: fadeIn 0.5s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .result-header {
+            text-align: center;
+            padding: 50px 30px;
+            background: linear-gradient(135deg, rgba(78, 205, 196, 0.2), rgba(68, 160, 141, 0.1));
+            border-radius: 25px;
+            margin-bottom: 25px;
+            border: 2px solid rgba(78, 205, 196, 0.3);
+        }
+
+        .result-title {
+            font-size: 1.3rem;
+            color: #aaa;
+            margin-bottom: 20px;
+        }
+
+        .score-display {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            margin-bottom: 25px;
+        }
+
+        .score-number {
+            font-size: 5rem;
+            font-weight: bold;
+            color: #4ecdc4;
+            text-shadow: 0 0 30px rgba(78, 205, 196, 0.5);
+        }
+
+        .score-total {
+            font-size: 2rem;
+            color: #666;
+        }
+
+        .result-grade {
+            display: inline-block;
+            font-size: 1.6rem;
+            color: #fff;
+            background: linear-gradient(135deg, #4ecdc4, #44a08d);
+            padding: 12px 35px;
+            border-radius: 50px;
+            font-weight: bold;
+            box-shadow: 0 5px 20px rgba(78, 205, 196, 0.3);
+        }
+
+        .result-detail {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 20px;
+            padding: 30px;
+            margin-bottom: 25px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .result-detail h3 {
+            color: #4ecdc4;
+            font-size: 1.2rem;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid rgba(78, 205, 196, 0.3);
+        }
+
+        .result-detail p {
+            color: #ccc;
+            margin-bottom: 15px;
+            font-size: 1rem;
+            line-height: 1.8;
+        }
+
+        .result-detail p:last-child {
+            margin-bottom: 0;
+        }
+
+        .highlight-box {
+            background: rgba(78, 205, 196, 0.1);
+            border-left: 4px solid #4ecdc4;
+            padding: 15px 20px;
+            border-radius: 0 10px 10px 0;
+            margin: 20px 0;
+        }
+
+        .highlight-box p {
+            color: #fff;
+            margin: 0;
+        }
+
+        .tips-section {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 20px;
+            padding: 30px;
+            margin-bottom: 25px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .tips-section h3 {
+            color: #4ecdc4;
+            font-size: 1.2rem;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid rgba(78, 205, 196, 0.3);
+            text-align: center;
+        }
+
+        .tips-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+        }
+
+        .tip-card {
+            background: rgba(78, 205, 196, 0.08);
+            border-radius: 12px;
+            padding: 20px;
+            border: 1px solid rgba(78, 205, 196, 0.2);
+            transition: all 0.3s ease;
+        }
+
+        .tip-card:hover {
+            transform: translateY(-3px);
+            border-color: #4ecdc4;
+        }
+
+        .tip-card h4 {
+            color: #4ecdc4;
+            font-size: 1rem;
+            margin-bottom: 10px;
+        }
+
+        .tip-card p {
+            color: #aaa;
+            font-size: 0.9rem;
+            line-height: 1.6;
+        }
+
+        .quote-section {
+            text-align: center;
+            padding: 35px;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 20px;
+            margin-bottom: 25px;
+        }
+
+        .quote-text {
+            font-size: 1.2rem;
+            font-style: italic;
+            color: #ccc;
+            margin-bottom: 15px;
+            line-height: 1.8;
+        }
+
+        .quote-author {
+            color: #4ecdc4;
+            font-size: 1rem;
+        }
+
+        .retry-btn {
+            display: block;
+            width: 100%;
+            padding: 18px;
+            background: transparent;
+            border: 2px solid #4ecdc4;
+            border-radius: 15px;
+            color: #4ecdc4;
+            font-size: 1.1rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .retry-btn:hover {
+            background: #4ecdc4;
+            color: #1a1a2e;
+        }
+
+        .progress-container {
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            padding: 15px 0;
+            margin: 0 -20px 20px -20px;
+            padding-left: 20px;
+            padding-right: 20px;
+            border-bottom: 1px solid rgba(78, 205, 196, 0.2);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 10px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 5px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #4ecdc4, #44a08d);
+            border-radius: 5px;
+            transition: width 0.3s ease;
+            width: 0%;
+        }
+
+        .progress-text {
+            text-align: center;
+            color: #fff;
+            font-size: 0.95rem;
+            margin-bottom: 10px;
+            font-weight: 500;
+        }
+
+        footer {
+            text-align: center;
+            padding: 30px;
+            color: #666;
+            font-size: 0.85rem;
+        }
+
+        @media (max-width: 600px) {
+            header h1 {
+                font-size: 1.6rem;
+            }
+
+            .options {
+                flex-wrap: wrap;
+            }
+
+            .option {
+                width: calc(33.333% - 6px);
+            }
+
+            .option label {
+                padding: 12px 5px;
+                font-size: 0.7rem;
+            }
+
+            .score-number {
+                font-size: 3.5rem;
+            }
+
+            .score-total {
+                font-size: 1.5rem;
+            }
+
+            .result-grade {
+                font-size: 1.3rem;
+                padding: 10px 25px;
+            }
+
+            .tips-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .progress-container {
+                margin: 0 -20px 15px -20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header id="pageTop">
+            <h1>자녀의 실천 역량 테스트</h1>
+            <p>세상을 바꾸는 작은 시민 의식 알아보기</p>
+        </header>
+
+        <div id="testArea">
+            <div class="progress-container">
+                <div class="progress-text">진행률: <span id="progressPercent">0</span>%</div>
+                <div class="progress-bar">
+                    <div class="progress-fill" id="progressFill"></div>
+                </div>
+            </div>
+
+            <form id="testForm">
+                <!-- Question 1 -->
+                <div class="question-card" data-question="1">
+                    <p class="question-text">
+                        <span class="question-number">1</span>
+                        <span>우리 아이는 "내가 해볼게!"라며 스스로 문제를 해결하려고 시도하는 편입니다.</span>
+                    </p>
+                    <div class="options">
+                        <div class="option"><input type="radio" name="q1" id="q1_1" value="1"><label for="q1_1">전혀 아니다</label></div>
+                        <div class="option"><input type="radio" name="q1" id="q1_2" value="2"><label for="q1_2">아니다</label></div>
+                        <div class="option"><input type="radio" name="q1" id="q1_3" value="3"><label for="q1_3">보통이다</label></div>
+                        <div class="option"><input type="radio" name="q1" id="q1_4" value="4"><label for="q1_4">그렇다</label></div>
+                        <div class="option"><input type="radio" name="q1" id="q1_5" value="5"><label for="q1_5">매우 그렇다</label></div>
+                    </div>
+                </div>
+
+                <!-- Question 2 -->
+                <div class="question-card" data-question="2">
+                    <p class="question-text">
+                        <span class="question-number">2</span>
+                        <span>우리 아이는 자신의 말이나 행동이 다른 사람에게 어떤 영향을 미치는지 생각하는 모습을 보입니다.</span>
+                    </p>
+                    <div class="options">
+                        <div class="option"><input type="radio" name="q2" id="q2_1" value="1"><label for="q2_1">전혀 아니다</label></div>
+                        <div class="option"><input type="radio" name="q2" id="q2_2" value="2"><label for="q2_2">아니다</label></div>
+                        <div class="option"><input type="radio" name="q2" id="q2_3" value="3"><label for="q2_3">보통이다</label></div>
+                        <div class="option"><input type="radio" name="q2" id="q2_4" value="4"><label for="q2_4">그렇다</label></div>
+                        <div class="option"><input type="radio" name="q2" id="q2_5" value="5"><label for="q2_5">매우 그렇다</label></div>
+                    </div>
+                </div>
+
+                <!-- Question 3 -->
+                <div class="question-card" data-question="3">
+                    <p class="question-text">
+                        <span class="question-number">3</span>
+                        <span>우리 아이는 문제 상황에서 기존과 다른 새로운 해결 방법을 제안하거나 시도해 본 적이 있습니다.</span>
+                    </p>
+                    <div class="options">
+                        <div class="option"><input type="radio" name="q3" id="q3_1" value="1"><label for="q3_1">전혀 아니다</label></div>
+                        <div class="option"><input type="radio" name="q3" id="q3_2" value="2"><label for="q3_2">아니다</label></div>
+                        <div class="option"><input type="radio" name="q3" id="q3_3" value="3"><label for="q3_3">보통이다</label></div>
+                        <div class="option"><input type="radio" name="q3" id="q3_4" value="4"><label for="q3_4">그렇다</label></div>
+                        <div class="option"><input type="radio" name="q3" id="q3_5" value="5"><label for="q3_5">매우 그렇다</label></div>
+                    </div>
+                </div>
+
+                <!-- Question 4 -->
+                <div class="question-card" data-question="4">
+                    <p class="question-text">
+                        <span class="question-number">4</span>
+                        <span>우리 아이는 친구들 사이에서 의견이 다를 때, 서로의 입장을 이해하고 조율하려고 노력합니다.</span>
+                    </p>
+                    <div class="options">
+                        <div class="option"><input type="radio" name="q4" id="q4_1" value="1"><label for="q4_1">전혀 아니다</label></div>
+                        <div class="option"><input type="radio" name="q4" id="q4_2" value="2"><label for="q4_2">아니다</label></div>
+                        <div class="option"><input type="radio" name="q4" id="q4_3" value="3"><label for="q4_3">보통이다</label></div>
+                        <div class="option"><input type="radio" name="q4" id="q4_4" value="4"><label for="q4_4">그렇다</label></div>
+                        <div class="option"><input type="radio" name="q4" id="q4_5" value="5"><label for="q4_5">매우 그렇다</label></div>
+                    </div>
+                </div>
+
+                <!-- Question 5 -->
+                <div class="question-card" data-question="5">
+                    <p class="question-text">
+                        <span class="question-number">5</span>
+                        <span>우리 아이는 "이렇게 하면 나중에 어떻게 될까?"라며 행동의 결과를 미리 생각해보는 편입니다.</span>
+                    </p>
+                    <div class="options">
+                        <div class="option"><input type="radio" name="q5" id="q5_1" value="1"><label for="q5_1">전혀 아니다</label></div>
+                        <div class="option"><input type="radio" name="q5" id="q5_2" value="2"><label for="q5_2">아니다</label></div>
+                        <div class="option"><input type="radio" name="q5" id="q5_3" value="3"><label for="q5_3">보통이다</label></div>
+                        <div class="option"><input type="radio" name="q5" id="q5_4" value="4"><label for="q5_4">그렇다</label></div>
+                        <div class="option"><input type="radio" name="q5" id="q5_5" value="5"><label for="q5_5">매우 그렇다</label></div>
+                    </div>
+                </div>
+
+                <!-- Question 6 -->
+                <div class="question-card" data-question="6">
+                    <p class="question-text">
+                        <span class="question-number">6</span>
+                        <span>우리 아이는 좋은 생각이 있으면 말로만 끝내지 않고 직접 행동으로 옮기려고 합니다.</span>
+                    </p>
+                    <div class="options">
+                        <div class="option"><input type="radio" name="q6" id="q6_1" value="1"><label for="q6_1">전혀 아니다</label></div>
+                        <div class="option"><input type="radio" name="q6" id="q6_2" value="2"><label for="q6_2">아니다</label></div>
+                        <div class="option"><input type="radio" name="q6" id="q6_3" value="3"><label for="q6_3">보통이다</label></div>
+                        <div class="option"><input type="radio" name="q6" id="q6_4" value="4"><label for="q6_4">그렇다</label></div>
+                        <div class="option"><input type="radio" name="q6" id="q6_5" value="5"><label for="q6_5">매우 그렇다</label></div>
+                    </div>
+                </div>
+
+                <!-- Question 7 -->
+                <div class="question-card" data-question="7">
+                    <p class="question-text">
+                        <span class="question-number">7</span>
+                        <span>우리 아이는 자신의 이익보다 "모두에게 좋은 것"이 무엇인지 생각하며 행동한 적이 있습니다.</span>
+                    </p>
+                    <div class="options">
+                        <div class="option"><input type="radio" name="q7" id="q7_1" value="1"><label for="q7_1">전혀 아니다</label></div>
+                        <div class="option"><input type="radio" name="q7" id="q7_2" value="2"><label for="q7_2">아니다</label></div>
+                        <div class="option"><input type="radio" name="q7" id="q7_3" value="3"><label for="q7_3">보통이다</label></div>
+                        <div class="option"><input type="radio" name="q7" id="q7_4" value="4"><label for="q7_4">그렇다</label></div>
+                        <div class="option"><input type="radio" name="q7" id="q7_5" value="5"><label for="q7_5">매우 그렇다</label></div>
+                    </div>
+                </div>
+
+                <!-- Question 8 -->
+                <div class="question-card" data-question="8">
+                    <p class="question-text">
+                        <span class="question-number">8</span>
+                        <span>우리 아이는 환경 문제, 어려운 이웃, 다른 나라 사람들의 어려움에 대해 관심을 보이고 공감합니다.</span>
+                    </p>
+                    <div class="options">
+                        <div class="option"><input type="radio" name="q8" id="q8_1" value="1"><label for="q8_1">전혀 아니다</label></div>
+                        <div class="option"><input type="radio" name="q8" id="q8_2" value="2"><label for="q8_2">아니다</label></div>
+                        <div class="option"><input type="radio" name="q8" id="q8_3" value="3"><label for="q8_3">보통이다</label></div>
+                        <div class="option"><input type="radio" name="q8" id="q8_4" value="4"><label for="q8_4">그렇다</label></div>
+                        <div class="option"><input type="radio" name="q8" id="q8_5" value="5"><label for="q8_5">매우 그렇다</label></div>
+                    </div>
+                </div>
+
+                <!-- Question 9 -->
+                <div class="question-card" data-question="9">
+                    <p class="question-text">
+                        <span class="question-number">9</span>
+                        <span>우리 아이는 주어진 규칙이나 상황에 대해 "왜 이렇게 해야 해?"라고 질문하며 이유를 알고 싶어합니다.</span>
+                    </p>
+                    <div class="options">
+                        <div class="option"><input type="radio" name="q9" id="q9_1" value="1"><label for="q9_1">전혀 아니다</label></div>
+                        <div class="option"><input type="radio" name="q9" id="q9_2" value="2"><label for="q9_2">아니다</label></div>
+                        <div class="option"><input type="radio" name="q9" id="q9_3" value="3"><label for="q9_3">보통이다</label></div>
+                        <div class="option"><input type="radio" name="q9" id="q9_4" value="4"><label for="q9_4">그렇다</label></div>
+                        <div class="option"><input type="radio" name="q9" id="q9_5" value="5"><label for="q9_5">매우 그렇다</label></div>
+                    </div>
+                </div>
+
+                <!-- Question 10 -->
+                <div class="question-card" data-question="10">
+                    <p class="question-text">
+                        <span class="question-number">10</span>
+                        <span>우리 아이는 분리수거, 에너지 절약, 물건 나눔 등 일상에서 작은 실천을 자발적으로 합니다.</span>
+                    </p>
+                    <div class="options">
+                        <div class="option"><input type="radio" name="q10" id="q10_1" value="1"><label for="q10_1">전혀 아니다</label></div>
+                        <div class="option"><input type="radio" name="q10" id="q10_2" value="2"><label for="q10_2">아니다</label></div>
+                        <div class="option"><input type="radio" name="q10" id="q10_3" value="3"><label for="q10_3">보통이다</label></div>
+                        <div class="option"><input type="radio" name="q10" id="q10_4" value="4"><label for="q10_4">그렇다</label></div>
+                        <div class="option"><input type="radio" name="q10" id="q10_5" value="5"><label for="q10_5">매우 그렇다</label></div>
+                    </div>
+                </div>
+
+                <button type="submit" class="submit-btn" id="submitBtn" disabled>결과 확인하기</button>
+            </form>
+        </div>
+
+        <div class="result-section" id="resultSection">
+            <div class="result-header">
+                <p class="result-title">자녀의 실천 역량 점수</p>
+                <div class="score-display">
+                    <span class="score-number" id="scoreNumber">0</span>
+                    <span class="score-total">/ 50점</span>
+                </div>
+                <span class="result-grade" id="resultGrade"></span>
+            </div>
+
+            <div class="result-detail">
+                <h3>결과 분석</h3>
+                <div id="resultMessage"></div>
+            </div>
+
+            <div class="tips-section">
+                <h3>실천 역량 향상을 위한 부모 TIP</h3>
+                <div class="tips-grid">
+                    <div class="tip-card">
+                        <h4>뉴스 브리핑 토론</h4>
+                        <p>"너라면 이 상황에서 어떤 선택을 했을까?" 질문해 보세요.</p>
+                    </div>
+                    <div class="tip-card">
+                        <h4>가족 자치 회의</h4>
+                        <p>집안의 작은 문제를 민주적으로 결정하며 시민 의식의 첫걸음을 떼게 하세요.</p>
+                    </div>
+                    <div class="tip-card">
+                        <h4>작은 기부의 경험</h4>
+                        <p>도움이 필요한 곳에 마음을 전하는 습관을 아이와 정기적으로 나눠보세요.</p>
+                    </div>
+                    <div class="tip-card">
+                        <h4>부모의 실천 모델링</h4>
+                        <p>질서 지키기, 이웃 돕기 등 부모의 올바른 실천이 가장 강력한 교육입니다.</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="quote-section">
+                <p class="quote-text">"세상이 변하길 바라는가?<br>그렇다면 당신 스스로가 먼저 그 변화가 되어라."</p>
+                <p class="quote-author">- 마하트마 간디</p>
+            </div>
+
+            <button class="retry-btn" id="retryBtn">다시 테스트하기</button>
+        </div>
+
+        <footer>
+            <p>본 테스트는 OECD Learning Framework 2030의 실천 역량(Transformative Action) 개념을 기반으로 제작되었습니다.</p>
+        </footer>
+    </div>
+
+    <script>
+        const form = document.getElementById('testForm');
+        const submitBtn = document.getElementById('submitBtn');
+        const progressFill = document.getElementById('progressFill');
+        const progressPercent = document.getElementById('progressPercent');
+        const resultSection = document.getElementById('resultSection');
+        const testArea = document.getElementById('testArea');
+        const retryBtn = document.getElementById('retryBtn');
+        const totalQuestions = 10;
+
+        // Track answered questions
+        function updateProgress() {
+            let answered = 0;
+            for (let i = 1; i <= totalQuestions; i++) {
+                if (document.querySelector(`input[name="q${i}"]:checked`)) {
+                    answered++;
+                    document.querySelector(`[data-question="${i}"]`).classList.add('answered');
+                }
+            }
+
+            const percent = Math.round((answered / totalQuestions) * 100);
+            progressFill.style.width = percent + '%';
+            progressPercent.textContent = percent;
+
+            submitBtn.disabled = answered < totalQuestions;
+        }
+
+        // Add event listeners to all radio buttons
+        document.querySelectorAll('input[type="radio"]').forEach(radio => {
+            radio.addEventListener('change', updateProgress);
+        });
+
+        // Handle form submission
+        form.addEventListener('submit', function(e) {
+            e.preventDefault();
+
+            let totalScore = 0;
+            for (let i = 1; i <= totalQuestions; i++) {
+                const selected = document.querySelector(`input[name="q${i}"]:checked`);
+                if (selected) {
+                    totalScore += parseInt(selected.value);
+                }
+            }
+
+            // Display result
+            document.getElementById('scoreNumber').textContent = totalScore;
+
+            let grade, message;
+            if (totalScore >= 40) {
+                grade = "실천 역량 우수";
+                message = `
+                    <p><strong>축하합니다!</strong> 자녀가 능동적 실천가로서의 자질을 잘 갖추고 있습니다.</p>
+                    <div class="highlight-box">
+                        <p>주체성, 책임감, 실행력이 고르게 발달되어 있어요!</p>
+                    </div>
+                    <p>지속적인 격려와 함께 더 넓은 실천 기회를 제공해 주세요. 지역 봉사활동, 환경 캠페인 참여 등 사회적 실천의 범위를 넓혀가면 더욱 성장할 수 있습니다.</p>
+                `;
+            } else if (totalScore >= 30) {
+                grade = "실천 역량 양호";
+                message = `
+                    <p>기본적인 시민 의식이 잘 형성되어 있습니다.</p>
+                    <div class="highlight-box">
+                        <p>공감 능력과 실천 의지를 갖추고 있어요!</p>
+                    </div>
+                    <p>부모의 실천 모델링과 함께 가족 프로젝트를 통해 더욱 키워갈 수 있습니다. '제로 웨이스트 챌린지'나 '가족 자치 회의' 등을 시작해보세요.</p>
+                `;
+            } else if (totalScore >= 20) {
+                grade = "실천 역량 발달 중";
+                message = `
+                    <p>잠재력이 있으나 실천으로 연결되는 경험이 더 필요합니다.</p>
+                    <div class="highlight-box">
+                        <p>생각과 행동 사이의 연결고리를 만들어주세요!</p>
+                    </div>
+                    <p>'우리 동네 불편 탐정단'처럼 작은 프로젝트부터 시작해보세요. 아이가 스스로 문제를 발견하고 해결책을 제안하는 경험이 실천 역량을 키우는 핵심입니다.</p>
+                `;
+            } else {
+                grade = "실천 역량 기초 단계";
+                message = `
+                    <p>실천 역량의 기초를 다지는 시기입니다.</p>
+                    <div class="highlight-box">
+                        <p>가정에서부터 시민 의식의 첫걸음을 떼어보세요!</p>
+                    </div>
+                    <p>민주적 의사결정(가족 자치 회의)과 뉴스 브리핑 토론을 활용해보세요. "너라면 어떻게 했을까?"라는 질문으로 아이의 생각을 자극하고, 작은 실천부터 함께 시작해보세요.</p>
+                `;
+            }
+
+            document.getElementById('resultGrade').textContent = grade;
+            document.getElementById('resultMessage').innerHTML = message;
+
+            // Hide form and show result
+            testArea.style.display = 'none';
+            resultSection.classList.add('show');
+
+            // Scroll to top
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        });
+
+        // Retry button
+        retryBtn.addEventListener('click', function() {
+            // Reset form
+            form.reset();
+
+            // Remove answered class from all cards
+            document.querySelectorAll('.question-card').forEach(card => {
+                card.classList.remove('answered');
+            });
+
+            // Reset progress
+            progressFill.style.width = '0%';
+            progressPercent.textContent = '0';
+            submitBtn.disabled = true;
+
+            // Show test area, hide result
+            testArea.style.display = 'block';
+            resultSection.classList.remove('show');
+
+            // Scroll to top
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        });
+    </script>
+</body>
+</html>

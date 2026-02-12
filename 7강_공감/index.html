@@ -1,0 +1,1007 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>내 아이 공감 역량 알아보기</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #1a2a4a 0%, #2d4a6f 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 700px;
+            margin: 0 auto;
+        }
+
+        header {
+            text-align: center;
+            padding: 40px 20px;
+            color: white;
+        }
+
+        header h1 {
+            font-size: 2rem;
+            margin-bottom: 10px;
+            color: #4ecca3;
+        }
+
+        header p {
+            font-size: 1rem;
+            opacity: 0.9;
+        }
+
+        .question-card {
+            background: white;
+            border-radius: 16px;
+            padding: 25px;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+        }
+
+        .question-header {
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+
+        .question-number {
+            background: #4ecca3;
+            color: white;
+            min-width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            text-align: center;
+            line-height: 32px;
+            font-weight: bold;
+            flex-shrink: 0;
+        }
+
+        .question-text {
+            font-size: 1.1rem;
+            color: #333;
+            line-height: 1.6;
+            padding-top: 4px;
+        }
+
+        .rating-container {
+            display: flex;
+            justify-content: space-between;
+            gap: 8px;
+        }
+
+        .rating-item {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .rating-score {
+            font-size: 1.1rem;
+            font-weight: bold;
+            color: #4ecca3;
+            margin-bottom: 6px;
+        }
+
+        .rating-btn {
+            width: 100%;
+            padding: 14px 8px;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            background: white;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: center;
+        }
+
+        .rating-btn:hover {
+            border-color: #4ecca3;
+            background: #f0faf6;
+        }
+
+        .rating-btn.selected {
+            border-color: #4ecca3;
+            background: #4ecca3;
+            color: white;
+        }
+
+        .rating-btn .label {
+            font-size: 0.75rem;
+        }
+
+        .submit-btn {
+            width: 100%;
+            padding: 18px;
+            background: linear-gradient(135deg, #4ecca3 0%, #38b28a 100%);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 1.2rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+            margin-top: 20px;
+        }
+
+        .submit-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(78, 204, 163, 0.4);
+        }
+
+        .submit-btn:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        /* 결과 카드 스타일 개선 */
+        .result-card {
+            display: none;
+            background: white;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+        }
+
+        .result-header {
+            background: linear-gradient(135deg, #4ecca3 0%, #38b28a 100%);
+            padding: 40px 30px;
+            text-align: center;
+            color: white;
+        }
+
+        .result-header h2 {
+            font-size: 1.3rem;
+            margin-bottom: 20px;
+            opacity: 0.9;
+        }
+
+        .score-circle {
+            width: 150px;
+            height: 150px;
+            background: white;
+            border-radius: 50%;
+            margin: 0 auto 20px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            box-shadow: 0 8px 30px rgba(0,0,0,0.15);
+        }
+
+        .result-score {
+            font-size: 3.5rem;
+            font-weight: bold;
+            color: #4ecca3;
+            line-height: 1;
+        }
+
+        .result-max {
+            font-size: 1rem;
+            color: #888;
+        }
+
+        .result-body {
+            padding: 30px;
+        }
+
+        .result-level-box {
+            text-align: center;
+            padding: 25px;
+            border-radius: 16px;
+            margin-bottom: 25px;
+        }
+
+        .result-level-box.level-excellent {
+            background: linear-gradient(135deg, #d4edda 0%, #c3e6cb 100%);
+            border: 2px solid #28a745;
+        }
+
+        .result-level-box.level-good {
+            background: linear-gradient(135deg, #cce5ff 0%, #b8daff 100%);
+            border: 2px solid #007bff;
+        }
+
+        .result-level-box.level-average {
+            background: linear-gradient(135deg, #fff3cd 0%, #ffeeba 100%);
+            border: 2px solid #ffc107;
+        }
+
+        .result-level-box.level-need {
+            background: linear-gradient(135deg, #f8d7da 0%, #f5c6cb 100%);
+            border: 2px solid #dc3545;
+        }
+
+        .result-level-icon {
+            font-size: 3rem;
+            margin-bottom: 10px;
+        }
+
+        .result-level {
+            font-size: 1.8rem;
+            font-weight: bold;
+            margin-bottom: 15px;
+        }
+
+        .level-excellent .result-level { color: #155724; }
+        .level-good .result-level { color: #004085; }
+        .level-average .result-level { color: #856404; }
+        .level-need .result-level { color: #721c24; }
+
+        .result-description {
+            font-size: 1rem;
+            line-height: 1.8;
+            color: #555;
+        }
+
+        .level-excellent .result-description { color: #155724; }
+        .level-good .result-description { color: #004085; }
+        .level-average .result-description { color: #856404; }
+        .level-need .result-description { color: #721c24; }
+
+        .score-bar-section {
+            margin-bottom: 30px;
+        }
+
+        .score-bar-label {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 8px;
+            font-size: 0.9rem;
+            color: #666;
+        }
+
+        .score-bar-bg {
+            background: #e9ecef;
+            border-radius: 10px;
+            height: 20px;
+            overflow: hidden;
+        }
+
+        .score-bar-fill {
+            height: 100%;
+            border-radius: 10px;
+            transition: width 1s ease;
+            background: linear-gradient(90deg, #4ecca3 0%, #38b28a 100%);
+        }
+
+        .tips-section {
+            background: #f8f9fa;
+            border-radius: 16px;
+            padding: 25px;
+        }
+
+        .tips-section h3 {
+            color: #333;
+            margin-bottom: 20px;
+            font-size: 1.2rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .tips-section h3::before {
+            content: "💡";
+            font-size: 1.5rem;
+        }
+
+        .tip-item {
+            display: flex;
+            align-items: flex-start;
+            padding: 15px 0;
+            border-bottom: 1px solid #e9ecef;
+        }
+
+        .tip-item:last-child {
+            border-bottom: none;
+        }
+
+        .tip-number {
+            background: #4ecca3;
+            color: white;
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-weight: bold;
+            font-size: 0.9rem;
+            margin-right: 15px;
+            flex-shrink: 0;
+        }
+
+        .tip-content {
+            flex: 1;
+        }
+
+        .tip-title {
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 5px;
+        }
+
+        .tip-desc {
+            color: #666;
+            font-size: 0.95rem;
+            line-height: 1.5;
+        }
+
+        .retry-btn {
+            width: 100%;
+            margin-top: 25px;
+            padding: 16px;
+            background: #6c757d;
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 1.1rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+
+        .retry-btn:hover {
+            background: #5a6268;
+        }
+
+        .quote {
+            text-align: center;
+            padding: 30px;
+            color: white;
+            font-style: italic;
+            opacity: 0.9;
+        }
+
+        .quote p {
+            font-size: 1rem;
+            margin-bottom: 10px;
+        }
+
+        .quote .author {
+            font-size: 0.9rem;
+            color: #4ecca3;
+        }
+
+        .progress-bar {
+            background: rgba(255,255,255,0.2);
+            border-radius: 10px;
+            height: 8px;
+            margin-bottom: 30px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            background: #4ecca3;
+            height: 100%;
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+
+        .progress-text {
+            text-align: center;
+            color: white;
+            margin-bottom: 10px;
+            font-size: 0.9rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>내 아이 공감 역량 알아보기</h1>
+            <p>평소 아이의 모습을 떠올리며 답해주세요</p>
+        </header>
+
+        <div class="progress-text">응답 진행: <span id="answered">0</span> / 10</div>
+        <div class="progress-bar">
+            <div class="progress-fill" id="progressFill"></div>
+        </div>
+
+        <form id="surveyForm">
+            <!-- 질문 1 -->
+            <div class="question-card">
+                <div class="question-header">
+                    <span class="question-number">1</span>
+                    <p class="question-text">아이가 상대방의 표정이나 몸짓만 보고도 그 사람의 기분을 알아채는 편인가요?</p>
+                </div>
+                <div class="rating-container">
+                    <div class="rating-item">
+                        <span class="rating-score">1</span>
+                        <button type="button" class="rating-btn" data-question="1" data-score="1">
+                            <span class="label">전혀<br>아니다</span>
+                        </button>
+                    </div>
+                    <div class="rating-item">
+                        <span class="rating-score">2</span>
+                        <button type="button" class="rating-btn" data-question="1" data-score="2">
+                            <span class="label">아니다</span>
+                        </button>
+                    </div>
+                    <div class="rating-item">
+                        <span class="rating-score">3</span>
+                        <button type="button" class="rating-btn" data-question="1" data-score="3">
+                            <span class="label">보통</span>
+                        </button>
+                    </div>
+                    <div class="rating-item">
+                        <span class="rating-score">4</span>
+                        <button type="button" class="rating-btn" data-question="1" data-score="4">
+                            <span class="label">그렇다</span>
+                        </button>
+                    </div>
+                    <div class="rating-item">
+                        <span class="rating-score">5</span>
+                        <button type="button" class="rating-btn" data-question="1" data-score="5">
+                            <span class="label">매우<br>그렇다</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 질문 2 -->
+            <div class="question-card">
+                <div class="question-header">
+                    <span class="question-number">2</span>
+                    <p class="question-text">아이가 대화할 때 상대방의 눈을 바라보며 이야기를 듣는 편인가요?</p>
+                </div>
+                <div class="rating-container">
+                    <div class="rating-item">
+                        <span class="rating-score">1</span>
+                        <button type="button" class="rating-btn" data-question="2" data-score="1">
+                            <span class="label">전혀<br>아니다</span>
+                        </button>
+                    </div>
+                    <div class="rating-item">
+                        <span class="rating-score">2</span>
+                        <button type="button" class="rating-btn" data-question="2" data-score="2">
+                            <span class="label">아니다</span>
+                        </button>
+                    </div>
+                    <div class="rating-item">
+                        <span class="rating-score">3</span>
+                        <button type="button" class="rating-btn" data-question="2" data-score="3">
+                            <span class="label">보통</span>
+                        </button>
+                    </div>
+                    <div class="rating-item">
+                        <span class="rating-score">4</span>
+                        <button type="button" class="rating-btn" data-question="2" data-score="4">
+                            <span class="label">그렇다</span>
+                        </button>
+                    </div>
+                    <div class="rating-item">
+                        <span class="rating-score">5</span>
+                        <button type="button" class="rating-btn" data-question="2" data-score="5">
+                            <span class="label">매우<br>그렇다</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 질문 3 -->
+            <div class="question-card">
+                <div class="question-header">
+                    <span class="question-number">3</span>
+                    <p class="question-text">아이가 다른 사람의 입장에서 생각해보려고 노력하는 편인가요?</p>
+                </div>
+                <div class="rating-container">
+                    <div class="rating-item">
+                        <span class="rating-score">1</span>
+                        <button type="button" class="rating-btn" data-question="3" data-score="1">
+                            <span class="label">전혀<br>아니다</span>
+                        </button>
+                    </div>
+                    <div class="rating-item">
+                        <span class="rating-score">2</span>
+                        <button type="button" class="rating-btn" data-question="3" data-score="2">
+                            <span class="label">아니다</span>
+                        </button>
+                    </div>
+                    <div class="rating-item">
+                        <span class="rating-score">3</span>
+                        <button type="button" class="rating-btn" data-question="3" data-score="3">
+                            <span class="label">보통</span>
+                        </button>
+                    </div>
+                    <div class="rating-item">
+                        <span class="rating-score">4</span>
+                        <button type="button" class="rating-btn" data-question="3" data-score="4">
+                            <span class="label">그렇다</span>
+                        </button>
+                    </div>
+                    <div class="rating-item">
+                        <span class="rating-score">5</span>
+                        <button type="button" class="rating-btn" data-question="3" data-score="5">
+                            <span class="label">매우<br>그렇다</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 질문 4 -->
+            <div class="question-card">
+                <div class="question-header">
+                    <span class="question-number">4</span>
+                    <p class="question-text">아이가 영화나 책을 볼 때 등장인물의 감정에 몰입하거나 감정이입을 하는 편인가요?</p>
+                </div>
+                <div class="rating-container">
+                    <div class="rating-item">
+                        <span class="rating-score">1</span>
+                        <button type="button" class="rating-btn" data-question="4" data-score="1">
+                            <span class="label">전혀<br>아니다</span>
+                        </button>
+                    </div>
+                    <div class="rating-item">
+                        <span class="rating-score">2</span>
+                        <button type="button" class="rating-btn" data-question="4" data-score="2">
+                            <span class="label">아니다</span>
+                        </button>
+                    </div>
+                    <div class="rating-item">
+                        <span class="rating-score">3</span>
+                        <button type="button" class="rating-btn" data-question="4" data-score="3">
+                            <span class="label">보통</span>
+                        </button>
+                    </div>
+                    <div class="rating-item">
+                        <span class="rating-score">4</span>
+                        <button type="button" class="rating-btn" data-question="4" data-score="4">
+                            <span class="label">그렇다</span>
+                        </button>
+                    </div>
+                    <div class="rating-item">
+                        <span class="rating-score">5</span>
+                        <button type="button" class="rating-btn" data-question="4" data-score="5">
+                            <span class="label">매우<br>그렇다</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 질문 5 -->
+            <div class="question-card">
+                <div class="question-header">
+                    <span class="question-number">5</span>
+                    <p class="question-text">아이가 친구와 갈등이 생겼을 때 상대방의 마음도 헤아려보려 하는 편인가요?</p>
+                </div>
+                <div class="rating-container">
+                    <div class="rating-item">
+                        <span class="rating-score">1</span>
+                        <button type="button" class="rating-btn" data-question="5" data-score="1">
+                            <span class="label">전혀<br>아니다</span>
+                        </button>
+                    </div>
+                    <div class="rating-item">
+                        <span class="rating-score">2</span>
+                        <button type="button" class="rating-btn" data-question="5" data-score="2">
+                            <span class="label">아니다</span>
+                        </button>
+                    </div>
+                    <div class="rating-item">
+                        <span class="rating-score">3</span>
+                        <button type="button" class="rating-btn" data-question="5" data-score="3">
+                            <span class="label">보통</span>
+                        </button>
+                    </div>
+                    <div class="rating-item">
+                        <span class="rating-score">4</span>
+                        <button type="button" class="rating-btn" data-question="5" data-score="4">
+                            <span class="label">그렇다</span>
+                        </button>
+                    </div>
+                    <div class="rating-item">
+                        <span class="rating-score">5</span>
+                        <button type="button" class="rating-btn" data-question="5" data-score="5">
+                            <span class="label">매우<br>그렇다</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 질문 6 -->
+            <div class="question-card">
+                <div class="question-header">
+                    <span class="question-number">6</span>
+                    <p class="question-text">아이가 슬퍼하거나 힘들어하는 사람에게 적절한 위로의 말이나 행동을 하는 편인가요?</p>
+                </div>
+                <div class="rating-container">
+                    <div class="rating-item">
+                        <span class="rating-score">1</span>
+                        <button type="button" class="rating-btn" data-question="6" data-score="1">
+                            <span class="label">전혀<br>아니다</span>
+                        </button>
+                    </div>
+                    <div class="rating-item">
+                        <span class="rating-score">2</span>
+                        <button type="button" class="rating-btn" data-question="6" data-score="2">
+                            <span class="label">아니다</span>
+                        </button>
+                    </div>
+                    <div class="rating-item">
+                        <span class="rating-score">3</span>
+                        <button type="button" class="rating-btn" data-question="6" data-score="3">
+                            <span class="label">보통</span>
+                        </button>
+                    </div>
+                    <div class="rating-item">
+                        <span class="rating-score">4</span>
+                        <button type="button" class="rating-btn" data-question="6" data-score="4">
+                            <span class="label">그렇다</span>
+                        </button>
+                    </div>
+                    <div class="rating-item">
+                        <span class="rating-score">5</span>
+                        <button type="button" class="rating-btn" data-question="6" data-score="5">
+                            <span class="label">매우<br>그렇다</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 질문 7 -->
+            <div class="question-card">
+                <div class="question-header">
+                    <span class="question-number">7</span>
+                    <p class="question-text">아이가 다른 사람의 이야기를 들을 때 "정말?", "그랬구나" 등 공감하는 반응을 보이나요?</p>
+                </div>
+                <div class="rating-container">
+                    <div class="rating-item">
+                        <span class="rating-score">1</span>
+                        <button type="button" class="rating-btn" data-question="7" data-score="1">
+                            <span class="label">전혀<br>아니다</span>
+                        </button>
+                    </div>
+                    <div class="rating-item">
+                        <span class="rating-score">2</span>
+                        <button type="button" class="rating-btn" data-question="7" data-score="2">
+                            <span class="label">아니다</span>
+                        </button>
+                    </div>
+                    <div class="rating-item">
+                        <span class="rating-score">3</span>
+                        <button type="button" class="rating-btn" data-question="7" data-score="3">
+                            <span class="label">보통</span>
+                        </button>
+                    </div>
+                    <div class="rating-item">
+                        <span class="rating-score">4</span>
+                        <button type="button" class="rating-btn" data-question="7" data-score="4">
+                            <span class="label">그렇다</span>
+                        </button>
+                    </div>
+                    <div class="rating-item">
+                        <span class="rating-score">5</span>
+                        <button type="button" class="rating-btn" data-question="7" data-score="5">
+                            <span class="label">매우<br>그렇다</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 질문 8 -->
+            <div class="question-card">
+                <div class="question-header">
+                    <span class="question-number">8</span>
+                    <p class="question-text">아이가 친구와 다툰 후에도 관계를 회복하려고 먼저 다가가거나 화해하려는 노력을 하나요?</p>
+                </div>
+                <div class="rating-container">
+                    <div class="rating-item">
+                        <span class="rating-score">1</span>
+                        <button type="button" class="rating-btn" data-question="8" data-score="1">
+                            <span class="label">전혀<br>아니다</span>
+                        </button>
+                    </div>
+                    <div class="rating-item">
+                        <span class="rating-score">2</span>
+                        <button type="button" class="rating-btn" data-question="8" data-score="2">
+                            <span class="label">아니다</span>
+                        </button>
+                    </div>
+                    <div class="rating-item">
+                        <span class="rating-score">3</span>
+                        <button type="button" class="rating-btn" data-question="8" data-score="3">
+                            <span class="label">보통</span>
+                        </button>
+                    </div>
+                    <div class="rating-item">
+                        <span class="rating-score">4</span>
+                        <button type="button" class="rating-btn" data-question="8" data-score="4">
+                            <span class="label">그렇다</span>
+                        </button>
+                    </div>
+                    <div class="rating-item">
+                        <span class="rating-score">5</span>
+                        <button type="button" class="rating-btn" data-question="8" data-score="5">
+                            <span class="label">매우<br>그렇다</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 질문 9 -->
+            <div class="question-card">
+                <div class="question-header">
+                    <span class="question-number">9</span>
+                    <p class="question-text">아이가 외톨이이거나 소외된 친구에게 관심을 가지거나 다가가는 편인가요?</p>
+                </div>
+                <div class="rating-container">
+                    <div class="rating-item">
+                        <span class="rating-score">1</span>
+                        <button type="button" class="rating-btn" data-question="9" data-score="1">
+                            <span class="label">전혀<br>아니다</span>
+                        </button>
+                    </div>
+                    <div class="rating-item">
+                        <span class="rating-score">2</span>
+                        <button type="button" class="rating-btn" data-question="9" data-score="2">
+                            <span class="label">아니다</span>
+                        </button>
+                    </div>
+                    <div class="rating-item">
+                        <span class="rating-score">3</span>
+                        <button type="button" class="rating-btn" data-question="9" data-score="3">
+                            <span class="label">보통</span>
+                        </button>
+                    </div>
+                    <div class="rating-item">
+                        <span class="rating-score">4</span>
+                        <button type="button" class="rating-btn" data-question="9" data-score="4">
+                            <span class="label">그렇다</span>
+                        </button>
+                    </div>
+                    <div class="rating-item">
+                        <span class="rating-score">5</span>
+                        <button type="button" class="rating-btn" data-question="9" data-score="5">
+                            <span class="label">매우<br>그렇다</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 질문 10 -->
+            <div class="question-card">
+                <div class="question-header">
+                    <span class="question-number">10</span>
+                    <p class="question-text">아이가 가족이나 친구가 아플 때, 슬플 때 진심으로 걱정하고 함께 마음 아파하는 편인가요?</p>
+                </div>
+                <div class="rating-container">
+                    <div class="rating-item">
+                        <span class="rating-score">1</span>
+                        <button type="button" class="rating-btn" data-question="10" data-score="1">
+                            <span class="label">전혀<br>아니다</span>
+                        </button>
+                    </div>
+                    <div class="rating-item">
+                        <span class="rating-score">2</span>
+                        <button type="button" class="rating-btn" data-question="10" data-score="2">
+                            <span class="label">아니다</span>
+                        </button>
+                    </div>
+                    <div class="rating-item">
+                        <span class="rating-score">3</span>
+                        <button type="button" class="rating-btn" data-question="10" data-score="3">
+                            <span class="label">보통</span>
+                        </button>
+                    </div>
+                    <div class="rating-item">
+                        <span class="rating-score">4</span>
+                        <button type="button" class="rating-btn" data-question="10" data-score="4">
+                            <span class="label">그렇다</span>
+                        </button>
+                    </div>
+                    <div class="rating-item">
+                        <span class="rating-score">5</span>
+                        <button type="button" class="rating-btn" data-question="10" data-score="5">
+                            <span class="label">매우<br>그렇다</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <button type="button" class="submit-btn" id="submitBtn" disabled>결과 확인하기</button>
+        </form>
+
+        <!-- 결과 카드 -->
+        <div class="result-card" id="resultCard">
+            <div class="result-header">
+                <h2>검사 결과</h2>
+                <div class="score-circle">
+                    <div class="result-score" id="resultScore">0</div>
+                    <div class="result-max">/ 50점</div>
+                </div>
+            </div>
+
+            <div class="result-body">
+                <div class="score-bar-section">
+                    <div class="score-bar-label">
+                        <span>공감 역량 수준</span>
+                        <span id="scorePercent">0%</span>
+                    </div>
+                    <div class="score-bar-bg">
+                        <div class="score-bar-fill" id="scoreBarFill"></div>
+                    </div>
+                </div>
+
+                <div class="result-level-box" id="resultLevelBox">
+                    <div class="result-level-icon" id="resultIcon">🌟</div>
+                    <div class="result-level" id="resultLevel">공감 역량 우수</div>
+                    <p class="result-description" id="resultDescription"></p>
+                </div>
+
+                <div class="tips-section">
+                    <h3>공감 역량 키우기 실천 TIP</h3>
+
+                    <div class="tip-item">
+                        <div class="tip-number">1</div>
+                        <div class="tip-content">
+                            <div class="tip-title">감정 읽어주기</div>
+                            <div class="tip-desc">"뚝 그쳐" 대신 "속상하구나"라고 감정에 이름 붙여주세요</div>
+                        </div>
+                    </div>
+
+                    <div class="tip-item">
+                        <div class="tip-number">2</div>
+                        <div class="tip-content">
+                            <div class="tip-title">하루 1분 눈맞춤</div>
+                            <div class="tip-desc">스마트폰 내려놓고 아이의 눈을 바라봐 주세요</div>
+                        </div>
+                    </div>
+
+                    <div class="tip-item">
+                        <div class="tip-number">3</div>
+                        <div class="tip-content">
+                            <div class="tip-title">관점 바꾸기 질문</div>
+                            <div class="tip-desc">"그 친구 마음은 어땠을까?" 물어봐 주세요</div>
+                        </div>
+                    </div>
+
+                    <div class="tip-item">
+                        <div class="tip-number">4</div>
+                        <div class="tip-content">
+                            <div class="tip-title">온전한 함께 시간</div>
+                            <div class="tip-desc">아이와 놀 때는 온전히 함께하는 시간을 가지세요</div>
+                        </div>
+                    </div>
+                </div>
+
+                <button class="retry-btn" id="retryBtn">다시 검사하기</button>
+            </div>
+        </div>
+
+        <div class="quote">
+            <p>"AI 시대에 가장 희소성을 갖는 것은<br>타인과 공감할 수 있는 힘을 가진 인간이 될 것이다."</p>
+            <span class="author">- 사티야 나델라 (MS CEO)</span>
+        </div>
+    </div>
+
+    <script>
+        const answers = {};
+        const totalQuestions = 10;
+
+        // 버튼 클릭 이벤트
+        document.querySelectorAll('.rating-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                const question = this.dataset.question;
+                const score = parseInt(this.dataset.score);
+
+                // 같은 질문의 다른 버튼 선택 해제
+                document.querySelectorAll(`[data-question="${question}"]`).forEach(b => {
+                    b.classList.remove('selected');
+                });
+
+                // 현재 버튼 선택
+                this.classList.add('selected');
+                answers[question] = score;
+
+                // 진행 상황 업데이트
+                updateProgress();
+            });
+        });
+
+        function updateProgress() {
+            const answered = Object.keys(answers).length;
+            document.getElementById('answered').textContent = answered;
+            document.getElementById('progressFill').style.width = (answered / totalQuestions * 100) + '%';
+
+            // 모든 질문에 답했으면 버튼 활성화
+            document.getElementById('submitBtn').disabled = answered < totalQuestions;
+        }
+
+        // 결과 확인
+        document.getElementById('submitBtn').addEventListener('click', function() {
+            const totalScore = Object.values(answers).reduce((a, b) => a + b, 0);
+            const percent = Math.round(totalScore / 50 * 100);
+
+            // 결과 표시
+            document.getElementById('surveyForm').style.display = 'none';
+            document.querySelector('.progress-bar').style.display = 'none';
+            document.querySelector('.progress-text').style.display = 'none';
+            document.getElementById('resultCard').style.display = 'block';
+
+            // 페이지 상단으로 스크롤
+            window.scrollTo(0, 0);
+
+            // 점수 애니메이션
+            let currentScore = 0;
+            const scoreElement = document.getElementById('resultScore');
+            const interval = setInterval(() => {
+                currentScore++;
+                scoreElement.textContent = currentScore;
+                if (currentScore >= totalScore) {
+                    clearInterval(interval);
+                }
+            }, 40);
+
+            // 퍼센트 표시 및 바 애니메이션
+            document.getElementById('scorePercent').textContent = percent + '%';
+            setTimeout(() => {
+                document.getElementById('scoreBarFill').style.width = percent + '%';
+            }, 100);
+
+            // 레벨 및 설명 설정
+            const levelBox = document.getElementById('resultLevelBox');
+            const levelElement = document.getElementById('resultLevel');
+            const descElement = document.getElementById('resultDescription');
+            const iconElement = document.getElementById('resultIcon');
+
+            levelBox.className = 'result-level-box';
+
+            if (totalScore >= 40) {
+                levelBox.classList.add('level-excellent');
+                iconElement.textContent = '🌟';
+                levelElement.textContent = '공감 역량 우수';
+                descElement.textContent = '아이가 타인의 감정을 잘 읽고 적절히 반응합니다. 관계를 소중히 여기고 유지하는 힘이 있습니다. 이러한 공감 능력은 AI 시대에 가장 귀한 경쟁력이 될 것입니다.';
+            } else if (totalScore >= 30) {
+                levelBox.classList.add('level-good');
+                iconElement.textContent = '👍';
+                levelElement.textContent = '공감 역량 양호';
+                descElement.textContent = '아이가 기본적인 공감 능력을 갖추고 있습니다. 꾸준한 연습으로 더 성장할 수 있습니다. 일상에서 감정 대화를 자주 나눠보세요.';
+            } else if (totalScore >= 20) {
+                levelBox.classList.add('level-average');
+                iconElement.textContent = '💪';
+                levelElement.textContent = '공감 역량 보통';
+                descElement.textContent = '아이의 공감 표현이 다소 부족할 수 있습니다. 가정에서 감정 대화를 자주 나누고, 타인의 입장을 생각해보는 연습을 해보세요.';
+            } else {
+                levelBox.classList.add('level-need');
+                iconElement.textContent = '🌱';
+                levelElement.textContent = '공감 역량 개발 필요';
+                descElement.textContent = '아이가 타인의 감정에 관심을 갖도록 도와주세요. 부모가 먼저 아이의 감정을 읽어주고 공감해주는 것이 중요합니다.';
+            }
+        });
+
+        // 다시 검사하기
+        document.getElementById('retryBtn').addEventListener('click', function() {
+            // 초기화
+            Object.keys(answers).forEach(key => delete answers[key]);
+            document.querySelectorAll('.rating-btn').forEach(btn => {
+                btn.classList.remove('selected');
+            });
+
+            // 바 초기화
+            document.getElementById('scoreBarFill').style.width = '0%';
+
+            // 화면 전환
+            document.getElementById('surveyForm').style.display = 'block';
+            document.querySelector('.progress-bar').style.display = 'block';
+            document.querySelector('.progress-text').style.display = 'block';
+            document.getElementById('resultCard').style.display = 'none';
+
+            updateProgress();
+            window.scrollTo(0, 0);
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,7 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(start \"\" \"C:\\\\Users\\\\gly10\\\\Desktop\\\\7강_공감\\\\index.html\")"
+    ]
+  }
+}

@@ -1,0 +1,501 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>우리 아이는 '평생 학습자'인가?</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            min-height: 100vh;
+            color: #fff;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 700px;
+            margin: 0 auto;
+        }
+
+        h1 {
+            text-align: center;
+            font-size: 2rem;
+            margin-bottom: 10px;
+            color: #4ecca3;
+        }
+
+        .subtitle {
+            text-align: center;
+            color: #aaa;
+            margin-bottom: 30px;
+            font-size: 0.95rem;
+        }
+
+        .question-card {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 15px;
+            padding: 25px;
+            margin-bottom: 20px;
+            border: 1px solid rgba(78, 204, 163, 0.2);
+        }
+
+        .question-number {
+            color: #4ecca3;
+            font-weight: bold;
+            font-size: 0.9rem;
+            margin-bottom: 10px;
+        }
+
+        .question-text {
+            font-size: 1.1rem;
+            line-height: 1.6;
+            margin-bottom: 20px;
+        }
+
+        .options {
+            display: flex;
+            justify-content: space-between;
+            gap: 10px;
+        }
+
+        .option {
+            flex: 1;
+            text-align: center;
+        }
+
+        .option input {
+            display: none;
+        }
+
+        .option label {
+            display: block;
+            padding: 12px 5px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-size: 0.85rem;
+        }
+
+        .option label:hover {
+            background: rgba(78, 204, 163, 0.3);
+        }
+
+        .option input:checked + label {
+            background: #4ecca3;
+            color: #1a1a2e;
+            font-weight: bold;
+        }
+
+        .score-label {
+            display: block;
+            font-size: 1.2rem;
+            font-weight: bold;
+            margin-bottom: 3px;
+        }
+
+        .submit-btn {
+            width: 100%;
+            padding: 18px;
+            font-size: 1.2rem;
+            background: linear-gradient(135deg, #4ecca3 0%, #38b28a 100%);
+            color: #1a1a2e;
+            border: none;
+            border-radius: 15px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: transform 0.3s, box-shadow 0.3s;
+            margin-top: 20px;
+        }
+
+        .submit-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 30px rgba(78, 204, 163, 0.3);
+        }
+
+        .result-section {
+            display: none;
+            text-align: center;
+            padding: 40px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 20px;
+            border: 2px solid #4ecca3;
+            margin-top: 30px;
+        }
+
+        .result-score {
+            font-size: 4rem;
+            font-weight: bold;
+            color: #4ecca3;
+            margin-bottom: 10px;
+        }
+
+        .result-max {
+            font-size: 1.2rem;
+            color: #888;
+            margin-bottom: 30px;
+        }
+
+        .result-title {
+            font-size: 1.8rem;
+            margin-bottom: 20px;
+            color: #fff;
+        }
+
+        .result-description {
+            font-size: 1rem;
+            line-height: 1.8;
+            color: #ccc;
+            margin-bottom: 30px;
+        }
+
+        .result-tip {
+            background: rgba(78, 204, 163, 0.1);
+            padding: 20px;
+            border-radius: 10px;
+            text-align: left;
+        }
+
+        .result-tip h3 {
+            color: #4ecca3;
+            margin-bottom: 15px;
+            font-size: 1.1rem;
+        }
+
+        .result-tip ul {
+            list-style: none;
+            padding-left: 0;
+        }
+
+        .result-tip li {
+            padding: 8px 0;
+            padding-left: 25px;
+            position: relative;
+            color: #ddd;
+        }
+
+        .result-tip li::before {
+            content: ">";
+            position: absolute;
+            left: 5px;
+            color: #4ecca3;
+            font-weight: bold;
+        }
+
+        .retry-btn {
+            padding: 15px 40px;
+            font-size: 1rem;
+            background: transparent;
+            color: #4ecca3;
+            border: 2px solid #4ecca3;
+            border-radius: 10px;
+            cursor: pointer;
+            margin-top: 20px;
+            transition: all 0.3s;
+        }
+
+        .retry-btn:hover {
+            background: #4ecca3;
+            color: #1a1a2e;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 6px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 3px;
+            margin-bottom: 30px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: #4ecca3;
+            width: 0%;
+            transition: width 0.3s;
+        }
+
+        .warning {
+            color: #ff6b6b;
+            text-align: center;
+            padding: 15px;
+            display: none;
+            margin-top: 10px;
+        }
+
+        .quote {
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 1px solid rgba(78, 204, 163, 0.3);
+            font-style: italic;
+            color: #aaa;
+            font-size: 1rem;
+            line-height: 1.8;
+        }
+
+        .quote-author {
+            color: #4ecca3;
+            font-style: normal;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>우리 아이는 '평생 학습자'인가?</h1>
+        <p class="subtitle">각 질문에 1~5점으로 답해주세요</p>
+
+        <div class="progress-bar">
+            <div class="progress-fill" id="progressFill"></div>
+        </div>
+
+        <form id="testForm">
+            <div class="question-card">
+                <div class="question-number">Q1</div>
+                <div class="question-text">아이가 "왜?", "어떻게?"라는 질문을 자주 합니까?</div>
+                <div class="options">
+                    <div class="option"><input type="radio" name="q1" id="q1_1" value="1"><label for="q1_1"><span class="score-label">1</span>전혀</label></div>
+                    <div class="option"><input type="radio" name="q1" id="q1_2" value="2"><label for="q1_2"><span class="score-label">2</span>아니오</label></div>
+                    <div class="option"><input type="radio" name="q1" id="q1_3" value="3"><label for="q1_3"><span class="score-label">3</span>보통</label></div>
+                    <div class="option"><input type="radio" name="q1" id="q1_4" value="4"><label for="q1_4"><span class="score-label">4</span>예</label></div>
+                    <div class="option"><input type="radio" name="q1" id="q1_5" value="5"><label for="q1_5"><span class="score-label">5</span>매우</label></div>
+                </div>
+            </div>
+
+            <div class="question-card">
+                <div class="question-number">Q2</div>
+                <div class="question-text">아이가 어려운 과제를 피하지 않고 도전하려 합니까?</div>
+                <div class="options">
+                    <div class="option"><input type="radio" name="q2" id="q2_1" value="1"><label for="q2_1"><span class="score-label">1</span>전혀</label></div>
+                    <div class="option"><input type="radio" name="q2" id="q2_2" value="2"><label for="q2_2"><span class="score-label">2</span>아니오</label></div>
+                    <div class="option"><input type="radio" name="q2" id="q2_3" value="3"><label for="q2_3"><span class="score-label">3</span>보통</label></div>
+                    <div class="option"><input type="radio" name="q2" id="q2_4" value="4"><label for="q2_4"><span class="score-label">4</span>예</label></div>
+                    <div class="option"><input type="radio" name="q2" id="q2_5" value="5"><label for="q2_5"><span class="score-label">5</span>매우</label></div>
+                </div>
+            </div>
+
+            <div class="question-card">
+                <div class="question-number">Q3</div>
+                <div class="question-text">아이가 실수했을 때 "다시 해볼게"라는 태도를 보입니까?</div>
+                <div class="options">
+                    <div class="option"><input type="radio" name="q3" id="q3_1" value="1"><label for="q3_1"><span class="score-label">1</span>전혀</label></div>
+                    <div class="option"><input type="radio" name="q3" id="q3_2" value="2"><label for="q3_2"><span class="score-label">2</span>아니오</label></div>
+                    <div class="option"><input type="radio" name="q3" id="q3_3" value="3"><label for="q3_3"><span class="score-label">3</span>보통</label></div>
+                    <div class="option"><input type="radio" name="q3" id="q3_4" value="4"><label for="q3_4"><span class="score-label">4</span>예</label></div>
+                    <div class="option"><input type="radio" name="q3" id="q3_5" value="5"><label for="q3_5"><span class="score-label">5</span>매우</label></div>
+                </div>
+            </div>
+
+            <div class="question-card">
+                <div class="question-number">Q4</div>
+                <div class="question-text">아이가 좋아하는 활동에 시간 가는 줄 모르고 몰입합니까?</div>
+                <div class="options">
+                    <div class="option"><input type="radio" name="q4" id="q4_1" value="1"><label for="q4_1"><span class="score-label">1</span>전혀</label></div>
+                    <div class="option"><input type="radio" name="q4" id="q4_2" value="2"><label for="q4_2"><span class="score-label">2</span>아니오</label></div>
+                    <div class="option"><input type="radio" name="q4" id="q4_3" value="3"><label for="q4_3"><span class="score-label">3</span>보통</label></div>
+                    <div class="option"><input type="radio" name="q4" id="q4_4" value="4"><label for="q4_4"><span class="score-label">4</span>예</label></div>
+                    <div class="option"><input type="radio" name="q4" id="q4_5" value="5"><label for="q4_5"><span class="score-label">5</span>매우</label></div>
+                </div>
+            </div>
+
+            <div class="question-card">
+                <div class="question-number">Q5</div>
+                <div class="question-text">아이가 지적이나 조언을 거부감 없이 받아들입니까?</div>
+                <div class="options">
+                    <div class="option"><input type="radio" name="q5" id="q5_1" value="1"><label for="q5_1"><span class="score-label">1</span>전혀</label></div>
+                    <div class="option"><input type="radio" name="q5" id="q5_2" value="2"><label for="q5_2"><span class="score-label">2</span>아니오</label></div>
+                    <div class="option"><input type="radio" name="q5" id="q5_3" value="3"><label for="q5_3"><span class="score-label">3</span>보통</label></div>
+                    <div class="option"><input type="radio" name="q5" id="q5_4" value="4"><label for="q5_4"><span class="score-label">4</span>예</label></div>
+                    <div class="option"><input type="radio" name="q5" id="q5_5" value="5"><label for="q5_5"><span class="score-label">5</span>매우</label></div>
+                </div>
+            </div>
+
+            <div class="question-card">
+                <div class="question-number">Q6</div>
+                <div class="question-text">아이가 점수나 보상보다 배움 자체를 즐거워합니까?</div>
+                <div class="options">
+                    <div class="option"><input type="radio" name="q6" id="q6_1" value="1"><label for="q6_1"><span class="score-label">1</span>전혀</label></div>
+                    <div class="option"><input type="radio" name="q6" id="q6_2" value="2"><label for="q6_2"><span class="score-label">2</span>아니오</label></div>
+                    <div class="option"><input type="radio" name="q6" id="q6_3" value="3"><label for="q6_3"><span class="score-label">3</span>보통</label></div>
+                    <div class="option"><input type="radio" name="q6" id="q6_4" value="4"><label for="q6_4"><span class="score-label">4</span>예</label></div>
+                    <div class="option"><input type="radio" name="q6" id="q6_5" value="5"><label for="q6_5"><span class="score-label">5</span>매우</label></div>
+                </div>
+            </div>
+
+            <div class="question-card">
+                <div class="question-number">Q7</div>
+                <div class="question-text">아이가 "노력하면 할 수 있다"고 믿습니까?</div>
+                <div class="options">
+                    <div class="option"><input type="radio" name="q7" id="q7_1" value="1"><label for="q7_1"><span class="score-label">1</span>전혀</label></div>
+                    <div class="option"><input type="radio" name="q7" id="q7_2" value="2"><label for="q7_2"><span class="score-label">2</span>아니오</label></div>
+                    <div class="option"><input type="radio" name="q7" id="q7_3" value="3"><label for="q7_3"><span class="score-label">3</span>보통</label></div>
+                    <div class="option"><input type="radio" name="q7" id="q7_4" value="4"><label for="q7_4"><span class="score-label">4</span>예</label></div>
+                    <div class="option"><input type="radio" name="q7" id="q7_5" value="5"><label for="q7_5"><span class="score-label">5</span>매우</label></div>
+                </div>
+            </div>
+
+            <div class="question-card">
+                <div class="question-number">Q8</div>
+                <div class="question-text">아이가 자신이 알던 것이 틀릴 수 있음을 인정합니까?</div>
+                <div class="options">
+                    <div class="option"><input type="radio" name="q8" id="q8_1" value="1"><label for="q8_1"><span class="score-label">1</span>전혀</label></div>
+                    <div class="option"><input type="radio" name="q8" id="q8_2" value="2"><label for="q8_2"><span class="score-label">2</span>아니오</label></div>
+                    <div class="option"><input type="radio" name="q8" id="q8_3" value="3"><label for="q8_3"><span class="score-label">3</span>보통</label></div>
+                    <div class="option"><input type="radio" name="q8" id="q8_4" value="4"><label for="q8_4"><span class="score-label">4</span>예</label></div>
+                    <div class="option"><input type="radio" name="q8" id="q8_5" value="5"><label for="q8_5"><span class="score-label">5</span>매우</label></div>
+                </div>
+            </div>
+
+            <div class="question-card">
+                <div class="question-number">Q9</div>
+                <div class="question-text">아이가 궁금한 것을 스스로 찾아보려 합니까?</div>
+                <div class="options">
+                    <div class="option"><input type="radio" name="q9" id="q9_1" value="1"><label for="q9_1"><span class="score-label">1</span>전혀</label></div>
+                    <div class="option"><input type="radio" name="q9" id="q9_2" value="2"><label for="q9_2"><span class="score-label">2</span>아니오</label></div>
+                    <div class="option"><input type="radio" name="q9" id="q9_3" value="3"><label for="q9_3"><span class="score-label">3</span>보통</label></div>
+                    <div class="option"><input type="radio" name="q9" id="q9_4" value="4"><label for="q9_4"><span class="score-label">4</span>예</label></div>
+                    <div class="option"><input type="radio" name="q9" id="q9_5" value="5"><label for="q9_5"><span class="score-label">5</span>매우</label></div>
+                </div>
+            </div>
+
+            <div class="question-card">
+                <div class="question-number">Q10</div>
+                <div class="question-text">아이가 옆의 친구보다 '어제의 나'와 비교하는 편입니까?</div>
+                <div class="options">
+                    <div class="option"><input type="radio" name="q10" id="q10_1" value="1"><label for="q10_1"><span class="score-label">1</span>전혀</label></div>
+                    <div class="option"><input type="radio" name="q10" id="q10_2" value="2"><label for="q10_2"><span class="score-label">2</span>아니오</label></div>
+                    <div class="option"><input type="radio" name="q10" id="q10_3" value="3"><label for="q10_3"><span class="score-label">3</span>보통</label></div>
+                    <div class="option"><input type="radio" name="q10" id="q10_4" value="4"><label for="q10_4"><span class="score-label">4</span>예</label></div>
+                    <div class="option"><input type="radio" name="q10" id="q10_5" value="5"><label for="q10_5"><span class="score-label">5</span>매우</label></div>
+                </div>
+            </div>
+
+            <div class="warning" id="warning">모든 질문에 답해주세요!</div>
+            <button type="submit" class="submit-btn">결과 확인하기</button>
+        </form>
+
+        <div class="result-section" id="resultSection">
+            <div class="result-score" id="resultScore">0</div>
+            <div class="result-max">/ 50점</div>
+            <div class="result-title" id="resultTitle"></div>
+            <div class="result-description" id="resultDescription"></div>
+            <div class="result-tip">
+                <h3>부모 실천 TIP</h3>
+                <ul id="resultTips"></ul>
+            </div>
+            <button class="retry-btn" onclick="location.reload()">다시 테스트하기</button>
+            <div class="quote">
+                "교육은 준비 과정이 아니라, 삶 자체입니다."<br>
+                <span class="quote-author">- 존 듀이</span>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 진행률 업데이트
+        document.querySelectorAll('input[type="radio"]').forEach(radio => {
+            radio.addEventListener('change', updateProgress);
+        });
+
+        function updateProgress() {
+            const total = 10;
+            let answered = 0;
+            for (let i = 1; i <= total; i++) {
+                if (document.querySelector(`input[name="q${i}"]:checked`)) {
+                    answered++;
+                }
+            }
+            const percent = (answered / total) * 100;
+            document.getElementById('progressFill').style.width = percent + '%';
+        }
+
+        // 폼 제출
+        document.getElementById('testForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+
+            let total = 0;
+            let allAnswered = true;
+
+            for (let i = 1; i <= 10; i++) {
+                const selected = document.querySelector(`input[name="q${i}"]:checked`);
+                if (selected) {
+                    total += parseInt(selected.value);
+                } else {
+                    allAnswered = false;
+                }
+            }
+
+            if (!allAnswered) {
+                document.getElementById('warning').style.display = 'block';
+                return;
+            }
+
+            document.getElementById('warning').style.display = 'none';
+            showResult(total);
+        });
+
+        function showResult(score) {
+            document.getElementById('testForm').style.display = 'none';
+            document.getElementById('resultSection').style.display = 'block';
+
+            // 점수 애니메이션
+            let current = 0;
+            const interval = setInterval(() => {
+                current++;
+                document.getElementById('resultScore').textContent = current;
+                if (current >= score) clearInterval(interval);
+            }, 50);
+
+            let title, description, tips;
+
+            if (score >= 40) {
+                title = "평생 학습자 DNA 충만!";
+                description = "아이에게 호기심과 성장 마인드셋이 잘 형성되어 있습니다. 배움을 즐기고, 도전을 두려워하지 않으며, 실패를 성장의 기회로 여기는 태도를 가지고 있습니다.";
+                tips = [
+                    "아이의 탐구심을 더욱 지지해주세요",
+                    "더 깊이 있는 학습 기회를 제공해주세요",
+                    "아이가 관심 있는 분야를 함께 탐험해보세요"
+                ];
+            } else if (score >= 30) {
+                title = "평생 학습자로 성장 중!";
+                description = "좋은 기반이 형성되어 있으나, 일부 영역에서 강화가 필요합니다. 아이의 호기심을 더욱 키워주고, 실패를 두려워하지 않는 환경을 만들어주세요.";
+                tips = [
+                    "실패를 '배움의 기회'로 축하해주세요",
+                    "아이의 질문에 함께 놀라워하며 탐색하세요",
+                    "결과보다 과정을 칭찬해주세요"
+                ];
+            } else if (score >= 20) {
+                title = "잠재력 개발이 필요해요";
+                description = "아이에게 고정형 사고방식이 일부 나타날 수 있습니다. 작은 성공 경험을 통해 '나도 할 수 있다'는 자신감을 심어주세요.";
+                tips = [
+                    "부모가 먼저 배우는 모습을 보여주세요",
+                    "작은 성공 경험을 자주 만들어주세요",
+                    "비교하지 말고 어제보다 나아진 점을 찾아주세요"
+                ];
+            } else {
+                title = "학습 환경 점검이 필요해요";
+                description = "아이가 학습을 의무나 부담으로 느끼고 있을 수 있습니다. 빽빽한 스케줄 대신 아이가 스스로 탐색하고 몰입할 수 있는 여유를 주세요.";
+                tips = [
+                    "아이에게 '공백의 시간'을 확보해주세요",
+                    "아이의 관심사를 존중하고 지지해주세요",
+                    "질문에 바로 답하지 말고 함께 찾아보세요"
+                ];
+            }
+
+            document.getElementById('resultTitle').textContent = title;
+            document.getElementById('resultDescription').textContent = description;
+            document.getElementById('resultTips').innerHTML = tips.map(tip => `<li>${tip}</li>`).join('');
+
+            // 결과로 스크롤
+            document.getElementById('resultSection').scrollIntoView({ behavior: 'smooth' });
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,679 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>실패를 성장 자산으로 바꾸는 3단계 질문법</title>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Noto Sans KR', sans-serif;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+            min-height: 100vh;
+            padding: 20px;
+            color: white;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .header {
+            text-align: center;
+            padding: 40px 20px;
+            margin-bottom: 30px;
+        }
+
+        .header h1 {
+            font-size: 32px;
+            font-weight: 700;
+            color: #4eeadb;
+            margin-bottom: 15px;
+        }
+
+        .header p {
+            font-size: 16px;
+            color: rgba(255,255,255,0.8);
+            line-height: 1.7;
+        }
+
+        .header .quote {
+            margin-top: 20px;
+            padding: 20px;
+            background: rgba(78, 234, 219, 0.1);
+            border-radius: 15px;
+            border-left: 4px solid #4eeadb;
+            font-style: italic;
+            color: rgba(255,255,255,0.9);
+        }
+
+        /* 3단계 설명 */
+        .steps-intro {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+            margin-bottom: 40px;
+        }
+
+        .step-box {
+            background: #2d2d44;
+            padding: 25px 20px;
+            border-radius: 16px;
+            text-align: center;
+            border: 1px solid rgba(78, 234, 219, 0.2);
+        }
+
+        .step-box .step-num {
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, #4eeadb, #45b7aa);
+            color: #1a1a2e;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 15px;
+            font-weight: 700;
+            font-size: 18px;
+        }
+
+        .step-box h3 {
+            color: #4eeadb;
+            font-size: 18px;
+            margin-bottom: 10px;
+        }
+
+        .step-box p {
+            font-size: 14px;
+            color: rgba(255,255,255,0.7);
+            line-height: 1.6;
+        }
+
+        /* 상황 선택 */
+        .situation-selector {
+            margin-bottom: 30px;
+        }
+
+        .situation-selector h2 {
+            font-size: 20px;
+            color: #4eeadb;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .situation-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 12px;
+        }
+
+        .situation-btn {
+            background: #2d2d44;
+            border: 2px solid transparent;
+            padding: 18px 15px;
+            border-radius: 12px;
+            color: rgba(255,255,255,0.9);
+            font-size: 15px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-family: 'Noto Sans KR', sans-serif;
+            text-align: center;
+        }
+
+        .situation-btn:hover {
+            border-color: #4eeadb;
+            background: #3d3d5c;
+        }
+
+        .situation-btn.active {
+            background: linear-gradient(135deg, #4eeadb, #45b7aa);
+            color: #1a1a2e;
+            font-weight: 600;
+        }
+
+        .situation-btn .icon {
+            font-size: 28px;
+            display: block;
+            margin-bottom: 10px;
+        }
+
+        /* 답안 카드 */
+        .answer-card {
+            background: #1a1a2e;
+            border-radius: 24px;
+            overflow: hidden;
+            border: 1px solid rgba(78, 234, 219, 0.3);
+            margin-top: 30px;
+            animation: fadeIn 0.5s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .answer-header {
+            background: linear-gradient(135deg, #2d2d44, #3d3d5c);
+            padding: 25px 30px;
+            border-bottom: 1px solid rgba(78, 234, 219, 0.2);
+        }
+
+        .answer-header .situation-title {
+            font-size: 24px;
+            font-weight: 700;
+            color: #4eeadb;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .answer-header .situation-title .icon {
+            font-size: 32px;
+        }
+
+        .answer-content {
+            padding: 30px;
+        }
+
+        .step-section {
+            background: #2d2d44;
+            border-radius: 16px;
+            padding: 25px;
+            margin-bottom: 20px;
+        }
+
+        .step-section:last-of-type {
+            margin-bottom: 0;
+        }
+
+        .step-section .step-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 15px;
+        }
+
+        .step-section .step-number {
+            width: 32px;
+            height: 32px;
+            background: linear-gradient(135deg, #4eeadb, #45b7aa);
+            color: #1a1a2e;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 14px;
+        }
+
+        .step-section .step-title {
+            font-size: 18px;
+            font-weight: 700;
+            color: #4eeadb;
+        }
+
+        .step-section .step-subtitle {
+            font-size: 13px;
+            color: rgba(255,255,255,0.5);
+            margin-left: auto;
+        }
+
+        .step-section .question {
+            background: rgba(78, 234, 219, 0.1);
+            padding: 15px 20px;
+            border-radius: 10px;
+            margin-bottom: 15px;
+            border-left: 3px solid #4eeadb;
+        }
+
+        .step-section .question strong {
+            color: #4eeadb;
+        }
+
+        .step-section .answer {
+            padding: 15px 20px;
+            background: #3d3d5c;
+            border-radius: 10px;
+            line-height: 1.8;
+            color: rgba(255,255,255,0.9);
+        }
+
+        /* 부모의 한마디 */
+        .parent-message {
+            background: linear-gradient(135deg, rgba(78, 234, 219, 0.2), rgba(69, 183, 170, 0.1));
+            border-radius: 16px;
+            padding: 30px;
+            margin-top: 25px;
+            border: 1px solid rgba(78, 234, 219, 0.3);
+            text-align: center;
+        }
+
+        .parent-message .label {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: linear-gradient(135deg, #4eeadb, #45b7aa);
+            color: #1a1a2e;
+            padding: 8px 20px;
+            border-radius: 20px;
+            font-weight: 700;
+            font-size: 14px;
+            margin-bottom: 20px;
+        }
+
+        .parent-message .message {
+            font-size: 20px;
+            font-weight: 600;
+            color: white;
+            line-height: 1.6;
+        }
+
+        .parent-message .message::before,
+        .parent-message .message::after {
+            content: '"';
+            color: #4eeadb;
+            font-size: 24px;
+        }
+
+        /* 핵심 포인트 */
+        .key-points {
+            margin-top: 25px;
+            padding: 20px;
+            background: #2d2d44;
+            border-radius: 12px;
+        }
+
+        .key-points h4 {
+            color: #4eeadb;
+            font-size: 15px;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .key-points ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .key-points li {
+            padding: 8px 0;
+            padding-left: 20px;
+            position: relative;
+            color: rgba(255,255,255,0.8);
+            font-size: 14px;
+            line-height: 1.6;
+        }
+
+        .key-points li::before {
+            content: '✓';
+            position: absolute;
+            left: 0;
+            color: #4eeadb;
+        }
+
+        /* 반응형 */
+        @media (max-width: 768px) {
+            .steps-intro {
+                grid-template-columns: 1fr;
+            }
+
+            .header h1 {
+                font-size: 24px;
+            }
+
+            .situation-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .answer-header .situation-title {
+                font-size: 20px;
+            }
+
+            .parent-message .message {
+                font-size: 17px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .situation-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>실패를 성장 자산으로 바꾸는<br>3단계 질문법</h1>
+            <p>실패는 주관적이며, 배움이 있다면 그것은 '성공의 자산'입니다.</p>
+            <div class="quote">
+                "나는 실패한 적이 없다. 단지 전구가 작동하지 않는 10,000가지 방법을 발견했을 뿐이다."<br>
+                <span style="color: #4eeadb;">- 토마스 에디슨</span>
+            </div>
+        </div>
+
+        <!-- 3단계 소개 -->
+        <div class="steps-intro">
+            <div class="step-box">
+                <div class="step-num">1</div>
+                <h3>분석 (Analysis)</h3>
+                <p>"이번에 어떤 부분이 어려웠을까?"<br><br>비난 없는 객관적 원인 파악</p>
+            </div>
+            <div class="step-box">
+                <div class="step-num">2</div>
+                <h3>교훈 (Lesson)</h3>
+                <p>"이 경험에서 배운 점은 무엇이니?"<br><br>경험에 긍정적 의미 부여</p>
+            </div>
+            <div class="step-box">
+                <div class="step-num">3</div>
+                <h3>계획 (Plan)</h3>
+                <p>"다음엔 어떻게 다르게 해볼까?"<br><br>미래 지향적 행동 설계</p>
+            </div>
+        </div>
+
+        <!-- 상황 선택 -->
+        <div class="situation-selector">
+            <h2>아이의 실패 상황을 선택하세요</h2>
+            <div class="situation-grid">
+                <button class="situation-btn active" onclick="showAnswer(0)">
+                    <span class="icon">📝</span>
+                    시험 성적이 나쁠 때
+                </button>
+                <button class="situation-btn" onclick="showAnswer(1)">
+                    <span class="icon">⚽</span>
+                    운동 경기에서 졌을 때
+                </button>
+                <button class="situation-btn" onclick="showAnswer(2)">
+                    <span class="icon">😢</span>
+                    친구와 싸웠을 때
+                </button>
+                <button class="situation-btn" onclick="showAnswer(3)">
+                    <span class="icon">🎤</span>
+                    발표에서 실수했을 때
+                </button>
+                <button class="situation-btn" onclick="showAnswer(4)">
+                    <span class="icon">🏆</span>
+                    대회/오디션 탈락했을 때
+                </button>
+                <button class="situation-btn" onclick="showAnswer(5)">
+                    <span class="icon">📚</span>
+                    숙제를 제때 못 냈을 때
+                </button>
+                <button class="situation-btn" onclick="showAnswer(6)">
+                    <span class="icon">🎸</span>
+                    새로운 것을 배우다 포기하고 싶을 때
+                </button>
+                <button class="situation-btn" onclick="showAnswer(7)">
+                    <span class="icon">🤝</span>
+                    약속을 어겼을 때
+                </button>
+            </div>
+        </div>
+
+        <!-- 답안 카드 -->
+        <div class="answer-card" id="answerCard">
+            <!-- JavaScript로 내용 채움 -->
+        </div>
+    </div>
+
+    <script>
+        const situations = [
+            {
+                icon: "📝",
+                title: "시험 성적이 나쁠 때",
+                analysis: {
+                    question: "열심히 했는데 점수가 안 나와서 속상하네. <strong>틀린 문제들이 어떤 유형이니?</strong>",
+                    answer: "아이와 함께 시험지를 보며 어떤 유형의 문제에서 틀렸는지 객관적으로 파악합니다. 개념 이해 부족인지, 계산 실수인지, 시간 부족이었는지 등을 차분하게 분석합니다."
+                },
+                lesson: {
+                    question: "아, 개념은 아는데 계산 실수가 많았구나. <strong>시간이 부족했다는 데이터가 나왔네!</strong>",
+                    answer: "틀린 원인을 '실패'가 아닌 '데이터'로 재정의합니다. 이 데이터는 다음에 더 잘하기 위한 소중한 정보라는 것을 알려줍니다."
+                },
+                plan: {
+                    question: "<strong>다음 시험에선 쉬운 문제부터 풀고 계산 검토 시간을 5분 확보해 보자.</strong>",
+                    answer: "구체적이고 실행 가능한 전략을 함께 세웁니다. 아이가 스스로 실천할 수 있는 작은 계획부터 시작합니다."
+                },
+                parentMessage: "점수는 실력이 아니라, 지금 공부의 '방향'을 알려주는 나침반이야.",
+                keyPoints: [
+                    "시험지를 함께 보며 '어떤 유형'에서 틀렸는지 파악하기",
+                    "틀린 것을 비난하지 않고 '정보'로 바라보기",
+                    "다음에 실천할 수 있는 구체적인 전략 세우기"
+                ]
+            },
+            {
+                icon: "⚽",
+                title: "운동 경기에서 졌을 때",
+                analysis: {
+                    question: "끝까지 최선을 다한 모습이 멋졌어. <strong>경기 결과는 졌지만 네 달리기는 정말 빨랐어.</strong>",
+                    answer: "패배 속에서도 아이가 잘한 부분을 먼저 인정해줍니다. 전체적인 결과보다 아이 개인의 노력과 성장 포인트를 짚어줍니다."
+                },
+                lesson: {
+                    question: "상대 팀은 패스가 빨랐구나? <strong>우리는 개인기에 의존했다는 배움을 얻었네.</strong>",
+                    answer: "승패의 원인을 객관적으로 분석하면서, 상대방의 강점에서 배울 점을 찾습니다. 패배를 '전략적 배움'으로 전환합니다."
+                },
+                plan: {
+                    question: "<strong>내일부턴 패스 연습 비중을 높여보자. 훨씬 재미있는 경기가 될 거야.</strong>",
+                    answer: "배운 점을 바탕으로 구체적인 연습 계획을 세웁니다. 개선이 '더 재미있는 결과'로 이어진다는 긍정적 기대를 심어줍니다."
+                },
+                parentMessage: "승패는 결과일 뿐이지만, 패배에서 얻은 전략은 너의 실력이 된단다.",
+                keyPoints: [
+                    "패배 속에서도 아이가 잘한 점을 먼저 칭찬하기",
+                    "상대방의 강점을 분석하며 배울 점 찾기",
+                    "연습 계획을 세워 성장 가능성 보여주기"
+                ]
+            },
+            {
+                icon: "😢",
+                title: "친구와 싸웠을 때",
+                analysis: {
+                    question: "많이 속상했겠다. <strong>어떤 일이 있었는지 천천히 얘기해줄래?</strong>",
+                    answer: "먼저 아이의 감정을 충분히 수용한 후, 상황을 객관적으로 파악합니다. 누가 잘못했는지 판단하기보다 '무슨 일이 있었는지' 사실을 들어봅니다."
+                },
+                lesson: {
+                    question: "그랬구나. <strong>서로 오해가 있었던 것 같네. 네 마음도, 친구 마음도 이해가 돼.</strong>",
+                    answer: "양쪽 입장을 모두 이해해주면서, 갈등 상황에서 '관계'와 '소통'의 중요성을 배울 수 있도록 도와줍니다."
+                },
+                plan: {
+                    question: "<strong>내일 친구에게 네 마음을 솔직하게 말해보는 건 어떨까?</strong>",
+                    answer: "화해를 위한 구체적인 행동을 제안합니다. 아이가 먼저 다가가는 용기를 낼 수 있도록 격려합니다."
+                },
+                parentMessage: "진짜 좋은 친구는 싸우고 나서 더 가까워지기도 해. 네가 먼저 손 내밀어볼 용기가 있니?",
+                keyPoints: [
+                    "감정을 충분히 수용한 후 상황 파악하기",
+                    "양쪽 입장을 모두 이해해주기",
+                    "화해를 위한 구체적인 행동 제안하기"
+                ]
+            },
+            {
+                icon: "🎤",
+                title: "발표에서 실수했을 때",
+                analysis: {
+                    question: "발표하느라 긴장 많이 했겠다. <strong>어떤 부분에서 실수가 났었니?</strong>",
+                    answer: "발표 자체를 한 용기를 인정해주고, 실수한 부분을 구체적으로 파악합니다. '망했다'가 아닌 '어떤 부분'인지 좁혀갑니다."
+                },
+                lesson: {
+                    question: "아, 중간에 내용이 기억 안 났구나. <strong>긴장하면 누구나 그럴 수 있어. 다음엔 대비책이 필요하겠네!</strong>",
+                    answer: "실수를 '정상적인 경험'으로 인식시키고, 실수 원인을 파악해 대비책을 마련할 수 있다는 점을 알려줍니다."
+                },
+                plan: {
+                    question: "<strong>다음엔 핵심 단어만 적은 메모를 준비하거나, 거울 앞에서 연습해보자.</strong>",
+                    answer: "실수를 줄일 수 있는 구체적인 준비 방법을 함께 찾습니다. 다음 발표에 대한 자신감을 심어줍니다."
+                },
+                parentMessage: "떨리는데도 발표를 끝까지 마친 게 대단해. 연습하면 다음엔 더 잘할 수 있어.",
+                keyPoints: [
+                    "발표를 마친 것 자체를 칭찬하기",
+                    "긴장으로 인한 실수는 자연스러운 것임을 알려주기",
+                    "연습과 준비로 개선할 수 있다는 희망 주기"
+                ]
+            },
+            {
+                icon: "🏆",
+                title: "대회/오디션 탈락했을 때",
+                analysis: {
+                    question: "정말 열심히 준비했는데 속상하지. <strong>심사 기준이 어땠는지, 어떤 부분이 아쉬웠는지 생각해볼까?</strong>",
+                    answer: "노력을 인정하며 감정을 수용하고, 탈락 원인을 객관적으로 분석해봅니다. 외부 요인(경쟁률, 심사 기준)도 함께 고려합니다."
+                },
+                lesson: {
+                    question: "이번에 준비하면서 실력이 많이 늘었잖아. <strong>대회 준비 과정 자체가 너의 성장이야.</strong>",
+                    answer: "결과보다 '과정에서의 성장'에 초점을 맞춥니다. 도전 자체가 귀중한 경험이라는 것을 알려줍니다."
+                },
+                plan: {
+                    question: "<strong>이번에 부족했던 부분을 보완해서 다음 기회를 준비해보자. 아니면 다른 대회에 도전해볼까?</strong>",
+                    answer: "다음 도전을 위한 계획을 세우거나, 새로운 기회를 찾아봅니다. 포기가 아닌 '다음 단계'를 함께 설계합니다."
+                },
+                parentMessage: "합격한 사람도 언젠간 떨어지고, 떨어진 사람도 다시 붙어. 중요한 건 계속 도전하는 거야.",
+                keyPoints: [
+                    "열심히 준비한 노력을 먼저 인정하기",
+                    "결과보다 과정에서의 성장에 초점 맞추기",
+                    "다음 도전을 위한 계획 함께 세우기"
+                ]
+            },
+            {
+                icon: "📚",
+                title: "숙제를 제때 못 냈을 때",
+                analysis: {
+                    question: "숙제를 못 낸 게 마음에 걸리지? <strong>어떤 이유로 못 했는지 같이 생각해볼까?</strong>",
+                    answer: "혼내기 전에 원인을 파악합니다. 시간 관리 문제인지, 숙제가 어려웠는지, 다른 일이 있었는지 등을 함께 살펴봅니다."
+                },
+                lesson: {
+                    question: "그렇구나. <strong>해야 할 일을 미루다 보니 시간이 부족했네. 계획의 중요성을 배웠구나.</strong>",
+                    answer: "실수에서 '시간 관리'나 '우선순위'의 중요성을 배울 수 있도록 합니다. 비난 대신 배움으로 전환합니다."
+                },
+                plan: {
+                    question: "<strong>앞으로는 숙제가 있으면 바로 수첩에 적고, 매일 30분씩 하는 건 어떨까?</strong>",
+                    answer: "구체적인 시간 관리 방법을 함께 만듭니다. 작은 습관부터 시작해 성공 경험을 쌓을 수 있도록 합니다."
+                },
+                parentMessage: "실수는 누구나 해. 중요한 건 같은 실수를 반복하지 않기 위해 어떻게 할지 생각하는 거야.",
+                keyPoints: [
+                    "혼내기 전에 원인을 먼저 파악하기",
+                    "시간 관리의 중요성을 자연스럽게 알려주기",
+                    "실천 가능한 작은 습관부터 만들어가기"
+                ]
+            },
+            {
+                icon: "🎸",
+                title: "새로운 것을 배우다 포기하고 싶을 때",
+                analysis: {
+                    question: "요즘 힘들어 보이더라. <strong>어떤 부분이 가장 어렵게 느껴져?</strong>",
+                    answer: "포기하고 싶은 마음을 비난하지 않고, 구체적으로 어떤 부분이 어려운지 파악합니다. 막연한 힘듦을 구체화합니다."
+                },
+                lesson: {
+                    question: "새로운 걸 배울 때 '정체기'는 꼭 오는 거야. <strong>지금 힘든 건 곧 성장할 신호란다.</strong>",
+                    answer: "성장 곡선에서 '정체기'는 자연스러운 과정임을 알려줍니다. 멈춰있는 것처럼 보이는 시간도 성장의 일부입니다."
+                },
+                plan: {
+                    question: "<strong>목표를 조금 낮춰서 하루 10분만 해보자. 아니면 재미있는 부분부터 다시 시작해볼까?</strong>",
+                    answer: "완전한 포기 대신 '작은 목표'나 '재미 요소'를 찾아 동기를 회복시킵니다. 부담을 줄여 지속할 수 있게 합니다."
+                },
+                parentMessage: "힘들 때 쉬어가는 것과 포기하는 건 달라. 잠깐 쉬더라도 다시 시작할 수 있어.",
+                keyPoints: [
+                    "포기하고 싶은 마음을 비난하지 않기",
+                    "정체기는 성장의 자연스러운 과정임을 알려주기",
+                    "목표를 낮추거나 재미 요소를 찾아 동기 부여하기"
+                ]
+            },
+            {
+                icon: "🤝",
+                title: "약속을 어겼을 때",
+                analysis: {
+                    question: "약속을 못 지킨 게 마음에 걸리지? <strong>어떤 상황이었는지 얘기해줄래?</strong>",
+                    answer: "약속을 어긴 이유를 들어봅니다. 의도적이었는지, 상황이 생긴 것인지, 깜빡한 것인지 등을 파악합니다."
+                },
+                lesson: {
+                    question: "그랬구나. <strong>약속을 못 지키면 상대방이 실망하고, 신뢰가 깨질 수 있어.</strong>",
+                    answer: "약속의 의미와 신뢰의 중요성을 알려줍니다. 상대방의 입장에서 어떤 기분일지 생각해보게 합니다."
+                },
+                plan: {
+                    question: "<strong>먼저 진심으로 사과하고, 다음부터는 약속을 하기 전에 한 번 더 생각해보자.</strong>",
+                    answer: "사과하는 방법과 앞으로의 예방책을 함께 만듭니다. 신뢰 회복을 위한 행동을 구체적으로 안내합니다."
+                },
+                parentMessage: "실수로 약속을 못 지킬 수 있어. 하지만 진심 어린 사과와 노력은 신뢰를 다시 쌓을 수 있단다.",
+                keyPoints: [
+                    "약속을 어긴 상황과 이유를 먼저 파악하기",
+                    "상대방 입장에서 생각해보게 하기",
+                    "사과와 함께 재발 방지 방법 찾기"
+                ]
+            }
+        ];
+
+        function showAnswer(index) {
+            // 버튼 활성화 상태 변경
+            const buttons = document.querySelectorAll('.situation-btn');
+            buttons.forEach((btn, i) => {
+                btn.classList.remove('active');
+                if (i === index) btn.classList.add('active');
+            });
+
+            const situation = situations[index];
+            const card = document.getElementById('answerCard');
+
+            card.innerHTML = `
+                <div class="answer-header">
+                    <div class="situation-title">
+                        <span class="icon">${situation.icon}</span>
+                        ${situation.title}
+                    </div>
+                </div>
+                <div class="answer-content">
+                    <div class="step-section">
+                        <div class="step-header">
+                            <div class="step-number">1</div>
+                            <div class="step-title">분석 (Analysis)</div>
+                            <div class="step-subtitle">객관적 원인 파악</div>
+                        </div>
+                        <div class="question">${situation.analysis.question}</div>
+                        <div class="answer">${situation.analysis.answer}</div>
+                    </div>
+
+                    <div class="step-section">
+                        <div class="step-header">
+                            <div class="step-number">2</div>
+                            <div class="step-title">교훈 (Lesson)</div>
+                            <div class="step-subtitle">긍정적 의미 부여</div>
+                        </div>
+                        <div class="question">${situation.lesson.question}</div>
+                        <div class="answer">${situation.lesson.answer}</div>
+                    </div>
+
+                    <div class="step-section">
+                        <div class="step-header">
+                            <div class="step-number">3</div>
+                            <div class="step-title">계획 (Plan)</div>
+                            <div class="step-subtitle">미래 지향적 행동 설계</div>
+                        </div>
+                        <div class="question">${situation.plan.question}</div>
+                        <div class="answer">${situation.plan.answer}</div>
+                    </div>
+
+                    <div class="parent-message">
+                        <div class="label">💡 부모의 한마디</div>
+                        <div class="message">${situation.parentMessage}</div>
+                    </div>
+
+                    <div class="key-points">
+                        <h4>📌 핵심 포인트</h4>
+                        <ul>
+                            ${situation.keyPoints.map(point => `<li>${point}</li>`).join('')}
+                        </ul>
+                    </div>
+                </div>
+            `;
+
+            // 스크롤 이동
+            card.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+
+        // 초기 로드
+        showAnswer(0);
+    </script>
+</body>
+</html>

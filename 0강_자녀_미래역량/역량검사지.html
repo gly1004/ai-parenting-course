@@ -1,0 +1,695 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI 시대 자녀 핵심 역량 검사</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Malgun Gothic', 'Apple SD Gothic Neo', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 40px 20px;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .intro-card, .test-card, .result-card {
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 15px 40px rgba(0,0,0,0.2);
+            margin-bottom: 30px;
+        }
+
+        h1 {
+            color: #333;
+            font-size: 1.8rem;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .subtitle {
+            color: #667eea;
+            text-align: center;
+            margin-bottom: 30px;
+            font-size: 1rem;
+        }
+
+        .intro-text {
+            color: #555;
+            line-height: 1.8;
+            margin-bottom: 30px;
+            text-align: center;
+        }
+
+        .competency-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+
+        .competency-item {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 15px;
+            border-radius: 10px;
+            text-align: center;
+            font-size: 0.95rem;
+        }
+
+        .competency-item span {
+            display: block;
+            font-size: 1.5rem;
+            margin-bottom: 5px;
+        }
+
+        .start-btn, .next-btn, .restart-btn {
+            display: block;
+            width: 100%;
+            max-width: 300px;
+            margin: 0 auto;
+            padding: 15px 30px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 30px;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+
+        .start-btn:hover, .next-btn:hover, .restart-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 10px 30px rgba(102, 126, 234, 0.5);
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        /* 테스트 섹션 */
+        .section-header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 3px solid #667eea;
+        }
+
+        .section-number {
+            display: inline-block;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            line-height: 40px;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        .section-title {
+            color: #333;
+            font-size: 1.4rem;
+            margin-bottom: 5px;
+        }
+
+        .section-desc {
+            color: #667eea;
+            font-size: 0.9rem;
+        }
+
+        .question {
+            margin-bottom: 25px;
+            padding: 20px;
+            background: #f8f9ff;
+            border-radius: 15px;
+            border-left: 4px solid #667eea;
+        }
+
+        .question-text {
+            color: #333;
+            font-size: 1rem;
+            margin-bottom: 15px;
+            line-height: 1.6;
+        }
+
+        .question-number {
+            color: #667eea;
+            font-weight: bold;
+            margin-right: 10px;
+        }
+
+        .options {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .option {
+            flex: 1;
+            min-width: 80px;
+            text-align: center;
+        }
+
+        .option input {
+            display: none;
+        }
+
+        .option label {
+            display: block;
+            padding: 10px 15px;
+            background: white;
+            border: 2px solid #ddd;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-size: 0.85rem;
+        }
+
+        .option input:checked + label {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-color: #667eea;
+        }
+
+        .option label:hover {
+            border-color: #667eea;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 8px;
+            background: #e0e0e0;
+            border-radius: 4px;
+            margin-bottom: 30px;
+            overflow: hidden;
+        }
+
+        .progress {
+            height: 100%;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            transition: width 0.3s;
+        }
+
+        /* 결과 섹션 */
+        .result-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .result-header h2 {
+            color: #333;
+            font-size: 1.6rem;
+            margin-bottom: 10px;
+        }
+
+        .total-score {
+            font-size: 3rem;
+            font-weight: bold;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .result-grid {
+            display: grid;
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .result-item {
+            background: #f8f9ff;
+            border-radius: 15px;
+            padding: 20px;
+        }
+
+        .result-item-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .result-item-title {
+            color: #333;
+            font-weight: bold;
+            font-size: 1rem;
+        }
+
+        .result-item-score {
+            color: #667eea;
+            font-weight: bold;
+            font-size: 1.2rem;
+        }
+
+        .score-bar {
+            width: 100%;
+            height: 12px;
+            background: #e0e0e0;
+            border-radius: 6px;
+            overflow: hidden;
+            margin-bottom: 10px;
+        }
+
+        .score-fill {
+            height: 100%;
+            border-radius: 6px;
+            transition: width 0.5s;
+        }
+
+        .score-fill.high { background: linear-gradient(135deg, #4CAF50, #8BC34A); }
+        .score-fill.medium { background: linear-gradient(135deg, #FF9800, #FFC107); }
+        .score-fill.low { background: linear-gradient(135deg, #f44336, #E91E63); }
+
+        .result-item-feedback {
+            color: #666;
+            font-size: 0.9rem;
+            line-height: 1.6;
+        }
+
+        .overall-feedback {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 25px;
+            border-radius: 15px;
+            margin-bottom: 30px;
+            text-align: center;
+        }
+
+        .overall-feedback h3 {
+            margin-bottom: 15px;
+            font-size: 1.2rem;
+        }
+
+        .overall-feedback p {
+            line-height: 1.8;
+            font-size: 0.95rem;
+        }
+
+        .child-name-input {
+            width: 100%;
+            max-width: 300px;
+            padding: 15px;
+            border: 2px solid #ddd;
+            border-radius: 10px;
+            font-size: 1rem;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .child-name-input:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .input-group {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .input-group label {
+            display: block;
+            margin-bottom: 10px;
+            color: #555;
+        }
+
+        @media (max-width: 600px) {
+            .options {
+                flex-direction: column;
+            }
+            .option {
+                min-width: 100%;
+            }
+            h1 {
+                font-size: 1.4rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- 인트로 -->
+        <div class="intro-card" id="introSection">
+            <h1>AI 시대 자녀 핵심 역량 검사</h1>
+            <p class="subtitle">지식 습득을 넘어 삶을 주도하는 핵심 역량 진단</p>
+
+            <p class="intro-text">
+                이 검사는 AI 시대에 우리 자녀에게 필요한 5가지 핵심 역량을 측정합니다.<br>
+                각 문항을 읽고 자녀의 평소 모습과 가장 가까운 답변을 선택해 주세요.
+            </p>
+
+            <div class="competency-list">
+                <div class="competency-item">
+                    <span>1</span>
+                    질문하고 사유하는 힘
+                </div>
+                <div class="competency-item">
+                    <span>2</span>
+                    마음의 근력과 회복탄력성
+                </div>
+                <div class="competency-item">
+                    <span>3</span>
+                    공감과 연결의 능력
+                </div>
+                <div class="competency-item">
+                    <span>4</span>
+                    메타 AI 리터러시
+                </div>
+                <div class="competency-item">
+                    <span>5</span>
+                    학습 주체성
+                </div>
+            </div>
+
+            <div class="input-group">
+                <label for="childName">자녀 이름 (선택사항)</label>
+                <input type="text" id="childName" class="child-name-input" placeholder="이름을 입력하세요">
+            </div>
+
+            <button class="start-btn" onclick="startTest()">검사 시작하기</button>
+        </div>
+
+        <!-- 테스트 섹션 -->
+        <div class="test-card hidden" id="testSection">
+            <div class="progress-bar">
+                <div class="progress" id="progressBar"></div>
+            </div>
+
+            <div id="questionContainer"></div>
+
+            <button class="next-btn" id="nextBtn" onclick="nextSection()">다음</button>
+        </div>
+
+        <!-- 결과 섹션 -->
+        <div class="result-card hidden" id="resultSection">
+            <div class="result-header">
+                <h2><span id="resultName">우리 아이</span>의 역량 검사 결과</h2>
+                <div class="total-score"><span id="totalScore">0</span>점</div>
+                <p style="color: #666; margin-top: 10px;">100점 만점</p>
+            </div>
+
+            <div class="result-grid" id="resultGrid"></div>
+
+            <div class="overall-feedback" id="overallFeedback"></div>
+
+            <button class="restart-btn" onclick="restartTest()">다시 검사하기</button>
+        </div>
+    </div>
+
+    <script>
+        const testData = [
+            {
+                section: 1,
+                title: "질문하고 사유하는 힘",
+                desc: "비판적 사고 및 창의적 문제해결",
+                questions: [
+                    "아이가 새로운 정보를 접했을 때 '왜 그럴까?'라고 질문하는 편인가요?",
+                    "아이가 여러 정보를 연결하여 자신만의 생각이나 결론을 내리나요?",
+                    "정해진 답이 없는 문제에도 다양한 해결책을 제안하려고 하나요?",
+                    "서로 다른 분야의 지식이나 경험을 연결하여 새로운 아이디어를 내나요?"
+                ]
+            },
+            {
+                section: 2,
+                title: "마음의 근력과 회복탄력성",
+                desc: "회복탄력성 및 자기조절능력",
+                questions: [
+                    "아이가 실패했을 때 쉽게 포기하지 않고 다시 도전하나요?",
+                    "어려운 상황에서도 긍정적인 마음을 유지하려고 노력하나요?",
+                    "스마트폰이나 게임 시간을 스스로 조절할 수 있나요?",
+                    "하나의 활동에 깊이 집중하는 시간을 가질 수 있나요?"
+                ]
+            },
+            {
+                section: 3,
+                title: "공감과 연결의 능력",
+                desc: "사회정서역량 및 변혁적 역량",
+                questions: [
+                    "다른 사람의 기분이나 감정을 잘 이해하고 공감하나요?",
+                    "친구들과 협력하여 함께 문제를 해결하는 것을 좋아하나요?",
+                    "환경, 사회 문제 등 공동체의 문제에 관심을 가지나요?",
+                    "다름을 인정하고 다양한 사람들과 어울리는 편인가요?"
+                ]
+            },
+            {
+                section: 4,
+                title: "메타 AI 리터러시와 윤리",
+                desc: "기술 활용 능력 및 디지털 윤리",
+                questions: [
+                    "다양한 디지털 도구나 앱을 목적에 맞게 선택하여 활용하나요?",
+                    "AI나 인터넷 정보를 무조건 믿지 않고 확인하려고 하나요?",
+                    "온라인에서도 예절을 지키고 책임감 있게 행동하나요?",
+                    "다른 사람의 저작권이나 개인정보를 존중하나요?"
+                ]
+            },
+            {
+                section: 5,
+                title: "스스로 배우는 학습 주체성",
+                desc: "자기주도 학습 및 배움의 의미",
+                questions: [
+                    "아이가 스스로 궁금한 것을 찾아보고 탐구하나요?",
+                    "시키지 않아도 스스로 공부하거나 학습 계획을 세우나요?",
+                    "새로운 것을 배우는 것 자체를 즐거워하나요?",
+                    "자신의 배움이 미래에 어떻게 도움이 될지 생각해 본 적이 있나요?"
+                ]
+            }
+        ];
+
+        const feedbackData = {
+            high: [
+                "비판적 사고와 창의력이 뛰어나요! 다양한 독서와 토론으로 더욱 발전시켜 주세요.",
+                "마음의 힘이 강해요! 도전적인 경험을 통해 더욱 성장할 수 있어요.",
+                "공감 능력이 훌륭해요! 다양한 사람들과의 만남이 더 큰 성장으로 이어질 거예요.",
+                "디지털 역량이 뛰어나요! 기술을 선한 목적에 활용하는 기회를 만들어 주세요.",
+                "학습 주체성이 높아요! 아이의 관심사를 더욱 깊이 탐구할 수 있도록 지원해 주세요."
+            ],
+            medium: [
+                "'왜?'라는 질문을 더 자주 해보도록 격려해 주세요. 정답 없는 문제를 함께 고민해 보세요.",
+                "실패해도 괜찮다는 메시지를 자주 전해주세요. 작은 성공 경험을 쌓아가면 좋아요.",
+                "가족 대화 시간을 늘리고, 봉사활동 등을 통해 공감 능력을 키워주세요.",
+                "디지털 기기 사용 규칙을 함께 정하고, 올바른 정보 검증 방법을 알려주세요.",
+                "아이 스스로 선택하고 결정하는 기회를 더 많이 만들어 주세요."
+            ],
+            low: [
+                "일상에서 '왜 그럴까?'라고 함께 질문하는 습관을 만들어 보세요.",
+                "작은 도전부터 시작하여 성공 경험을 쌓고, 격려를 아끼지 마세요.",
+                "감정을 표현하고 나누는 연습을 가족과 함께 해보세요.",
+                "디지털 기기의 긍정적 활용법을 함께 배우고 실천해 보세요.",
+                "아이의 관심사를 찾아 작은 프로젝트를 함께 시작해 보세요."
+            ]
+        };
+
+        let currentSection = 0;
+        let answers = {};
+        let childName = "";
+
+        function startTest() {
+            childName = document.getElementById('childName').value || "우리 아이";
+            document.getElementById('introSection').classList.add('hidden');
+            document.getElementById('testSection').classList.remove('hidden');
+            showSection(0);
+        }
+
+        function showSection(sectionIndex) {
+            currentSection = sectionIndex;
+            const section = testData[sectionIndex];
+            const container = document.getElementById('questionContainer');
+
+            let html = `
+                <div class="section-header">
+                    <div class="section-number">${section.section}</div>
+                    <div class="section-title">${section.title}</div>
+                    <div class="section-desc">${section.desc}</div>
+                </div>
+            `;
+
+            section.questions.forEach((q, i) => {
+                const qId = `q${sectionIndex}_${i}`;
+                const savedAnswer = answers[qId] || "";
+
+                html += `
+                    <div class="question">
+                        <div class="question-text">
+                            <span class="question-number">Q${i + 1}.</span>${q}
+                        </div>
+                        <div class="options">
+                            <div class="option">
+                                <input type="radio" name="${qId}" id="${qId}_1" value="1" ${savedAnswer === "1" ? "checked" : ""}>
+                                <label for="${qId}_1">전혀<br>아니다</label>
+                            </div>
+                            <div class="option">
+                                <input type="radio" name="${qId}" id="${qId}_2" value="2" ${savedAnswer === "2" ? "checked" : ""}>
+                                <label for="${qId}_2">아니다</label>
+                            </div>
+                            <div class="option">
+                                <input type="radio" name="${qId}" id="${qId}_3" value="3" ${savedAnswer === "3" ? "checked" : ""}>
+                                <label for="${qId}_3">보통<br>이다</label>
+                            </div>
+                            <div class="option">
+                                <input type="radio" name="${qId}" id="${qId}_4" value="4" ${savedAnswer === "4" ? "checked" : ""}>
+                                <label for="${qId}_4">그렇다</label>
+                            </div>
+                            <div class="option">
+                                <input type="radio" name="${qId}" id="${qId}_5" value="5" ${savedAnswer === "5" ? "checked" : ""}>
+                                <label for="${qId}_5">매우<br>그렇다</label>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            });
+
+            container.innerHTML = html;
+
+            // 진행률 업데이트
+            const progress = ((sectionIndex + 1) / testData.length) * 100;
+            document.getElementById('progressBar').style.width = progress + '%';
+
+            // 버튼 텍스트 변경
+            const nextBtn = document.getElementById('nextBtn');
+            if (sectionIndex === testData.length - 1) {
+                nextBtn.textContent = '결과 보기';
+            } else {
+                nextBtn.textContent = '다음';
+            }
+        }
+
+        function nextSection() {
+            // 현재 섹션 답변 저장
+            const section = testData[currentSection];
+            let allAnswered = true;
+
+            section.questions.forEach((q, i) => {
+                const qId = `q${currentSection}_${i}`;
+                const selected = document.querySelector(`input[name="${qId}"]:checked`);
+                if (selected) {
+                    answers[qId] = selected.value;
+                } else {
+                    allAnswered = false;
+                }
+            });
+
+            if (!allAnswered) {
+                alert('모든 문항에 답변해 주세요.');
+                return;
+            }
+
+            if (currentSection < testData.length - 1) {
+                showSection(currentSection + 1);
+                window.scrollTo(0, 0);
+            } else {
+                showResults();
+            }
+        }
+
+        function showResults() {
+            document.getElementById('testSection').classList.add('hidden');
+            document.getElementById('resultSection').classList.remove('hidden');
+
+            document.getElementById('resultName').textContent = childName;
+
+            // 점수 계산
+            const sectionScores = [];
+            let totalScore = 0;
+
+            testData.forEach((section, sIndex) => {
+                let sectionTotal = 0;
+                section.questions.forEach((q, qIndex) => {
+                    const qId = `q${sIndex}_${qIndex}`;
+                    sectionTotal += parseInt(answers[qId] || 0);
+                });
+                const maxScore = section.questions.length * 5;
+                const percentage = Math.round((sectionTotal / maxScore) * 100);
+                sectionScores.push({
+                    title: section.title,
+                    score: sectionTotal,
+                    max: maxScore,
+                    percentage: percentage
+                });
+                totalScore += sectionTotal;
+            });
+
+            const maxTotal = testData.reduce((sum, s) => sum + s.questions.length * 5, 0);
+            const totalPercentage = Math.round((totalScore / maxTotal) * 100);
+
+            document.getElementById('totalScore').textContent = totalPercentage;
+
+            // 결과 그리드 생성
+            let resultHTML = '';
+            sectionScores.forEach((s, i) => {
+                let level, levelClass;
+                if (s.percentage >= 70) {
+                    level = 'high';
+                    levelClass = 'high';
+                } else if (s.percentage >= 40) {
+                    level = 'medium';
+                    levelClass = 'medium';
+                } else {
+                    level = 'low';
+                    levelClass = 'low';
+                }
+
+                resultHTML += `
+                    <div class="result-item">
+                        <div class="result-item-header">
+                            <span class="result-item-title">${s.title}</span>
+                            <span class="result-item-score">${s.percentage}점</span>
+                        </div>
+                        <div class="score-bar">
+                            <div class="score-fill ${levelClass}" style="width: ${s.percentage}%"></div>
+                        </div>
+                        <div class="result-item-feedback">${feedbackData[level][i]}</div>
+                    </div>
+                `;
+            });
+
+            document.getElementById('resultGrid').innerHTML = resultHTML;
+
+            // 종합 피드백
+            let overallLevel, overallMessage;
+            if (totalPercentage >= 70) {
+                overallLevel = "우수";
+                overallMessage = `${childName}은(는) AI 시대에 필요한 핵심 역량을 잘 갖추고 있어요!
+                    현재의 강점을 더욱 발전시키고, 다양한 경험을 통해 잠재력을 펼칠 수 있도록 응원해 주세요.`;
+            } else if (totalPercentage >= 40) {
+                overallLevel = "양호";
+                overallMessage = `${childName}은(는) 핵심 역량의 기초를 갖추고 있어요!
+                    부족한 영역에 조금 더 관심을 기울이면 균형 잡힌 성장을 이룰 수 있어요.
+                    아이의 속도에 맞춰 천천히 함께 해주세요.`;
+            } else {
+                overallLevel = "관심 필요";
+                overallMessage = `${childName}에게는 조금 더 관심과 지원이 필요해요.
+                    하지만 걱정하지 마세요! 부모님의 따뜻한 격려와 함께라면
+                    어떤 아이도 멋지게 성장할 수 있어요. 작은 것부터 하나씩 시작해 보세요.`;
+            }
+
+            document.getElementById('overallFeedback').innerHTML = `
+                <h3>종합 평가: ${overallLevel}</h3>
+                <p>${overallMessage}</p>
+            `;
+
+            window.scrollTo(0, 0);
+        }
+
+        function restartTest() {
+            answers = {};
+            currentSection = 0;
+            document.getElementById('resultSection').classList.add('hidden');
+            document.getElementById('introSection').classList.remove('hidden');
+            document.getElementById('childName').value = '';
+            window.scrollTo(0, 0);
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,14 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(git init:*)",
+      "Bash(gh auth:*)",
+      "Bash(git add:*)",
+      "Bash(git commit -m \"$\\(cat <<''EOF''\nAdd Meta AI Competency Test website\n\n부모용 메타 AI 역량 진단 테스트 웹사이트\n\nCo-Authored-By: Claude Opus 4.5 <noreply@anthropic.com>\nEOF\n\\)\")",
+      "Bash(gh api:*)",
+      "Bash(start https://gly1004.github.io/meta-ai-competency-test/)",
+      "Bash(git commit -m \"$\\(cat <<''EOF''\nFix mobile button layout and scroll to top on result\n\n- 모바일에서 이전/다음 버튼 가로 배치 유지\n- 결과 페이지 전환 시 상단으로 스크롤\n\nCo-Authored-By: Claude Opus 4.5 <noreply@anthropic.com>\nEOF\n\\)\")",
+      "Bash(git push)"
+    ]
+  }
+}

@@ -1,0 +1,421 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>창의적 해결사로 키우는 부모 체크리스트</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+            min-height: 100vh;
+            padding: 40px 20px;
+            color: #fff;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .subtitle {
+            color: #4ecdc4;
+            font-size: 14px;
+            letter-spacing: 2px;
+            margin-bottom: 10px;
+        }
+
+        h1 {
+            font-size: 2rem;
+            margin-bottom: 10px;
+            line-height: 1.4;
+        }
+
+        h1 span {
+            color: #4ecdc4;
+        }
+
+        .description {
+            color: #aaa;
+            font-size: 14px;
+        }
+
+        .instruction {
+            color: #4ecdc4;
+            font-size: 16px;
+            margin-top: 20px;
+            padding: 10px 20px;
+            border: 1px dashed #4ecdc4;
+            border-radius: 8px;
+            display: inline-block;
+        }
+
+        .checklist {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 16px;
+            padding: 30px;
+            margin-bottom: 30px;
+        }
+
+        .checklist-item {
+            display: flex;
+            align-items: flex-start;
+            padding: 20px;
+            margin-bottom: 12px;
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: 1px solid transparent;
+        }
+
+        .checklist-item:hover {
+            background: rgba(78, 205, 196, 0.1);
+            border-color: rgba(78, 205, 196, 0.3);
+        }
+
+        .checklist-item.checked {
+            background: rgba(78, 205, 196, 0.15);
+            border-color: #4ecdc4;
+        }
+
+        .checkbox {
+            width: 28px;
+            height: 28px;
+            min-width: 28px;
+            border: 2px solid #4ecdc4;
+            border-radius: 8px;
+            margin-right: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+        }
+
+        .checklist-item.checked .checkbox {
+            background: #4ecdc4;
+        }
+
+        .checkbox svg {
+            width: 16px;
+            height: 16px;
+            fill: none;
+            stroke: #1a1a2e;
+            stroke-width: 3;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .checklist-item.checked .checkbox svg {
+            opacity: 1;
+        }
+
+        .item-number {
+            color: #4ecdc4;
+            font-weight: bold;
+            margin-right: 10px;
+            font-size: 16px;
+        }
+
+        .item-text {
+            font-size: 16px;
+            line-height: 1.6;
+            color: #e0e0e0;
+        }
+
+        .submit-section {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .submit-btn {
+            background: linear-gradient(135deg, #4ecdc4 0%, #44a08d 100%);
+            border: none;
+            color: #1a1a2e;
+            padding: 16px 50px;
+            border-radius: 12px;
+            font-size: 18px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(78, 205, 196, 0.3);
+        }
+
+        .submit-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(78, 205, 196, 0.4);
+        }
+
+        .result-section {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 16px;
+            padding: 40px;
+            text-align: center;
+            display: none;
+        }
+
+        .result-section.show {
+            display: block;
+            animation: fadeIn 0.5s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .result-title {
+            font-size: 20px;
+            margin-bottom: 20px;
+            color: #fff;
+        }
+
+        .score-display {
+            font-size: 72px;
+            font-weight: bold;
+            color: #4ecdc4;
+            margin-bottom: 10px;
+        }
+
+        .score-label {
+            color: #aaa;
+            margin-bottom: 30px;
+            font-size: 16px;
+        }
+
+        .result-message {
+            padding: 30px;
+            border-radius: 16px;
+            font-size: 22px;
+            font-weight: bold;
+            margin-bottom: 20px;
+            line-height: 1.6;
+        }
+
+        .result-excellent {
+            background: rgba(78, 205, 196, 0.2);
+            color: #4ecdc4;
+            border: 2px solid #4ecdc4;
+        }
+
+        .result-good {
+            background: rgba(255, 193, 7, 0.2);
+            color: #ffc107;
+            border: 2px solid #ffc107;
+        }
+
+        .result-start {
+            background: rgba(255, 107, 107, 0.2);
+            color: #ff6b6b;
+            border: 2px solid #ff6b6b;
+        }
+
+        .result-emoji {
+            font-size: 60px;
+            margin-bottom: 20px;
+        }
+
+        .result-detail {
+            color: #aaa;
+            font-size: 16px;
+            margin-top: 15px;
+            font-weight: normal;
+        }
+
+        .reset-btn {
+            background: transparent;
+            border: 2px solid #4ecdc4;
+            color: #4ecdc4;
+            padding: 14px 40px;
+            border-radius: 10px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 20px;
+        }
+
+        .reset-btn:hover {
+            background: #4ecdc4;
+            color: #1a1a2e;
+        }
+
+        footer {
+            text-align: center;
+            margin-top: 30px;
+            color: #666;
+            font-size: 12px;
+        }
+
+        .hidden {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div class="subtitle">AI 시대 미래 역량 강의 [제 3강]</div>
+            <h1><span>창의적 해결사</span>로 키우는<br>부모 체크리스트</h1>
+            <p class="description">"데이터가 줄 수 없는 정답을 찾는 아이로 키우기"</p>
+            <p class="instruction">해당되는 항목에만 체크 하세요</p>
+        </header>
+
+        <div id="checklistSection">
+            <div class="checklist">
+                <div class="checklist-item" onclick="toggleCheck(this)">
+                    <div class="checkbox">
+                        <svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                    </div>
+                    <span class="item-number">1.</span>
+                    <span class="item-text">아이가 힘들어할 때, 해결책을 제시하기 전에 <strong>"많이 속상했겠다"</strong>라며 먼저 감정에 공감해 준다.</span>
+                </div>
+
+                <div class="checklist-item" onclick="toggleCheck(this)">
+                    <div class="checkbox">
+                        <svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                    </div>
+                    <span class="item-number">2.</span>
+                    <span class="item-text">아이의 행동(결과) 뒤에 숨겨진 <strong>진짜 이유(맥락)</strong>가 무엇인지 함께 이야기해 본다.</span>
+                </div>
+
+                <div class="checklist-item" onclick="toggleCheck(this)">
+                    <div class="checkbox">
+                        <svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                    </div>
+                    <span class="item-number">3.</span>
+                    <span class="item-text">결과가 실패하더라도 <strong>"도전한 것 자체가 대단해!"</strong>라며 시도의 용기를 칭찬한다.</span>
+                </div>
+
+                <div class="checklist-item" onclick="toggleCheck(this)">
+                    <div class="checkbox">
+                        <svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                    </div>
+                    <span class="item-number">4.</span>
+                    <span class="item-text">정답이 보이지 않는 상황에서도 <strong>"완벽하지 않아도 일단 해보자!"</strong>라고 격려한다.</span>
+                </div>
+
+                <div class="checklist-item" onclick="toggleCheck(this)">
+                    <div class="checkbox">
+                        <svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                    </div>
+                    <span class="item-number">5.</span>
+                    <span class="item-text">아이의 엉뚱한 아이디어에 <strong>"그것도 좋네! 또 다른 건?"</strong>이라며 더 많은 생각을 이끌어낸다.</span>
+                </div>
+
+                <div class="checklist-item" onclick="toggleCheck(this)">
+                    <div class="checkbox">
+                        <svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                    </div>
+                    <span class="item-number">6.</span>
+                    <span class="item-text">생활 속 선택을 아이가 직접 결정하게 하고, <strong>"왜 그걸 선택했어?"</strong>라고 생각의 이유를 물어본다.</span>
+                </div>
+
+                <div class="checklist-item" onclick="toggleCheck(this)">
+                    <div class="checkbox">
+                        <svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                    </div>
+                    <span class="item-number">7.</span>
+                    <span class="item-text"><strong>"만약 중력이 사라진다면?"</strong> 같은 엉뚱한 상상 질문으로 고정관념을 깨는 대화를 한다.</span>
+                </div>
+
+                <div class="checklist-item" onclick="toggleCheck(this)">
+                    <div class="checkbox">
+                        <svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                    </div>
+                    <span class="item-number">8.</span>
+                    <span class="item-text">일상의 작은 불편함을 아이와 함께 발견하고, <strong>재활용품 등으로 직접 해결책</strong>을 만들어 본다.</span>
+                </div>
+
+                <div class="checklist-item" onclick="toggleCheck(this)">
+                    <div class="checkbox">
+                        <svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                    </div>
+                    <span class="item-number">9.</span>
+                    <span class="item-text">아이가 궁금해할 때, 답을 바로 주지 않고 <strong>"혹시 이래서 그런 건 아닐까?"</strong> 하며 함께 가설을 세우고 실험해 본다.</span>
+                </div>
+
+                <div class="checklist-item" onclick="toggleCheck(this)">
+                    <div class="checkbox">
+                        <svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                    </div>
+                    <span class="item-number">10.</span>
+                    <span class="item-text"><strong>"보통은 이렇게 하지만, 우리만의 방법을 만들어볼까?"</strong>라며 새로운 시도를 격려한다.</span>
+                </div>
+            </div>
+
+            <div class="submit-section">
+                <button class="submit-btn" onclick="showResult()">결과 확인하기</button>
+            </div>
+        </div>
+
+        <div id="resultSection" class="result-section">
+            <div class="result-title">나의 창의적 해결사 양육 점수</div>
+            <div class="result-emoji" id="resultEmoji"></div>
+            <div class="score-display"><span id="score">0</span> / 10</div>
+            <div class="score-label">체크한 항목 수</div>
+
+            <div id="resultMessage" class="result-message">
+            </div>
+
+            <button class="reset-btn" onclick="resetAll()">다시 시작하기</button>
+        </div>
+
+        <footer>
+            <p>AI 시대 미래 역량 강의 [제3강] 창의적 문제 해결 - 데이터가 줄 수 없는 정답 찾기</p>
+        </footer>
+    </div>
+
+    <script>
+        function toggleCheck(element) {
+            element.classList.toggle('checked');
+        }
+
+        function showResult() {
+            const checkedItems = document.querySelectorAll('.checklist-item.checked').length;
+            document.getElementById('score').textContent = checkedItems;
+
+            const messageEl = document.getElementById('resultMessage');
+            const emojiEl = document.getElementById('resultEmoji');
+            messageEl.classList.remove('result-excellent', 'result-good', 'result-start');
+
+            if (checkedItems >= 8) {
+                emojiEl.textContent = '🌟';
+                messageEl.innerHTML = '훌륭합니다!<br>창의적 해결사를 잘 키우고 있습니다!<p class="result-detail">아이가 공감과 직관으로 데이터 너머의 해답을 찾는 힘을 기르고 있어요. 지금처럼 꾸준히 실천해 주세요!</p>';
+                messageEl.classList.add('result-excellent');
+            } else if (checkedItems >= 5) {
+                emojiEl.textContent = '💡';
+                messageEl.innerHTML = '좋은 출발점입니다!<br>조금 더 실천해 보세요.<p class="result-detail">이미 좋은 습관을 갖추고 계시네요. 체크하지 못한 항목들을 하나씩 시도해 보시면 아이의 창의적 문제해결력이 더욱 성장할 거예요!</p>';
+                messageEl.classList.add('result-good');
+            } else {
+                emojiEl.textContent = '🚀';
+                messageEl.innerHTML = '오늘부터 아이와 함께<br>시작해 보세요!<p class="result-detail">창의성은 "그럼에도 불구하고 해보자!"라는 작은 용기에서 시작됩니다. 오늘부터 아이의 엉뚱한 생각에 "또 다른 건?"이라고 물어보세요!</p>';
+                messageEl.classList.add('result-start');
+            }
+
+            document.getElementById('checklistSection').classList.add('hidden');
+            document.getElementById('resultSection').classList.add('show');
+            document.querySelector('.instruction').classList.add('hidden');
+        }
+
+        function resetAll() {
+            document.querySelectorAll('.checklist-item').forEach(item => {
+                item.classList.remove('checked');
+            });
+            document.getElementById('checklistSection').classList.remove('hidden');
+            document.getElementById('resultSection').classList.remove('show');
+            document.querySelector('.instruction').classList.remove('hidden');
+        }
+    </script>
+</body>
+</html>

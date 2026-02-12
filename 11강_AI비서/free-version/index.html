@@ -1,0 +1,1005 @@
+﻿<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI 비서 컨설턴트 - 부모와 아이를 위한 AI 비서 추천</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+            min-height: 100vh;
+            color: #fff;
+        }
+
+        .container {
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        header {
+            text-align: center;
+            padding: 40px 0;
+            border-bottom: 2px solid #00d4aa;
+            margin-bottom: 30px;
+        }
+
+        header h1 {
+            font-size: 2.5rem;
+            color: #00d4aa;
+            margin-bottom: 15px;
+        }
+
+        header p {
+            color: #aaa;
+            font-size: 1.1rem;
+            line-height: 1.6;
+        }
+
+        .badge {
+            display: inline-block;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            margin-top: 10px;
+        }
+
+        .activity-section {
+            background: rgba(255,255,255,0.05);
+            border-radius: 15px;
+            padding: 30px;
+            margin-bottom: 30px;
+            border: 1px solid rgba(0,212,170,0.3);
+        }
+
+        .activity-section h2 {
+            color: #00d4aa;
+            margin-bottom: 20px;
+            font-size: 1.4rem;
+        }
+
+        .activity-input {
+            width: 100%;
+            padding: 20px;
+            border: 2px solid rgba(0,212,170,0.3);
+            border-radius: 12px;
+            background: rgba(255,255,255,0.1);
+            color: #fff;
+            font-size: 1.1rem;
+            resize: none;
+            height: 120px;
+            font-family: inherit;
+            line-height: 1.6;
+        }
+
+        .activity-input:focus {
+            outline: none;
+            border-color: #00d4aa;
+        }
+
+        .activity-input::placeholder {
+            color: #666;
+        }
+
+        .example-activities {
+            margin-top: 20px;
+        }
+
+        .example-activities h4 {
+            color: #888;
+            font-size: 0.95rem;
+            margin-bottom: 12px;
+        }
+
+        .example-chips {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .example-chip {
+            padding: 10px 18px;
+            background: rgba(0,212,170,0.15);
+            border: 1px solid rgba(0,212,170,0.4);
+            border-radius: 25px;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-size: 0.95rem;
+        }
+
+        .example-chip:hover {
+            background: rgba(0,212,170,0.25);
+            transform: translateY(-2px);
+        }
+
+        .submit-btn {
+            width: 100%;
+            padding: 18px;
+            background: linear-gradient(135deg, #00d4aa, #00a080);
+            border: none;
+            border-radius: 12px;
+            color: #fff;
+            font-weight: bold;
+            font-size: 1.2rem;
+            cursor: pointer;
+            transition: all 0.2s;
+            margin-top: 20px;
+        }
+
+        .submit-btn:hover:not(:disabled) {
+            transform: scale(1.02);
+            box-shadow: 0 5px 20px rgba(0,212,170,0.3);
+        }
+
+        .submit-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 60px;
+        }
+
+        .loading-spinner {
+            width: 60px;
+            height: 60px;
+            border: 4px solid rgba(0,212,170,0.2);
+            border-top-color: #00d4aa;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 20px;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .loading p {
+            color: #00d4aa;
+            font-size: 1.1rem;
+        }
+
+        .results-section {
+            display: none;
+        }
+
+        .results-header {
+            background: linear-gradient(135deg, rgba(0,212,170,0.2), rgba(0,160,128,0.2));
+            border-radius: 15px;
+            padding: 25px;
+            margin-bottom: 25px;
+            border: 1px solid rgba(0,212,170,0.4);
+        }
+
+        .results-header h2 {
+            color: #00d4aa;
+            margin-bottom: 10px;
+        }
+
+        .results-header p {
+            color: #ccc;
+            line-height: 1.6;
+        }
+
+        .tool-card {
+            background: rgba(255,255,255,0.05);
+            border-radius: 15px;
+            padding: 25px;
+            margin-bottom: 20px;
+            border: 1px solid rgba(0,212,170,0.3);
+            transition: all 0.3s;
+        }
+
+        .tool-card:hover {
+            border-color: #00d4aa;
+            transform: translateY(-3px);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+        }
+
+        .tool-header {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid rgba(0,212,170,0.2);
+        }
+
+        .tool-icon {
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(135deg, #00d4aa, #00a080);
+            border-radius: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.8rem;
+        }
+
+        .tool-info h3 {
+            color: #00d4aa;
+            font-size: 1.4rem;
+            margin-bottom: 5px;
+        }
+
+        .tool-info .category {
+            color: #888;
+            font-size: 0.9rem;
+        }
+
+        .tool-section {
+            margin-bottom: 20px;
+        }
+
+        .tool-section:last-child {
+            margin-bottom: 0;
+        }
+
+        .tool-section h4 {
+            color: #00d4aa;
+            font-size: 1.1rem;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .tool-section h4::before {
+            content: "";
+            width: 4px;
+            height: 20px;
+            background: #00d4aa;
+            border-radius: 2px;
+        }
+
+        .tool-section p {
+            color: #ccc;
+            line-height: 1.7;
+        }
+
+        .tool-section ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .tool-section li {
+            padding: 10px 0;
+            padding-left: 25px;
+            position: relative;
+            color: #ccc;
+            line-height: 1.6;
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+        }
+
+        .tool-section li:last-child {
+            border-bottom: none;
+        }
+
+        .tool-section li::before {
+            content: ">";
+            position: absolute;
+            left: 5px;
+            color: #00d4aa;
+            font-weight: bold;
+        }
+
+        .tips-box {
+            background: rgba(102,126,234,0.15);
+            border: 1px solid rgba(102,126,234,0.4);
+            border-radius: 12px;
+            padding: 20px;
+            margin-top: 15px;
+        }
+
+        .tips-box h5 {
+            color: #667eea;
+            margin-bottom: 10px;
+            font-size: 1rem;
+        }
+
+        .tips-box p {
+            color: #aaa;
+            font-size: 0.95rem;
+            line-height: 1.6;
+        }
+
+        .tool-link {
+            display: inline-block;
+            padding: 12px 25px;
+            background: rgba(0,212,170,0.2);
+            border: 1px solid rgba(0,212,170,0.5);
+            border-radius: 8px;
+            color: #00d4aa;
+            text-decoration: none;
+            font-weight: bold;
+            margin-top: 15px;
+            transition: all 0.2s;
+        }
+
+        .tool-link:hover {
+            background: rgba(0,212,170,0.3);
+            transform: translateX(5px);
+        }
+
+        .new-search-btn {
+            width: 100%;
+            padding: 15px;
+            background: transparent;
+            border: 2px solid #00d4aa;
+            border-radius: 12px;
+            color: #00d4aa;
+            font-weight: bold;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: all 0.2s;
+            margin-top: 30px;
+        }
+
+        .new-search-btn:hover {
+            background: rgba(0,212,170,0.1);
+        }
+
+        .process-guide {
+            background: rgba(255,255,255,0.05);
+            border-radius: 15px;
+            padding: 25px;
+            margin-bottom: 30px;
+            border: 1px solid rgba(0,212,170,0.3);
+        }
+
+        .process-guide h3 {
+            color: #00d4aa;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .process-steps {
+            display: flex;
+            justify-content: space-around;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+
+        .process-step {
+            text-align: center;
+            flex: 1;
+            min-width: 150px;
+        }
+
+        .step-number {
+            width: 50px;
+            height: 50px;
+            background: linear-gradient(135deg, #00d4aa, #00a080);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            font-weight: bold;
+            margin: 0 auto 10px;
+        }
+
+        .process-step h4 {
+            color: #00d4aa;
+            margin-bottom: 5px;
+        }
+
+        .process-step p {
+            color: #888;
+            font-size: 0.9rem;
+        }
+
+        @media (max-width: 768px) {
+            header h1 {
+                font-size: 1.8rem;
+            }
+
+            .tool-header {
+                flex-direction: column;
+                text-align: center;
+            }
+
+            .process-steps {
+                flex-direction: column;
+            }
+        }
+
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: rgba(255,255,255,0.05);
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: rgba(0,212,170,0.3);
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: rgba(0,212,170,0.5);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>AI 비서 컨설턴트</h1>
+            <p>부모와 아이가 함께 할 활동을 선택하면<br>최적의 AI 비서들을 추천해 드립니다</p>
+        </header>
+
+        <!-- AI 비서 활용 3단계 프로세스 -->
+        <div class="process-guide">
+            <h3>AI 비서를 다루는 3단계 프로세스</h3>
+            <div class="process-steps">
+                <div class="process-step">
+                    <div class="step-number">1</div>
+                    <h4>대화하기</h4>
+                    <p>무엇을 만들고 싶은지<br>AI에게 상세히 설명</p>
+                </div>
+                <div class="process-step">
+                    <div class="step-number">2</div>
+                    <h4>시안 고르기</h4>
+                    <p>AI가 제안한 여러 안 중<br>최적의 것을 선택</p>
+                </div>
+                <div class="process-step">
+                    <div class="step-number">3</div>
+                    <h4>다듬기</h4>
+                    <p>AI 결과물에 나의 감성을<br>더해 완성</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="activity-section" id="activitySection">
+            <h2>아이와 함께 할 활동을 선택하세요</h2>
+
+            <div class="example-activities">
+                <h4>선택 활동 (클릭하면 맞춤 AI 비서를 추천해 드립니다)</h4>
+                <div class="example-chips">
+                    <div class="example-chip" onclick="selectActivity('아이와 함께 나만의 동화책을 만들고 싶어요. 스토리도 짜고 삽화도 넣고 싶습니다.')">동화책 만들기</div>
+                    <div class="example-chip" onclick="selectActivity('초등학생 아이와 주말에 캠핑을 가려고 합니다. 장소 추천과 준비물, 일정을 계획하고 싶어요.')">가족 캠핑 계획</div>
+                    <div class="example-chip" onclick="selectActivity('아이가 자기만의 캐릭터와 브랜드를 만들고 싶어해요. 로고도 만들고 굿즈 디자인도 해보고 싶습니다.')">브랜드/캐릭터 만들기</div>
+                    <div class="example-chip" onclick="selectActivity('집에서 아이와 함께 할 수 있는 과학 실험을 찾고 있어요. 재미있으면서 교육적인 것을 원합니다.')">과학 실험하기</div>
+                    <div class="example-chip" onclick="selectActivity('아이와 함께 간단한 요리를 만들어보려고 해요. 아이가 직접 참여할 수 있는 레시피가 필요합니다.')">함께 요리하기</div>
+                    <div class="example-chip" onclick="selectActivity('아이가 좋아하는 노래를 직접 만들어보고 싶어해요. 작곡이나 음악 만들기를 해보고 싶습니다.')">음악/노래 만들기</div>
+                    <div class="example-chip" onclick="selectActivity('아이의 학교 발표 자료를 멋지게 만들고 싶어요. PPT나 영상으로 만들어보려고 합니다.')">발표 자료 만들기</div>
+                    <div class="example-chip" onclick="selectActivity('아이와 함께 짧은 애니메이션이나 영상을 만들어보고 싶어요.')">영상/애니메이션 만들기</div>
+                    <div class="example-chip" onclick="selectActivity('아이와 함께 그림을 그리고 싶어요. 상상 속 캐릭터나 풍경을 그려보고 싶습니다.')">그림/일러스트 그리기</div>
+                    <div class="example-chip" onclick="selectActivity('아이의 생일 파티를 계획하고 있어요. 초대장과 장식을 직접 만들고 싶습니다.')">생일 파티 준비</div>
+                    <div class="example-chip" onclick="selectActivity('아이와 함께 간단한 게임이나 앱을 만들어보고 싶어요. 코딩을 처음 배워보려고 합니다.')">코딩/게임 만들기</div>
+                    <div class="example-chip" onclick="selectActivity('아이가 숙제나 학습에서 어려워하는 부분이 있어요. 재미있게 공부할 수 있도록 도와주고 싶습니다.')">학습/숙제 도우미</div>
+                    <div class="example-chip" onclick="selectActivity('가족 여행 계획을 세우고 있어요. 아이가 가고 싶은 곳으로 일정을 짜고 싶습니다.')">가족 여행 계획</div>
+                    <div class="example-chip" onclick="selectActivity('아이가 만든 이야기를 오디오북으로 만들어주고 싶어요. 목소리 녹음이나 음성 생성을 해보고 싶습니다.')">오디오북 만들기</div>
+                    <div class="example-chip" onclick="selectActivity('아이와 함께 유튜브 영상을 만들어보고 싶어요. 편집과 효과도 넣어보고 싶습니다.')">유튜브 영상 제작</div>
+                    <div class="example-chip" onclick="selectActivity('아이의 사진을 예쁘게 편집하고 앨범을 만들고 싶어요.')">사진 편집/앨범 만들기</div>
+                    <div class="example-chip" onclick="selectActivity('아이와 함께 보드게임이나 카드게임을 직접 만들어보고 싶어요.')">보드게임/카드게임 만들기</div>
+                    <div class="example-chip" onclick="selectActivity('아이가 일기나 독서록을 쓰는 것을 도와주고 싶어요. 글쓰기 습관을 기르고 싶습니다.')">일기/독서록 쓰기</div>
+                    <div class="example-chip" onclick="selectActivity('아이와 함께 외국어를 공부하고 싶어요. 재미있게 영어나 다른 언어를 배우고 싶습니다.')">외국어 학습</div>
+                    <div class="example-chip" onclick="selectActivity('아이의 꿈이나 장래희망에 대해 알아보고 싶어요. 관련 정보를 함께 탐색하고 싶습니다.')">진로/꿈 탐색</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="loading" id="loading" style="display: none;">
+            <div class="loading-spinner"></div>
+            <p>맞춤형 AI 비서를 분석하고 있습니다...</p>
+        </div>
+
+        <div class="results-section" id="resultsSection">
+            <div class="results-header">
+                <h2>맞춤 AI 비서 추천 결과</h2>
+                <p id="activitySummary"></p>
+            </div>
+
+            <div id="toolsContainer"></div>
+
+            <button class="new-search-btn" onclick="newSearch()">다른 활동으로 새로 검색하기</button>
+        </div>
+    </div>
+
+    <script>
+        // AI 비서 데이터베이스 (PDF 기반 상세 정보 포함)
+        const aiTools = {
+            "Claude": {
+                category: "대화 및 논리 기획",
+                icon: "🤖",
+                url: "https://claude.ai",
+                keywords: ["스토리", "동화", "이야기", "글", "글쓰기", "아이디어", "기획", "계획", "대화", "질문", "설명", "논리", "분석", "요약", "번역", "교육", "학습", "숙제", "과제", "창작", "소설", "시나리오", "대본"],
+                reason: "Claude는 아이의 아이디어를 풍성한 스토리로 발전시키는 데 탁월합니다. 맥락을 이해하고 창의적인 제안을 하며, 아이가 '최종 결정권자'로서 지휘하는 방식으로 협업할 수 있습니다.",
+                howToUse: [
+                    "claude.ai에 접속하여 무료 계정을 만듭니다",
+                    "아이와 함께 만들고 싶은 것에 대해 대화를 시작합니다",
+                    "Claude가 제안하는 여러 아이디어 중 마음에 드는 것을 선택합니다",
+                    "선택한 아이디어를 바탕으로 더 구체화해 달라고 요청합니다"
+                ],
+                activityGuide: "아이에게 먼저 '어떤 이야기를 만들고 싶어?'라고 물어보세요. 아이의 대답을 Claude에게 전달하면, Claude가 여러 방향의 스토리를 제안합니다. 아이가 마음에 드는 방향을 선택하면, 그 방향으로 스토리를 발전시켜 나갑니다. 이 과정에서 아이는 '지휘자' 역할을 하게 됩니다.",
+                parentTip: "AI에게 답을 묻기 전, 아이가 얻고 싶은 '진짜 결과'가 무엇인지 먼저 대화하세요. AI는 '숙제 대신 해주는 기계'가 아닌 '내 생각을 돕는 비서'로 활용해야 합니다."
+            },
+            "ChatGPT-4o": {
+                category: "대화 및 논리 기획",
+                icon: "💬",
+                url: "https://chat.openai.com",
+                keywords: ["대화", "질문", "답변", "아이디어", "브레인스토밍", "기획", "계획", "글쓰기", "번역", "요약", "설명", "학습", "교육", "코딩", "프로그래밍", "분석", "조사", "연구", "브랜드", "이름", "슬로건"],
+                reason: "ChatGPT는 브랜드의 이름, 슬로건, 핵심 가치를 제안하는 브랜딩 비서 역할에 탁월합니다. 다양한 아이디어를 빠르게 생성하고, 아이의 취향에 맞춰 수정해 나갈 수 있습니다.",
+                howToUse: [
+                    "chat.openai.com에 접속하여 계정을 만듭니다",
+                    "아이가 좋아하는 것(색깔, 동물, 취미 등)을 알려줍니다",
+                    "브랜드 이름이나 슬로건 아이디어를 요청합니다",
+                    "마음에 드는 것을 선택하고 더 다듬어 달라고 요청합니다"
+                ],
+                activityGuide: "아이에게 좋아하는 색깔, 동물, 취미를 물어보고 이를 ChatGPT에게 알려주세요. '7살 아이가 좋아하는 고양이와 파란색을 활용한 브랜드 이름 10개를 제안해줘'와 같이 구체적으로 요청하면 더 좋은 결과를 얻을 수 있습니다.",
+                parentTip: "AI가 준 여러 시안 중 왜 이 안을 골랐는지 아이의 논리를 물어봐 주세요. 이 과정이 아이의 비판적 사고력을 키워줍니다."
+            },
+            "Perplexity": {
+                category: "대화 및 논리 기획",
+                icon: "🔍",
+                url: "https://perplexity.ai",
+                keywords: ["검색", "조사", "연구", "자료", "정보", "찾기", "학습", "공부", "과학", "실험", "역사", "지식", "질문", "답변", "설명"],
+                reason: "Perplexity는 3시간 걸릴 자료 조사와 요약을 5분 만에 끝낼 수 있는 강력한 검색 AI입니다. 과학 실험이나 학습 활동에 필요한 정보를 신뢰할 수 있는 출처와 함께 제공합니다.",
+                howToUse: [
+                    "perplexity.ai에 접속합니다",
+                    "알고 싶은 내용을 질문 형식으로 입력합니다",
+                    "답변과 함께 제공되는 출처를 확인합니다",
+                    "추가 질문으로 더 깊이 탐구합니다"
+                ],
+                activityGuide: "과학 실험을 하기 전에 '집에서 아이와 할 수 있는 안전한 화산 폭발 실험 방법'을 검색해 보세요. Perplexity가 여러 방법을 비교해서 알려주고, 각 방법의 출처도 함께 제공합니다. 아이와 함께 어떤 방법이 좋을지 선택해 보세요.",
+                parentTip: "검색 결과를 아이에게 그대로 보여주기보다, 아이가 이해할 수 있는 수준으로 함께 읽어보며 설명해 주세요."
+            },
+            "Midjourney": {
+                category: "이미지 생성",
+                icon: "🎨",
+                url: "https://midjourney.com",
+                keywords: ["그림", "이미지", "일러스트", "삽화", "캐릭터", "동화", "그리기", "미술", "디자인", "아트", "상상", "시각화", "배경", "장면", "판타지", "동물", "사람", "풍경"],
+                reason: "그림 실력이 없어도 Midjourney를 통해 상상 속 캐릭터를 고퀄리티 일러스트로 구현할 수 있습니다. 아이의 머릿속 이미지를 구체화해 주는 '크리에이티브 파트너' 역할을 합니다.",
+                howToUse: [
+                    "Discord에 가입하고 Midjourney 서버에 참여합니다",
+                    "아이가 상상하는 장면을 말로 설명하게 합니다",
+                    "그 설명을 영어로 번역하여 /imagine 명령어와 함께 입력합니다",
+                    "생성된 4개의 이미지 중 마음에 드는 것을 선택합니다"
+                ],
+                activityGuide: "아이에게 '동화 속 주인공이 어떻게 생겼으면 좋겠어?'라고 물어보세요. '파란 머리카락에 날개 달린 요정'과 같은 설명을 받으면, 이를 'a fairy with blue hair and wings, children's book illustration style'로 변환하여 입력합니다. 여러 결과물 중 아이가 직접 선택하게 하세요.",
+                parentTip: "AI의 결과물에 아이만의 손길(수정, 보완)을 반드시 거쳐 '나의 것'으로 만들게 하세요. 예를 들어, 생성된 이미지를 보고 아이가 추가하고 싶은 요소를 말하게 하세요."
+            },
+            "DALL-E 3": {
+                category: "이미지 생성",
+                icon: "🖼️",
+                url: "https://openai.com/dall-e-3",
+                keywords: ["그림", "이미지", "일러스트", "삽화", "캐릭터", "그리기", "미술", "디자인", "생성", "만들기", "시각화"],
+                reason: "DALL-E 3는 ChatGPT 안에서 바로 사용할 수 있어 편리합니다. 자연스러운 한국어 설명만으로도 원하는 이미지를 생성할 수 있어 아이들이 사용하기 쉽습니다.",
+                howToUse: [
+                    "ChatGPT Plus에 가입합니다 (유료)",
+                    "채팅창에 원하는 그림을 설명합니다",
+                    "'이 장면을 그림으로 그려줘'라고 요청합니다",
+                    "생성된 이미지를 확인하고 수정 요청을 합니다"
+                ],
+                activityGuide: "동화책의 각 장면을 아이와 함께 상상한 후, '숲 속에서 토끼와 거북이가 달리기 시합을 하는 장면을 동화책 스타일로 그려줘'와 같이 요청해 보세요. 아이가 직접 어떤 장면을 그릴지 결정하게 하는 것이 중요합니다.",
+                parentTip: "한 번에 완벽한 그림이 나오지 않을 수 있습니다. '토끼를 더 크게 해줘', '배경에 꽃을 추가해줘'처럼 아이와 함께 수정 요청을 하는 과정 자체가 좋은 학습이 됩니다."
+            },
+            "Canva": {
+                category: "디자인",
+                icon: "🎯",
+                url: "https://canva.com",
+                keywords: ["디자인", "포스터", "카드", "초대장", "굿즈", "로고", "편집", "템플릿", "발표", "PPT", "프레젠테이션", "이미지", "사진", "편집", "꾸미기", "만들기", "홍보"],
+                reason: "Canva는 만들어진 로고나 이미지를 활용해 굿즈 이미지와 카드뉴스를 제작할 수 있는 '홍보 비서'입니다. 드래그 앤 드롭으로 쉽게 사용할 수 있어 아이들도 직접 참여할 수 있습니다.",
+                howToUse: [
+                    "canva.com에서 무료 계정을 만듭니다",
+                    "원하는 템플릿(포스터, 카드, 프레젠테이션 등)을 선택합니다",
+                    "텍스트와 이미지를 드래그하여 원하는 위치에 배치합니다",
+                    "완성된 디자인을 다운로드하거나 공유합니다"
+                ],
+                activityGuide: "아이가 만든 캐릭터나 브랜드 로고를 Canva에 업로드하고, 이를 활용해 스티커, 포스터, 카드 등을 만들어 보세요. '내 캐릭터가 들어간 생일 초대장 만들기' 같은 프로젝트를 진행하면 아이가 큰 성취감을 느낄 수 있습니다.",
+                parentTip: "처음에는 간단한 템플릿부터 시작하세요. 아이가 직접 색상을 바꾸고 텍스트를 입력하는 경험을 하게 해주세요."
+            },
+            "Gamma": {
+                category: "프레젠테이션",
+                icon: "📊",
+                url: "https://gamma.app",
+                keywords: ["발표", "PPT", "프레젠테이션", "슬라이드", "자료", "학교", "수업", "과제", "정리", "요약", "책", "전자책", "레이아웃", "편집"],
+                reason: "Gamma는 완성된 글과 그림을 레이아웃에 맞춰 전자책이나 프레젠테이션으로 편집하는 '편집 비서'입니다. 텍스트만 입력하면 AI가 자동으로 멋진 디자인을 만들어줍니다.",
+                howToUse: [
+                    "gamma.app에 접속하여 계정을 만듭니다",
+                    "'Generate' 버튼을 클릭하고 주제를 입력합니다",
+                    "AI가 생성한 프레젠테이션을 확인합니다",
+                    "원하는 부분을 클릭하여 수정합니다"
+                ],
+                activityGuide: "아이가 Claude로 만든 동화 스토리와 Midjourney로 만든 삽화를 Gamma에서 조합하여 전자책을 완성해 보세요. '우리 가족만의 동화책' 프로젝트를 통해 아이는 창작의 전 과정을 경험할 수 있습니다.",
+                parentTip: "완성된 결과물을 가족이나 친구에게 공유하는 경험을 해보세요. 아이가 자신의 작품에 대해 설명하는 과정이 중요한 학습이 됩니다."
+            },
+            "Tome": {
+                category: "프레젠테이션",
+                icon: "📑",
+                url: "https://tome.app",
+                keywords: ["발표", "스토리", "프레젠테이션", "슬라이드", "자료", "이야기", "시각화", "정리"],
+                reason: "Tome은 스토리텔링에 최적화된 프레젠테이션 도구입니다. 아이의 이야기를 시각적으로 매력있게 표현할 수 있습니다.",
+                howToUse: [
+                    "tome.app에서 계정을 만듭니다",
+                    "새 프레젠테이션을 시작합니다",
+                    "AI에게 주제를 설명하고 슬라이드를 생성합니다",
+                    "이미지와 텍스트를 수정하여 완성합니다"
+                ],
+                activityGuide: "아이의 상상 속 모험 이야기를 Tome으로 시각화해 보세요. 각 장면을 슬라이드로 만들고, AI가 생성한 이미지와 함께 이야기를 완성합니다.",
+                parentTip: "발표 자료를 만드는 과정에서 아이가 스토리의 흐름을 직접 구성하게 해주세요."
+            },
+            "Suno": {
+                category: "음악 생성",
+                icon: "🎵",
+                url: "https://suno.ai",
+                keywords: ["노래", "음악", "작곡", "멜로디", "가사", "동요", "만들기", "창작", "사운드", "소리"],
+                reason: "Suno는 텍스트 설명만으로 완성도 높은 노래를 만들 수 있는 작곡 AI입니다. 아이가 가사나 분위기를 정하면 AI가 멜로디와 함께 노래를 완성해줍니다.",
+                howToUse: [
+                    "suno.ai에 접속하여 계정을 만듭니다",
+                    "만들고 싶은 노래의 스타일이나 가사를 입력합니다",
+                    "AI가 생성한 여러 버전의 노래를 들어봅니다",
+                    "마음에 드는 버전을 선택하고 다운로드합니다"
+                ],
+                activityGuide: "아이와 함께 간단한 가사를 만들어 보세요. '우리 강아지 뽀뽀에 대한 신나는 노래'처럼 주제를 정하고, 아이가 좋아하는 단어들을 넣어 가사를 만듭니다. Suno에 입력하면 실제 노래가 완성됩니다!",
+                parentTip: "완성된 노래를 가족들 앞에서 함께 불러보는 시간을 가져보세요. 아이의 창작물에 대한 자부심이 커집니다."
+            },
+            "ElevenLabs": {
+                category: "음성 생성",
+                icon: "🎙️",
+                url: "https://elevenlabs.io",
+                keywords: ["목소리", "음성", "더빙", "나레이션", "오디오", "낭독", "책", "동화", "읽기"],
+                reason: "ElevenLabs는 텍스트를 자연스러운 음성으로 변환해주는 AI입니다. 아이가 만든 동화를 오디오북으로 만들 수 있습니다.",
+                howToUse: [
+                    "elevenlabs.io에서 계정을 만듭니다",
+                    "원하는 목소리 스타일을 선택합니다",
+                    "텍스트를 입력하고 음성을 생성합니다",
+                    "오디오 파일을 다운로드합니다"
+                ],
+                activityGuide: "아이가 만든 동화 스토리를 입력하여 오디오북을 만들어 보세요. 여러 목소리를 사용해 캐릭터별로 다른 음성을 지정할 수도 있습니다. 완성된 오디오북을 자기 전에 함께 들어보세요.",
+                parentTip: "아이가 직접 목소리를 녹음해서 추가하는 것도 좋습니다. AI 음성과 아이의 실제 음성을 조합해 보세요."
+            },
+            "HeyGen": {
+                category: "영상 생성",
+                icon: "🎥",
+                url: "https://heygen.com",
+                keywords: ["영상", "비디오", "아바타", "발표", "소개", "설명", "유튜브", "만들기"],
+                reason: "HeyGen은 AI 아바타가 대신 말해주는 영상을 만들 수 있습니다. 아이의 발표 영상이나 소개 영상을 쉽게 제작할 수 있습니다.",
+                howToUse: [
+                    "heygen.com에서 계정을 만듭니다",
+                    "아바타와 배경을 선택합니다",
+                    "대본을 입력합니다",
+                    "영상을 생성하고 다운로드합니다"
+                ],
+                activityGuide: "아이가 학교에서 발표할 내용을 대본으로 작성하고, AI 아바타가 발표하는 예시 영상을 만들어 보세요. 이를 보며 아이가 발표 연습을 할 수 있습니다.",
+                parentTip: "AI 영상은 참고용으로 활용하고, 실제 발표는 아이가 직접 하도록 격려해 주세요."
+            },
+            "Runway": {
+                category: "영상 편집",
+                icon: "🎞️",
+                url: "https://runway.ml",
+                keywords: ["영상", "비디오", "편집", "효과", "애니메이션", "만들기", "유튜브"],
+                reason: "Runway는 AI 기반 영상 편집 도구로, 배경 제거, 특수 효과 등을 쉽게 적용할 수 있습니다. 아이와 함께 창의적인 영상을 만들 수 있습니다.",
+                howToUse: [
+                    "runway.ml에서 계정을 만듭니다",
+                    "영상을 업로드하거나 새로 촬영합니다",
+                    "원하는 AI 비서(배경 제거, 효과 등)를 선택합니다",
+                    "편집된 영상을 내보냅니다"
+                ],
+                activityGuide: "아이가 촬영한 짧은 영상에 재미있는 배경을 합성해 보세요. 우주, 바닷속, 공룡 시대 등 상상의 세계를 배경으로 설정할 수 있습니다.",
+                parentTip: "복잡한 편집보다는 간단한 효과부터 시작하세요. 아이가 직접 효과를 선택하게 해주세요."
+            },
+            "GuideGeek": {
+                category: "여행 계획",
+                icon: "🗺️",
+                url: "https://guidegeek.com",
+                keywords: ["여행", "캠핑", "장소", "추천", "관광", "나들이", "주말", "휴가", "어디", "가볼만한"],
+                reason: "GuideGeek은 가족의 취향(숲, 계곡, 바다 등)을 입력하면 최적의 여행 장소를 제안하는 여행 AI입니다. 아이와 함께 여행 계획을 세울 때 유용합니다.",
+                howToUse: [
+                    "GuideGeek 웹사이트 또는 WhatsApp에서 접속합니다",
+                    "가족의 여행 취향과 조건을 알려줍니다",
+                    "추천받은 장소들을 비교합니다",
+                    "마음에 드는 곳을 선택하고 상세 정보를 요청합니다"
+                ],
+                activityGuide: "아이에게 '이번 주말에 어떤 곳에 가고 싶어?'라고 물어보세요. 숲, 바다, 놀이공원 등 아이의 대답을 GuideGeek에 입력하면 구체적인 장소를 추천받을 수 있습니다. 여러 후보 중 아이가 직접 선택하게 하세요.",
+                parentTip: "AI의 모든 제안을 검토하고, 가족의 행복을 위해 최종 결정하는 것은 '아이'라는 점을 강조해 주세요."
+            },
+            "Roam Around": {
+                category: "여행 계획",
+                icon: "✈️",
+                url: "https://roamaround.io",
+                keywords: ["여행", "일정", "계획", "코스", "루트", "스케줄", "휴가", "여행지"],
+                reason: "Roam Around는 이동시간과 날씨를 고려한 여행 일정을 빠르게 설계해주는 AI입니다. 1박 2일 가족 캠핑 일정도 순식간에 만들 수 있습니다.",
+                howToUse: [
+                    "roamaround.io에 접속합니다",
+                    "여행 목적지와 기간을 입력합니다",
+                    "AI가 생성한 일정을 확인합니다",
+                    "필요에 따라 일정을 수정합니다"
+                ],
+                activityGuide: "캠핑 장소가 정해지면 Roam Around에 '○○캠핑장 1박2일 가족 여행'을 입력해 보세요. 출발 시간, 중간 휴게소, 도착 후 활동 등 상세 일정을 제안받을 수 있습니다.",
+                parentTip: "AI가 만든 일정을 기본으로 하되, 아이와 함께 '여기서 뭘 하고 싶어?'를 이야기하며 일정을 수정해 보세요."
+            },
+            "Tripnotes": {
+                category: "여행 계획",
+                icon: "📋",
+                url: "https://tripnotes.ai",
+                keywords: ["여행", "준비물", "체크리스트", "캠핑", "짐", "싸기", "목록"],
+                reason: "Tripnotes는 여행 장소의 지형과 날씨에 맞는 맞춤형 준비물 체크리스트를 생성해줍니다. 캠핑이나 여행 준비를 빠짐없이 할 수 있습니다.",
+                howToUse: [
+                    "Tripnotes에 접속합니다",
+                    "여행 목적지와 활동 유형을 입력합니다",
+                    "생성된 체크리스트를 확인합니다",
+                    "필요한 항목을 추가하거나 삭제합니다"
+                ],
+                activityGuide: "캠핑 준비를 할 때 아이와 함께 Tripnotes의 체크리스트를 보며 짐을 싸보세요. '이건 왜 필요할까?' 질문하며 아이가 생각해보게 하면 좋습니다.",
+                parentTip: "체크리스트를 프린트해서 아이가 직접 체크하며 준비하게 하면 책임감을 기를 수 있습니다."
+            },
+            "Looka": {
+                category: "로고 디자인",
+                icon: "✨",
+                url: "https://looka.com",
+                keywords: ["로고", "브랜드", "디자인", "마크", "심볼", "아이콘", "만들기"],
+                reason: "Looka는 브랜드 성격에 맞는 수백 개의 로고 시안을 순식간에 생성하는 '로고 비서'입니다. 아이만의 브랜드 로고를 전문가 수준으로 만들 수 있습니다.",
+                howToUse: [
+                    "looka.com에 접속합니다",
+                    "브랜드 이름을 입력합니다",
+                    "좋아하는 색상, 스타일, 심볼을 선택합니다",
+                    "AI가 생성한 로고 시안 중 마음에 드는 것을 선택합니다"
+                ],
+                activityGuide: "아이가 ChatGPT로 정한 브랜드 이름을 Looka에 입력하세요. 좋아하는 색깔과 동물을 선택하면 다양한 로고가 생성됩니다. 아이가 여러 시안 중 가장 마음에 드는 것을 선택하고 그 이유를 말해보게 하세요.",
+                parentTip: "선택한 로고에 대해 '왜 이게 좋아?'라고 물어보세요. 아이의 미적 감각과 논리적 사고를 함께 키울 수 있습니다."
+            },
+            "Storybird": {
+                category: "동화 제작",
+                icon: "📖",
+                url: "https://storybird.com",
+                keywords: ["동화", "그림책", "스토리", "이야기", "책", "만들기", "글쓰기", "창작"],
+                reason: "Storybird는 아름다운 일러스트를 활용해 나만의 그림책을 만들 수 있는 플랫폼입니다. 아이의 이야기에 전문 일러스트레이터의 그림을 매칭해줍니다.",
+                howToUse: [
+                    "storybird.com에서 계정을 만듭니다",
+                    "마음에 드는 일러스트 스타일을 선택합니다",
+                    "그림에 맞춰 이야기를 작성합니다",
+                    "완성된 책을 저장하거나 출판합니다"
+                ],
+                activityGuide: "아이와 함께 여러 일러스트 스타일을 구경하며 마음에 드는 것을 선택하세요. 그림을 보며 '이 그림에서 무슨 일이 일어나고 있을까?' 상상하며 이야기를 만들어 갑니다.",
+                parentTip: "완성된 책을 실제로 인쇄해서 선물하면 아이에게 특별한 경험이 됩니다."
+            },
+            "Khanmigo": {
+                category: "학습",
+                icon: "📚",
+                url: "https://khanacademy.org/khanmigo",
+                keywords: ["공부", "학습", "교육", "수학", "과학", "숙제", "과외", "선생님", "설명", "이해"],
+                reason: "Khanmigo는 Khan Academy의 AI 튜터로, 아이의 학습 수준에 맞춰 개인화된 설명을 제공합니다. 답을 알려주는 것이 아니라 스스로 답을 찾도록 도와줍니다.",
+                howToUse: [
+                    "Khan Academy에서 계정을 만듭니다",
+                    "Khanmigo를 활성화합니다",
+                    "모르는 문제나 개념에 대해 질문합니다",
+                    "AI의 힌트를 따라 스스로 답을 찾아봅니다"
+                ],
+                activityGuide: "아이가 숙제를 하다가 막히면 Khanmigo에게 물어보세요. 바로 답을 알려주지 않고 '어떤 부분이 어려워?', '이렇게 생각해볼까?' 하며 아이가 스스로 답을 찾도록 유도합니다.",
+                parentTip: "AI 튜터를 '답 알려주는 기계'가 아닌 '함께 생각하는 친구'로 소개해 주세요."
+            },
+            "Wolfram Alpha": {
+                category: "학습/계산",
+                icon: "🧮",
+                url: "https://wolframalpha.com",
+                keywords: ["수학", "계산", "과학", "공식", "그래프", "답", "풀이", "문제"],
+                reason: "Wolfram Alpha는 수학 문제의 풀이 과정을 단계별로 보여주는 계산 AI입니다. 과학 실험의 원리를 설명할 때도 유용합니다.",
+                howToUse: [
+                    "wolframalpha.com에 접속합니다",
+                    "수학 문제나 과학 질문을 입력합니다",
+                    "단계별 풀이 과정을 확인합니다",
+                    "이해가 안 되는 부분은 추가 질문합니다"
+                ],
+                activityGuide: "과학 실험을 하면서 '왜 이렇게 되는 걸까?' 궁금한 점이 생기면 Wolfram Alpha에 물어보세요. 예를 들어, 베이킹소다와 식초가 반응하는 원리를 검색하면 화학식과 함께 설명을 볼 수 있습니다.",
+                parentTip: "아이의 수준에 맞게 설명을 단순화해서 전달해 주세요. AI의 답변을 그대로 보여주기보다 함께 이해하는 시간을 가지세요."
+            },
+            "Notion AI": {
+                category: "생산성",
+                icon: "📓",
+                url: "https://notion.so",
+                keywords: ["정리", "메모", "계획", "일정", "기록", "노트", "관리", "프로젝트"],
+                reason: "Notion AI는 아이디어를 정리하고 프로젝트를 관리하는 데 탁월합니다. 가족 활동 계획을 체계적으로 기록하고 관리할 수 있습니다.",
+                howToUse: [
+                    "notion.so에서 계정을 만듭니다",
+                    "새 페이지를 만들고 프로젝트 내용을 입력합니다",
+                    "AI 기능을 사용해 내용을 요약하거나 확장합니다",
+                    "체크리스트, 일정 등을 추가합니다"
+                ],
+                activityGuide: "가족 프로젝트(동화책 만들기, 여행 계획 등)를 Notion에 기록해 보세요. 아이디어, 진행 상황, 완성 작품을 모두 한 곳에서 관리할 수 있습니다.",
+                parentTip: "프로젝트가 끝나면 함께 기록을 돌아보며 '무엇이 재미있었어?', '다음에는 뭘 해볼까?' 대화해 보세요."
+            },
+            "Replit": {
+                category: "코딩",
+                icon: "💻",
+                url: "https://replit.com",
+                keywords: ["코딩", "프로그래밍", "게임", "앱", "만들기", "개발", "컴퓨터"],
+                reason: "Replit은 웹에서 바로 코딩을 시작할 수 있는 플랫폼입니다. AI가 코드 작성을 도와주어 아이도 간단한 게임이나 앱을 만들 수 있습니다.",
+                howToUse: [
+                    "replit.com에서 계정을 만듭니다",
+                    "새 프로젝트를 시작합니다",
+                    "AI에게 만들고 싶은 것을 설명합니다",
+                    "AI가 작성한 코드를 실행하고 수정합니다"
+                ],
+                activityGuide: "아이와 함께 간단한 숫자 맞추기 게임을 만들어 보세요. '1부터 100 사이의 숫자를 맞추는 게임을 만들어줘'라고 요청하면 AI가 코드를 작성해줍니다. 아이와 함께 게임을 실행하고, '숫자 범위를 바꿔볼까?' 하며 코드를 수정해 보세요.",
+                parentTip: "코드를 완전히 이해하지 못해도 괜찮습니다. '여기를 바꾸면 어떻게 될까?' 실험하는 과정 자체가 학습입니다."
+            },
+            "Adobe Firefly": {
+                category: "이미지 생성",
+                icon: "🔥",
+                url: "https://firefly.adobe.com",
+                keywords: ["그림", "이미지", "사진", "편집", "디자인", "생성", "만들기"],
+                reason: "Adobe Firefly는 상업적으로도 안전하게 사용할 수 있는 이미지 생성 AI입니다. 다양한 스타일의 이미지를 만들 수 있습니다.",
+                howToUse: [
+                    "firefly.adobe.com에 접속합니다",
+                    "Adobe 계정으로 로그인합니다",
+                    "원하는 이미지를 설명합니다",
+                    "생성된 이미지를 다운로드합니다"
+                ],
+                activityGuide: "아이의 상상 속 장면을 설명하고 이미지로 만들어 보세요. 다양한 스타일(수채화, 만화, 사진 등)로 같은 장면을 생성해보고 비교하는 것도 재미있습니다.",
+                parentTip: "여러 스타일의 결과물을 비교하며 아이의 미적 취향을 발견해 보세요."
+            }
+        };
+
+        // 활동 카테고리 매핑
+        const activityCategories = {
+            "동화/스토리": ["스토리", "동화", "이야기", "글", "글쓰기", "책", "소설", "창작"],
+            "이미지/그림": ["그림", "이미지", "일러스트", "삽화", "캐릭터", "그리기", "미술", "디자인"],
+            "브랜드/디자인": ["브랜드", "로고", "디자인", "캐릭터", "굿즈", "만들기"],
+            "여행/캠핑": ["여행", "캠핑", "장소", "일정", "준비물", "주말", "휴가", "나들이"],
+            "음악/영상": ["노래", "음악", "영상", "비디오", "작곡", "애니메이션"],
+            "학습/교육": ["공부", "학습", "과학", "실험", "수학", "숙제", "교육"],
+            "발표/프레젠테이션": ["발표", "PPT", "프레젠테이션", "자료", "슬라이드"],
+            "요리": ["요리", "레시피", "음식", "만들기", "베이킹", "쿠킹"]
+        };
+
+        let selectedActivity = '';
+
+        function selectActivity(text) {
+            selectedActivity = text;
+
+            document.getElementById('activitySection').style.display = 'none';
+            document.getElementById('loading').style.display = 'block';
+
+            // 시뮬레이션을 위한 짧은 딜레이
+            setTimeout(() => {
+                const recommendations = analyzeAndRecommend(text.toLowerCase());
+                displayResults(text, recommendations);
+            }, 1500);
+        }
+
+        function analyzeAndRecommend(activity) {
+            const scores = {};
+
+            // 각 도구별 점수 계산
+            for (const [toolName, toolInfo] of Object.entries(aiTools)) {
+                let score = 0;
+
+                // 키워드 매칭
+                for (const keyword of toolInfo.keywords) {
+                    if (activity.includes(keyword)) {
+                        score += 10;
+                    }
+                }
+
+                // 부분 매칭
+                for (const keyword of toolInfo.keywords) {
+                    if (activity.includes(keyword.substring(0, 2))) {
+                        score += 2;
+                    }
+                }
+
+                if (score > 0) {
+                    scores[toolName] = score;
+                }
+            }
+
+            // 점수순 정렬
+            const sorted = Object.entries(scores)
+                .sort((a, b) => b[1] - a[1])
+                .slice(0, 5);
+
+            // 매칭된 도구가 적으면 기본 추천 추가
+            if (sorted.length < 3) {
+                const defaults = ["Claude", "Canva", "ChatGPT-4o", "Midjourney", "Gamma"];
+                for (const tool of defaults) {
+                    if (!scores[tool] && sorted.length < 4) {
+                        sorted.push([tool, 5]);
+                    }
+                }
+            }
+
+            // 결과 생성
+            const recommendations = sorted.map(([toolName]) => {
+                const tool = aiTools[toolName];
+                return {
+                    toolName,
+                    category: tool.category,
+                    icon: tool.icon,
+                    url: tool.url,
+                    reason: tool.reason,
+                    howToUse: tool.howToUse,
+                    activityGuide: tool.activityGuide,
+                    parentTip: tool.parentTip
+                };
+            });
+
+            // 활동 요약 생성
+            let summary = "입력하신 활동에 맞는 AI 비서들을 추천해 드립니다.";
+
+            for (const [category, keywords] of Object.entries(activityCategories)) {
+                for (const keyword of keywords) {
+                    if (activity.includes(keyword)) {
+                        summary = `'${category}' 관련 활동으로 분석되었습니다. 아이와 함께 창의적인 시간을 보내실 수 있는 도구들을 추천합니다.`;
+                        break;
+                    }
+                }
+            }
+
+            return { summary, recommendations };
+        }
+
+        function displayResults(activity, data) {
+            document.getElementById('loading').style.display = 'none';
+            document.getElementById('resultsSection').style.display = 'block';
+
+            document.getElementById('activitySummary').innerHTML = `
+                <strong>입력하신 활동:</strong> ${activity}<br>
+                <strong>분석 결과:</strong> ${data.summary}
+            `;
+
+            const container = document.getElementById('toolsContainer');
+            container.innerHTML = '';
+
+            data.recommendations.forEach((rec) => {
+                const card = document.createElement('div');
+                card.className = 'tool-card';
+                card.innerHTML = `
+                    <div class="tool-header">
+                        <div class="tool-icon">${rec.icon}</div>
+                        <div class="tool-info">
+                            <h3>${rec.toolName}</h3>
+                            <div class="category">${rec.category}</div>
+                        </div>
+                    </div>
+
+                    <div class="tool-section">
+                        <h4>추천 이유</h4>
+                        <p>${rec.reason}</p>
+                    </div>
+
+                    <div class="tool-section">
+                        <h4>사용 방법</h4>
+                        <ul>
+                            ${rec.howToUse.map(step => `<li>${step}</li>`).join('')}
+                        </ul>
+                    </div>
+
+                    <div class="tool-section">
+                        <h4>활용 가이드</h4>
+                        <p>${rec.activityGuide}</p>
+                    </div>
+
+                    <div class="tips-box">
+                        <h5>부모님을 위한 TIP</h5>
+                        <p>${rec.parentTip}</p>
+                    </div>
+
+                    <a href="${rec.url}" target="_blank" class="tool-link">
+                        ${rec.toolName} 바로가기 →
+                    </a>
+                `;
+
+                container.appendChild(card);
+            });
+        }
+
+        function newSearch() {
+            document.getElementById('resultsSection').style.display = 'none';
+            document.getElementById('activitySection').style.display = 'block';
+            selectedActivity = '';
+        }
+    </script>
+</body>
+</html>

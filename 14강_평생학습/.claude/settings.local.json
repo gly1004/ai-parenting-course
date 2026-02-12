@@ -1,0 +1,18 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(start \"\" \"C:\\\\Users\\\\gly10\\\\Desktop\\\\`14강_평생학습\\\\평생학습자_가능성_테스트_질문.txt\")",
+      "Bash(explorer \"C:\\\\Users\\\\gly10\\\\Desktop\\\\`14강_평생학습\\\\평생학습자_테스트.html\")",
+      "Bash(start:*)",
+      "Bash(powershell -Command \"Start-Process ''C:\\\\Users\\\\gly10\\\\Desktop\\\\`14강_평생학습\\\\평생학습자_테스트.html''\")",
+      "Bash(gh auth:*)",
+      "Bash(cmd /c \"mkdir \"\"C:\\\\Users\\\\gly10\\\\AppData\\\\Local\\\\Temp\\\\claude\\\\lifelong-learner-test\"\" 2>nul & copy \"\"C:\\\\Users\\\\gly10\\\\Desktop\\\\`14강_평생학습\\\\평생학습자_테스트.html\"\" \"\"C:\\\\Users\\\\gly10\\\\AppData\\\\Local\\\\Temp\\\\claude\\\\lifelong-learner-test\\\\index.html\"\"\")",
+      "Bash(git init:*)",
+      "Bash(git add:*)",
+      "Bash(git commit:*)",
+      "Bash(gh repo create:*)",
+      "Bash(gh api:*)",
+      "Bash(git push)"
+    ]
+  }
+}

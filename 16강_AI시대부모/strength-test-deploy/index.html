@@ -1,0 +1,1921 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>진로성격강점검사</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+            min-height: 100vh;
+            color: #fff;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        header {
+            text-align: center;
+            padding: 40px 20px;
+            background: rgba(255,255,255,0.05);
+            border-radius: 20px;
+            margin-bottom: 30px;
+        }
+
+        header h1 {
+            font-size: 2.2em;
+            color: #4ecca3;
+            margin-bottom: 15px;
+        }
+
+        header p {
+            color: #aaa;
+            font-size: 1.1em;
+            line-height: 1.6;
+        }
+
+        .intro-box {
+            background: rgba(78, 204, 163, 0.1);
+            border: 1px solid #4ecca3;
+            border-radius: 15px;
+            padding: 25px;
+            margin-bottom: 30px;
+        }
+
+        .intro-box h2 {
+            color: #4ecca3;
+            margin-bottom: 15px;
+            font-size: 1.3em;
+        }
+
+        .method-box {
+            background: rgba(255,255,255,0.05);
+            border-radius: 15px;
+            padding: 25px;
+            margin-bottom: 20px;
+        }
+
+        .method-box h3 {
+            color: #4ecca3;
+            margin-bottom: 15px;
+            font-size: 1.1em;
+            text-align: center;
+        }
+
+        .method-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .method-item {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            background: rgba(0,0,0,0.2);
+            padding: 12px 18px;
+            border-radius: 10px;
+        }
+
+        .method-number {
+            width: 28px;
+            height: 28px;
+            background: linear-gradient(135deg, #4ecca3, #45b7aa);
+            color: #1a1a2e;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 0.9em;
+            flex-shrink: 0;
+        }
+
+        .method-text {
+            color: #ddd;
+            font-size: 0.95em;
+        }
+
+        .highlight-box {
+            background: linear-gradient(135deg, rgba(78, 204, 163, 0.2), rgba(69, 183, 170, 0.2));
+            border: 2px solid #4ecca3;
+            border-radius: 15px;
+            padding: 25px 30px;
+            margin-bottom: 30px;
+            text-align: center;
+        }
+
+        .highlight-box p {
+            font-size: 1.2em;
+            color: #fff;
+            margin: 0;
+            line-height: 1.6;
+        }
+
+        .highlight-box strong {
+            color: #4ecca3;
+            font-size: 1.1em;
+        }
+
+        /* 강점 분류표 스타일 */
+        .strength-table-container {
+            background: rgba(255,255,255,0.05);
+            border-radius: 15px;
+            padding: 25px;
+            margin-bottom: 30px;
+        }
+
+        .strength-table-container h3 {
+            color: #4ecca3;
+            margin-bottom: 20px;
+            text-align: center;
+            font-size: 1.3em;
+        }
+
+        .virtue-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 15px;
+        }
+
+        .virtue-card {
+            background: rgba(0,0,0,0.3);
+            border-radius: 12px;
+            padding: 18px;
+            border-left: 4px solid;
+        }
+
+        .virtue-card.wisdom { border-left-color: #e74c3c; }
+        .virtue-card.humanity { border-left-color: #3498db; }
+        .virtue-card.courage { border-left-color: #f39c12; }
+        .virtue-card.temperance { border-left-color: #9b59b6; }
+        .virtue-card.justice { border-left-color: #1abc9c; }
+        .virtue-card.transcendence { border-left-color: #e91e63; }
+
+        .virtue-card h4 {
+            color: #fff;
+            margin-bottom: 12px;
+            font-size: 1.05em;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .virtue-card h4 .icon {
+            font-size: 1.2em;
+        }
+
+        .virtue-card .strengths-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+        }
+
+        .virtue-card .strength-tag {
+            background: rgba(255,255,255,0.1);
+            padding: 5px 10px;
+            border-radius: 15px;
+            font-size: 0.85em;
+            color: #ddd;
+        }
+
+        /* Holland 유형 설명 */
+        .holland-info {
+            background: rgba(255,255,255,0.05);
+            border-radius: 15px;
+            padding: 25px;
+            margin-bottom: 30px;
+        }
+
+        .holland-info h3 {
+            color: #4ecca3;
+            margin-bottom: 20px;
+            text-align: center;
+            font-size: 1.3em;
+        }
+
+        .holland-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+            gap: 12px;
+        }
+
+        .holland-type {
+            background: rgba(0,0,0,0.3);
+            border-radius: 10px;
+            padding: 15px;
+            text-align: center;
+        }
+
+        .holland-type .letter {
+            font-size: 1.8em;
+            font-weight: bold;
+            color: #4ecca3;
+        }
+
+        .holland-type .name {
+            font-size: 0.9em;
+            color: #fff;
+            margin-top: 5px;
+        }
+
+        .holland-type .desc {
+            font-size: 0.75em;
+            color: #aaa;
+            margin-top: 5px;
+        }
+
+        .child-info {
+            background: rgba(255,255,255,0.05);
+            border-radius: 15px;
+            padding: 25px;
+            margin-bottom: 30px;
+        }
+
+        .child-info h3 {
+            color: #4ecca3;
+            margin-bottom: 20px;
+        }
+
+        .child-info input {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid rgba(78, 204, 163, 0.3);
+            border-radius: 10px;
+            background: rgba(255,255,255,0.05);
+            color: #fff;
+            font-size: 1em;
+            margin-bottom: 15px;
+        }
+
+        .child-info input:focus {
+            outline: none;
+            border-color: #4ecca3;
+        }
+
+        .notice-text {
+            color: #f39c12;
+            font-size: 0.95em;
+            margin-bottom: 15px;
+            text-align: center;
+        }
+
+        .question-section {
+            display: none;
+        }
+
+        .question-section.active {
+            display: block;
+        }
+
+        .progress-bar {
+            background: rgba(255,255,255,0.1);
+            border-radius: 10px;
+            height: 10px;
+            margin-bottom: 20px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            background: linear-gradient(90deg, #4ecca3, #45b7aa);
+            height: 100%;
+            border-radius: 10px;
+            transition: width 0.3s ease;
+        }
+
+        .progress-text {
+            text-align: center;
+            margin-bottom: 20px;
+            color: #aaa;
+        }
+
+        .question-card {
+            background: rgba(255,255,255,0.05);
+            border-radius: 15px;
+            padding: 30px;
+            margin-bottom: 20px;
+        }
+
+        .question-card h3 {
+            font-size: 1.15em;
+            margin-bottom: 25px;
+            color: #fff;
+            line-height: 1.6;
+        }
+
+        .question-number {
+            display: inline-block;
+            background: linear-gradient(135deg, #4ecca3, #45b7aa);
+            color: #1a1a2e;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 0.85em;
+            font-weight: bold;
+            margin-bottom: 15px;
+        }
+
+        .rating-scale {
+            display: flex;
+            justify-content: space-between;
+            gap: 10px;
+        }
+
+        .rating-btn {
+            flex: 1;
+            padding: 15px 10px;
+            border: 2px solid rgba(78, 204, 163, 0.3);
+            border-radius: 10px;
+            background: rgba(255,255,255,0.05);
+            color: #fff;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 0.9em;
+        }
+
+        .rating-btn:hover {
+            border-color: #4ecca3;
+            background: rgba(78, 204, 163, 0.1);
+        }
+
+        .rating-btn.selected {
+            background: linear-gradient(135deg, #4ecca3, #45b7aa);
+            color: #1a1a2e;
+            border-color: #4ecca3;
+            font-weight: bold;
+        }
+
+        .nav-buttons {
+            display: flex;
+            justify-content: space-between;
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .nav-btn {
+            padding: 15px 30px;
+            border: none;
+            border-radius: 10px;
+            font-size: 1em;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .nav-btn.prev {
+            background: rgba(255,255,255,0.1);
+            color: #fff;
+        }
+
+        .nav-btn.next, .nav-btn.submit {
+            background: linear-gradient(135deg, #4ecca3, #45b7aa);
+            color: #1a1a2e;
+            font-weight: bold;
+        }
+
+        .nav-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 20px rgba(78, 204, 163, 0.3);
+        }
+
+        .nav-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        .start-btn {
+            width: 100%;
+            padding: 20px;
+            background: linear-gradient(135deg, #4ecca3, #45b7aa);
+            color: #1a1a2e;
+            border: none;
+            border-radius: 15px;
+            font-size: 1.2em;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .start-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 30px rgba(78, 204, 163, 0.4);
+        }
+
+        /* Results Section */
+        .results-section {
+            display: none;
+        }
+
+        .results-section.active {
+            display: block;
+        }
+
+        .results-header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .results-header h2 {
+            color: #4ecca3;
+            font-size: 2em;
+            margin-bottom: 10px;
+        }
+
+        /* Holland 결과 */
+        .holland-result {
+            background: rgba(255,255,255,0.05);
+            border-radius: 15px;
+            padding: 25px;
+            margin-bottom: 30px;
+        }
+
+        .holland-result h3 {
+            color: #4ecca3;
+            margin-bottom: 20px;
+            font-size: 1.4em;
+        }
+
+        .holland-code {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-bottom: 25px;
+        }
+
+        .holland-code .code-letter {
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(135deg, #4ecca3, #45b7aa);
+            color: #1a1a2e;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.8em;
+            font-weight: bold;
+        }
+
+        .holland-bars {
+            display: grid;
+            gap: 12px;
+        }
+
+        .holland-bar-item {
+            display: grid;
+            grid-template-columns: 100px 1fr 50px;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .holland-bar-item .type-name {
+            font-size: 0.95em;
+        }
+
+        .holland-bar-item .bar {
+            background: rgba(255,255,255,0.1);
+            border-radius: 5px;
+            height: 20px;
+            overflow: hidden;
+        }
+
+        .holland-bar-item .bar-fill {
+            height: 100%;
+            border-radius: 5px;
+            transition: width 0.5s ease;
+        }
+
+        .holland-bar-item .bar-fill.R { background: #e74c3c; }
+        .holland-bar-item .bar-fill.I { background: #3498db; }
+        .holland-bar-item .bar-fill.A { background: #9b59b6; }
+        .holland-bar-item .bar-fill.S { background: #2ecc71; }
+        .holland-bar-item .bar-fill.E { background: #f39c12; }
+        .holland-bar-item .bar-fill.C { background: #1abc9c; }
+
+        .holland-bar-item .score {
+            text-align: right;
+            color: #aaa;
+        }
+
+        .holland-description {
+            background: rgba(0,0,0,0.2);
+            border-radius: 10px;
+            padding: 20px;
+            margin-top: 20px;
+        }
+
+        .holland-description h4 {
+            color: #4ecca3;
+            margin-bottom: 10px;
+        }
+
+        .holland-description p {
+            color: #ddd;
+            line-height: 1.6;
+        }
+
+        .top-strengths {
+            margin-bottom: 40px;
+        }
+
+        .top-strengths h3 {
+            color: #4ecca3;
+            margin-bottom: 20px;
+            font-size: 1.4em;
+            text-align: center;
+        }
+
+        .tie-notice {
+            background: rgba(243, 156, 18, 0.15);
+            border: 1px solid #f39c12;
+            border-radius: 10px;
+            padding: 15px 20px;
+            margin-bottom: 20px;
+            color: #f5d77c;
+            font-size: 0.95em;
+            line-height: 1.6;
+        }
+
+        .tie-notice strong {
+            color: #f39c12;
+        }
+
+        .strength-card {
+            background: rgba(255,255,255,0.05);
+            border-radius: 15px;
+            padding: 25px;
+            margin-bottom: 20px;
+            border-left: 4px solid #4ecca3;
+        }
+
+        .strength-card .rank {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 35px;
+            height: 35px;
+            background: linear-gradient(135deg, #4ecca3, #45b7aa);
+            color: #1a1a2e;
+            border-radius: 50%;
+            font-weight: bold;
+            margin-right: 15px;
+        }
+
+        .strength-card .strength-name {
+            font-size: 1.3em;
+            color: #fff;
+            margin-bottom: 5px;
+        }
+
+        .strength-card .virtue-name {
+            color: #4ecca3;
+            font-size: 0.9em;
+            margin-bottom: 15px;
+        }
+
+        .strength-card .score-bar {
+            background: rgba(255,255,255,0.1);
+            border-radius: 5px;
+            height: 8px;
+            margin-bottom: 20px;
+        }
+
+        .strength-card .score-fill {
+            background: linear-gradient(90deg, #4ecca3, #45b7aa);
+            height: 100%;
+            border-radius: 5px;
+        }
+
+        .strength-details {
+            margin-top: 20px;
+        }
+
+        .detail-section {
+            background: rgba(0,0,0,0.2);
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 15px;
+        }
+
+        .detail-section h4 {
+            color: #4ecca3;
+            margin-bottom: 12px;
+            font-size: 1.05em;
+        }
+
+        .detail-section ul {
+            list-style: none;
+            padding-left: 0;
+        }
+
+        .detail-section li {
+            padding: 8px 0;
+            padding-left: 25px;
+            position: relative;
+            color: #ddd;
+            line-height: 1.5;
+        }
+
+        .detail-section li::before {
+            content: ">";
+            position: absolute;
+            left: 0;
+            color: #4ecca3;
+            font-weight: bold;
+        }
+
+        .career-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-top: 10px;
+        }
+
+        .career-tag {
+            background: rgba(78, 204, 163, 0.2);
+            color: #4ecca3;
+            padding: 6px 12px;
+            border-radius: 15px;
+            font-size: 0.85em;
+        }
+
+        .restart-btn {
+            width: 100%;
+            padding: 20px;
+            background: rgba(255,255,255,0.1);
+            color: #fff;
+            border: 2px solid #4ecca3;
+            border-radius: 15px;
+            font-size: 1.1em;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 30px;
+        }
+
+        .restart-btn:hover {
+            background: rgba(78, 204, 163, 0.1);
+        }
+
+        .print-btn {
+            width: 100%;
+            padding: 15px;
+            background: linear-gradient(135deg, #4ecca3, #45b7aa);
+            color: #1a1a2e;
+            border: none;
+            border-radius: 15px;
+            font-size: 1.1em;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 15px;
+        }
+
+        .print-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 20px rgba(78, 204, 163, 0.3);
+        }
+
+        .footer-note {
+            text-align: center;
+            margin-top: 40px;
+            padding: 20px;
+            color: #888;
+            font-size: 0.9em;
+            border-top: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .footer-note a {
+            color: #4ecca3;
+            text-decoration: none;
+        }
+
+        @media (max-width: 600px) {
+            header h1 {
+                font-size: 1.6em;
+            }
+
+            .rating-scale {
+                flex-direction: column;
+            }
+
+            .rating-btn {
+                padding: 12px;
+            }
+
+            .strength-card {
+                padding: 20px;
+            }
+
+            .holland-bar-item {
+                grid-template-columns: 80px 1fr 40px;
+            }
+
+            .virtue-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media print {
+            body {
+                background: #fff;
+                color: #333;
+                -webkit-print-color-adjust: exact !important;
+                print-color-adjust: exact !important;
+            }
+
+            .container {
+                max-width: 100%;
+            }
+
+            .restart-btn, .print-btn {
+                display: none;
+            }
+
+            .strength-card {
+                border: 1px solid #ddd;
+                page-break-inside: avoid;
+            }
+
+            .detail-section {
+                background: #f5f5f5 !important;
+                -webkit-print-color-adjust: exact !important;
+                print-color-adjust: exact !important;
+            }
+
+            .career-tag {
+                background: #e0f7ef !important;
+                color: #2d8a6d !important;
+                -webkit-print-color-adjust: exact !important;
+                print-color-adjust: exact !important;
+            }
+
+            .holland-result {
+                page-break-inside: avoid;
+                page-break-after: always;
+            }
+
+            .holland-bar-item .bar {
+                background: #e0e0e0 !important;
+                -webkit-print-color-adjust: exact !important;
+                print-color-adjust: exact !important;
+            }
+
+            .holland-bar-item .bar-fill {
+                -webkit-print-color-adjust: exact !important;
+                print-color-adjust: exact !important;
+            }
+
+            .holland-bar-item .bar-fill.R { background: #e74c3c !important; }
+            .holland-bar-item .bar-fill.I { background: #3498db !important; }
+            .holland-bar-item .bar-fill.A { background: #9b59b6 !important; }
+            .holland-bar-item .bar-fill.S { background: #2ecc71 !important; }
+            .holland-bar-item .bar-fill.E { background: #f39c12 !important; }
+            .holland-bar-item .bar-fill.C { background: #1abc9c !important; }
+
+            .holland-code .code-letter {
+                background: #4ecca3 !important;
+                -webkit-print-color-adjust: exact !important;
+                print-color-adjust: exact !important;
+            }
+
+            .top-strengths h3 {
+                page-break-before: always;
+                color: #1a5a4a !important;
+            }
+
+            .results-header {
+                color: #333 !important;
+            }
+
+            .results-header h2 {
+                color: #1a5a4a !important;
+            }
+
+            .results-header p {
+                color: #333 !important;
+            }
+
+            .strength-card {
+                background: #fff !important;
+                border: 1px solid #ddd !important;
+                border-left: 4px solid #2d8a6d !important;
+            }
+
+            .strength-card .strength-name {
+                color: #222 !important;
+            }
+
+            .strength-card .virtue-name {
+                color: #2d8a6d !important;
+            }
+
+            .strength-card p {
+                color: #444 !important;
+            }
+
+            .detail-section h4 {
+                color: #1a5a4a !important;
+            }
+
+            .detail-section li {
+                color: #333 !important;
+            }
+
+            .detail-section li::before {
+                color: #2d8a6d !important;
+            }
+
+            .holland-result {
+                background: #fff !important;
+                border: 1px solid #ddd !important;
+            }
+
+            .holland-result h3 {
+                color: #1a5a4a !important;
+            }
+
+            .holland-description {
+                background: #f5f5f5 !important;
+            }
+
+            .holland-description h4 {
+                color: #1a5a4a !important;
+            }
+
+            .holland-description p {
+                color: #333 !important;
+            }
+
+            .holland-bar-item .type-name {
+                color: #333 !important;
+            }
+
+            .holland-bar-item .score {
+                color: #333 !important;
+            }
+
+            .tie-notice {
+                background: #fff3cd !important;
+                border: 1px solid #ffc107 !important;
+                color: #856404 !important;
+                -webkit-print-color-adjust: exact !important;
+                print-color-adjust: exact !important;
+            }
+
+            .footer-note {
+                color: #666 !important;
+            }
+
+            .footer-note a {
+                color: #2d8a6d !important;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>진로성격강점검사</h1>
+            <p>96문항으로 알아보는 24가지 강점과 Holland 직업유형</p>
+        </header>
+
+        <!-- Intro Section -->
+        <div id="intro-section">
+            <div class="intro-box">
+                <h2>진로성격강점검사란?</h2>
+                <p>긍정심리학에 기반한 <strong style="color:#4ecca3">24가지 성격 강점</strong>과 <strong style="color:#4ecca3">Holland 직업 유형</strong>을 함께 측정하여, 아이의 대표 강점 TOP5를 발견하고 이를 바탕으로 진로를 탐색할 수 있도록 돕는 검사입니다.</p>
+            </div>
+
+            <div class="method-box">
+                <h3>검사 방법</h3>
+                <div class="method-list">
+                    <div class="method-item">
+                        <span class="method-number">1</span>
+                        <span class="method-text">부모가 자녀를 생각하며 응답합니다.</span>
+                    </div>
+                    <div class="method-item">
+                        <span class="method-number">2</span>
+                        <span class="method-text">부모가 자녀와 함께 응답합니다.</span>
+                    </div>
+                    <div class="method-item">
+                        <span class="method-number">3</span>
+                        <span class="method-text">자녀 혼자 검사합니다.</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="highlight-box">
+                <p>"약점을 보완하는 것보다 <strong>강점을 계발할 때</strong> 진정한 행복과 성취에 도달할 수 있습니다."</p>
+            </div>
+
+            <!-- 24개 강점 분류표 -->
+            <div class="strength-table-container">
+                <h3>24가지 성격 강점 분류표</h3>
+                <div class="virtue-grid">
+                    <div class="virtue-card wisdom">
+                        <h4><span class="icon">🎓</span> 지성 (Wisdom)</h4>
+                        <div class="strengths-list">
+                            <span class="strength-tag">창의성</span>
+                            <span class="strength-tag">호기심</span>
+                            <span class="strength-tag">개방성</span>
+                            <span class="strength-tag">학구열</span>
+                            <span class="strength-tag">지혜</span>
+                        </div>
+                    </div>
+                    <div class="virtue-card humanity">
+                        <h4><span class="icon">💙</span> 인간애 (Humanity)</h4>
+                        <div class="strengths-list">
+                            <span class="strength-tag">사랑</span>
+                            <span class="strength-tag">친절성</span>
+                            <span class="strength-tag">사회지능</span>
+                        </div>
+                    </div>
+                    <div class="virtue-card courage">
+                        <h4><span class="icon">🦁</span> 용기 (Courage)</h4>
+                        <div class="strengths-list">
+                            <span class="strength-tag">용감성</span>
+                            <span class="strength-tag">끈기</span>
+                            <span class="strength-tag">진실성</span>
+                            <span class="strength-tag">활력</span>
+                        </div>
+                    </div>
+                    <div class="virtue-card temperance">
+                        <h4><span class="icon">⚖️</span> 절제 (Temperance)</h4>
+                        <div class="strengths-list">
+                            <span class="strength-tag">용서</span>
+                            <span class="strength-tag">겸손</span>
+                            <span class="strength-tag">신중성</span>
+                            <span class="strength-tag">자기조절</span>
+                        </div>
+                    </div>
+                    <div class="virtue-card justice">
+                        <h4><span class="icon">🏛️</span> 정의 (Justice)</h4>
+                        <div class="strengths-list">
+                            <span class="strength-tag">시민의식</span>
+                            <span class="strength-tag">공정성</span>
+                            <span class="strength-tag">리더십</span>
+                        </div>
+                    </div>
+                    <div class="virtue-card transcendence">
+                        <h4><span class="icon">✨</span> 초월 (Transcendence)</h4>
+                        <div class="strengths-list">
+                            <span class="strength-tag">심미안</span>
+                            <span class="strength-tag">감사</span>
+                            <span class="strength-tag">낙관성</span>
+                            <span class="strength-tag">유머</span>
+                            <span class="strength-tag">영성</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Holland 유형 설명 -->
+            <div class="holland-info">
+                <h3>Holland 직업 유형 (RIASEC)</h3>
+                <div class="holland-grid">
+                    <div class="holland-type">
+                        <div class="letter">R</div>
+                        <div class="name">현실형</div>
+                        <div class="desc">실용적, 기술적</div>
+                    </div>
+                    <div class="holland-type">
+                        <div class="letter">I</div>
+                        <div class="name">탐구형</div>
+                        <div class="desc">분석적, 지적</div>
+                    </div>
+                    <div class="holland-type">
+                        <div class="letter">A</div>
+                        <div class="name">예술형</div>
+                        <div class="desc">창조적, 표현적</div>
+                    </div>
+                    <div class="holland-type">
+                        <div class="letter">S</div>
+                        <div class="name">사회형</div>
+                        <div class="desc">협력적, 돌봄</div>
+                    </div>
+                    <div class="holland-type">
+                        <div class="letter">E</div>
+                        <div class="name">진취형</div>
+                        <div class="desc">리더십, 설득</div>
+                    </div>
+                    <div class="holland-type">
+                        <div class="letter">C</div>
+                        <div class="name">관습형</div>
+                        <div class="desc">체계적, 정확</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="child-info">
+                <h3>자녀 정보 입력</h3>
+                <input type="text" id="childName" placeholder="자녀 이름을 입력하세요">
+                <p class="notice-text">* 응답의 변별력을 위해 각 문항을 신중히 답해 주세요.</p>
+                <button class="start-btn" onclick="startTest()">검사 시작하기 (96문항)</button>
+            </div>
+        </div>
+
+        <!-- Question Section -->
+        <div id="question-section" class="question-section">
+            <div class="progress-bar">
+                <div class="progress-fill" id="progress-fill"></div>
+            </div>
+            <div class="progress-text" id="progress-text">1 / 96</div>
+
+            <div id="question-container"></div>
+
+            <div class="nav-buttons">
+                <button class="nav-btn prev" id="prevBtn" onclick="prevQuestion()">이전</button>
+                <button class="nav-btn next" id="nextBtn" onclick="nextQuestion()">다음</button>
+                <button class="nav-btn submit" id="submitBtn" onclick="showResults()" style="display:none;">결과 보기</button>
+            </div>
+        </div>
+
+        <!-- Results Section -->
+        <div id="results-section" class="results-section">
+            <div class="results-header">
+                <h2><span id="resultName"></span>의 검사 결과</h2>
+                <p style="color:#aaa;">강점 분석 및 Holland 직업 유형</p>
+            </div>
+
+            <!-- Holland 결과 -->
+            <div class="holland-result">
+                <h3>Holland 직업 유형 결과</h3>
+                <div class="holland-code" id="holland-code"></div>
+                <div class="holland-bars" id="holland-bars"></div>
+                <div class="holland-description" id="holland-description"></div>
+            </div>
+
+            <div class="top-strengths" id="top-strengths"></div>
+
+            <button class="print-btn" onclick="window.print()">결과 인쇄/저장하기</button>
+            <button class="restart-btn" onclick="restartTest()">다시 검사하기</button>
+
+            <div class="footer-note">
+                <p>본 검사는 Holland 직업 유형, KICS 진로성격강점검사 등을 참고하여 제작되었습니다.<br>
+                정식 검사는 <a href="https://www.jrcafe.go.kr" target="_blank">쥬니어커리어넷</a>, <a href="https://www.career.go.kr" target="_blank">커리어넷</a>, <a href="https://www.work.go.kr" target="_blank">워크넷</a> 사이트에서 받으실 수 있습니다.</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 24가지 강점 데이터 (각 강점당 4~5개 질문)
+        const strengthsData = {
+            // 지성 (Wisdom)
+            creativity: {
+                name: '창의성',
+                virtue: '지성(Wisdom)',
+                description: '새로운 방식으로 생각하고 독창적인 해결책을 찾는 능력',
+                holland: ['A', 'I'],
+                questions: [
+                    '우리 아이(나)는 새롭고 독창적인 아이디어를 잘 떠올린다.',
+                    '우리 아이(나)는 같은 문제도 남들과 다른 방식으로 해결하려고 한다.',
+                    '우리 아이(나)는 상상력이 풍부하고 공상을 자주 한다.',
+                    '우리 아이(나)는 만들기나 그리기에서 독특한 결과물을 만들어낸다.'
+                ],
+                development: [
+                    '종이, 점토, 폐품 등 다양한 재료를 활용해 자유롭게 만들기 활동을 해보세요. 정해진 답 없이 아이만의 작품을 만들도록 격려해 주세요.',
+                    '일주일에 한 번 "아이디어 시간"을 정해서 떠오르는 생각을 노트에 자유롭게 적어보게 하세요. 엉뚱한 아이디어도 칭찬해 주세요.',
+                    '"만약 하늘을 날 수 있다면?", "만약 투명인간이 된다면?" 같은 상상 질문으로 대화를 나눠보세요. 상상력을 자극하는 좋은 방법입니다.',
+                    '레고, 블록, 자석 타일 등으로 설명서 없이 자유롭게 창작하는 시간을 주세요. 완성품보다 과정을 칭찬해 주세요.'
+                ],
+                careers: ['디자이너', '건축가', '작가', '발명가', 'UX기획자', '게임개발자', '광고기획자', '예술가'],
+                majors: ['디자인학과', '건축학과', '문예창작학과', '산업디자인학과', '미디어아트학과']
+            },
+            curiosity: {
+                name: '호기심',
+                virtue: '지성(Wisdom)',
+                description: '새로운 것을 탐구하고 배우려는 열정',
+                holland: ['I', 'A'],
+                questions: [
+                    '우리 아이(나)는 모르는 것에 대해 궁금해하고 질문을 많이 한다.',
+                    '우리 아이(나)는 새로운 장소나 경험을 좋아한다.',
+                    '우리 아이(나)는 "왜?"라는 질문을 자주 한다.',
+                    '우리 아이(나)는 관심 있는 주제에 대해 깊이 파고든다.'
+                ],
+                development: [
+                    '주말에 도서관, 박물관, 과학관 등을 함께 방문해 보세요. 아이가 관심 보이는 것에 대해 함께 이야기 나눠주세요.',
+                    '아이가 질문할 때 바로 답을 주기보다 "같이 찾아볼까?"라고 하며 함께 검색하거나 책을 찾아보세요.',
+                    '자연, 우주, 동물 등 다양한 주제의 다큐멘터리를 함께 시청하고 느낀 점을 이야기해 보세요.',
+                    '현미경, 돋보기, 망원경 등 관찰 도구나 과학 실험 키트를 선물해 직접 탐구하는 경험을 주세요.'
+                ],
+                careers: ['과학자', '연구원', '탐험가', '기자', '다큐멘터리 감독', '고고학자', '천문학자'],
+                majors: ['자연과학계열', '공학계열', '언론정보학과', '고고학과', '물리학과', '생명과학과']
+            },
+            open_mindedness: {
+                name: '개방성',
+                virtue: '지성(Wisdom)',
+                description: '다양한 관점을 수용하고 편견 없이 판단하는 능력',
+                holland: ['I', 'S'],
+                questions: [
+                    '우리 아이(나)는 다른 사람의 의견을 열린 마음으로 듣고 받아들인다.',
+                    '우리 아이(나)는 자신의 생각이 틀릴 수 있다는 것을 인정한다.',
+                    '우리 아이(나)는 다양한 문화나 생각에 관심을 보인다.',
+                    '우리 아이(나)는 새로운 음식이나 활동을 거부감 없이 시도한다.'
+                ],
+                development: [
+                    '다양한 나라의 전래동화, 영화, 애니메이션을 함께 감상하며 다른 문화에 대해 이야기 나눠보세요.',
+                    '저녁 식사 시간에 가족 토론 시간을 가져보세요. 서로 다른 의견도 존중받는 분위기를 만들어 주세요.',
+                    '한 달에 한 번 다른 나라 음식을 함께 만들어 먹어보세요. 그 나라에 대해서도 함께 알아보면 좋습니다.',
+                    '다양한 배경을 가진 친구들과 어울릴 기회를 만들어 주세요. 다름을 자연스럽게 받아들이는 경험이 됩니다.'
+                ],
+                careers: ['외교관', '문화인류학자', '국제기구 직원', '통역사', '다문화 전문가', '컨설턴트'],
+                majors: ['국제학과', '문화인류학과', '외국어학과', '사회학과', '정치외교학과']
+            },
+            love_of_learning: {
+                name: '학구열',
+                virtue: '지성(Wisdom)',
+                description: '지식과 기술을 습득하는 것에서 기쁨을 느끼는 성향',
+                holland: ['I', 'C'],
+                questions: [
+                    '우리 아이(나)는 새로운 것을 배우는 것 자체를 즐긴다.',
+                    '우리 아이(나)는 학교 외에도 스스로 공부하거나 탐구한다.',
+                    '우리 아이(나)는 책 읽기를 좋아하고 자주 읽는다.',
+                    '우리 아이(나)는 관심 분야의 전문가가 되고 싶어한다.'
+                ],
+                development: [
+                    '아이가 관심 있는 분야의 온라인 강좌나 유튜브 교육 채널을 함께 찾아보세요. 스스로 선택하게 하면 더 좋습니다.',
+                    '매일 정해진 시간에 책 읽는 습관을 들여주세요. 부모도 함께 책을 읽으면 자연스럽게 독서 환경이 만들어집니다.',
+                    '악기, 코딩, 요리, 운동 등 새로운 취미를 배울 기회를 주세요. 배움 자체의 즐거움을 경험하게 됩니다.',
+                    '관심 분야의 전문가 강연, 체험 워크숍, 박람회 등에 참여해 보세요. 실제 전문가를 만나는 경험이 동기부여가 됩니다.'
+                ],
+                careers: ['교수', '연구원', '교사', '큐레이터', '에디터', '학자', '교육 컨텐츠 개발자'],
+                majors: ['교육학과', '문헌정보학과', '인문학계열', '사회과학계열']
+            },
+            wisdom: {
+                name: '지혜',
+                virtue: '지성(Wisdom)',
+                description: '큰 그림을 보고 균형 잡힌 판단을 내리는 능력',
+                holland: ['I', 'S'],
+                questions: [
+                    '우리 아이(나)는 어려운 상황에서 현명한 조언을 해줄 수 있다.',
+                    '우리 아이(나)는 문제의 여러 측면을 고려해서 판단한다.',
+                    '우리 아이(나)는 또래보다 성숙하다는 말을 듣는다.',
+                    '우리 아이(나)는 친구들이 고민 상담을 자주 해온다.'
+                ],
+                development: [
+                    '위인전이나 역사 속 인물 이야기를 함께 읽고, 그들이 어려운 상황에서 어떤 선택을 했는지 이야기 나눠보세요.',
+                    '일상에서 생기는 작은 문제들을 아이와 함께 해결해 보세요. "어떻게 하면 좋을까?"라고 물어보며 생각할 기회를 주세요.',
+                    '여행, 봉사활동, 다양한 사람 만나기 등 폭넓은 경험을 할 수 있도록 해주세요. 경험이 지혜의 바탕이 됩니다.',
+                    '조부모님이나 다양한 어른들과 대화할 기회를 만들어 주세요. 삶의 경험담을 듣는 것이 큰 배움이 됩니다.'
+                ],
+                careers: ['철학자', '상담사', '법관', '종교지도자', '경영자', 'CEO', '정책전문가'],
+                majors: ['철학과', '심리학과', '법학과', '경영학과', '행정학과']
+            },
+            // 인간애 (Humanity)
+            love: {
+                name: '사랑',
+                virtue: '인간애(Humanity)',
+                description: '타인과 친밀하고 의미 있는 관계를 형성하는 능력',
+                holland: ['S', 'A'],
+                questions: [
+                    '우리 아이(나)는 가족이나 친구와 깊고 따뜻한 관계를 맺는다.',
+                    '우리 아이(나)는 사랑하는 사람에게 애정 표현을 잘 한다.',
+                    '우리 아이(나)는 친한 친구와 오래 우정을 유지한다.',
+                    '우리 아이(나)는 가족과 함께하는 시간을 소중히 여긴다.'
+                ],
+                development: [
+                    '매일 저녁 식사나 주말 나들이 등 가족과 함께하는 시간을 의식적으로 늘려주세요. 함께하는 시간이 사랑의 기반이 됩니다.',
+                    '"고마워", "사랑해"라는 표현을 자주 해주시고, 아이도 감사와 애정을 표현하도록 격려해 주세요.',
+                    '친한 친구나 가족에게 손편지를 써보게 해주세요. 마음을 글로 표현하는 것이 관계를 더 깊게 합니다.',
+                    '가족이 함께 봉사활동에 참여해 보세요. 다른 사람을 돕는 경험이 사랑의 마음을 키워줍니다.'
+                ],
+                careers: ['사회복지사', '상담심리사', '아동보육교사', '호스피스 전문가', '가족치료사'],
+                majors: ['사회복지학과', '아동학과', '심리학과', '가정학과']
+            },
+            kindness: {
+                name: '친절성',
+                virtue: '인간애(Humanity)',
+                description: '타인을 배려하고 돕는 것에서 기쁨을 느끼는 성향',
+                holland: ['S', 'E'],
+                questions: [
+                    '우리 아이(나)는 다른 사람을 돕는 것을 기꺼이 한다.',
+                    '우리 아이(나)는 어려운 처지의 사람을 보면 마음 아파한다.',
+                    '우리 아이(나)는 친구가 힘들 때 곁에서 위로해준다.',
+                    '우리 아이(나)는 작은 선물이나 도움을 주는 것을 좋아한다.'
+                ],
+                development: [
+                    '엘리베이터 버튼 눌러주기, 문 잡아주기 등 일상 속 작은 친절을 실천하도록 격려해 주세요. 작은 것부터 시작하면 됩니다.',
+                    '양로원, 동물보호소, 환경정화 활동 등 지역사회 봉사활동에 함께 참여해 보세요. 도움을 주는 기쁨을 경험하게 됩니다.',
+                    '친구가 힘들어할 때 옆에서 들어주고 위로하는 것의 소중함을 알려주세요. 경청하는 것만으로도 큰 도움이 된다는 것을 알려주세요.',
+                    '반려동물이나 화분을 함께 돌보게 해주세요. 다른 생명을 보살피는 경험이 친절한 마음을 키워줍니다.'
+                ],
+                careers: ['간호사', '의사', '수의사', 'NGO 활동가', '사회복지사', '요양보호사', '자원봉사 코디네이터'],
+                majors: ['간호학과', '의학과', '수의학과', '사회복지학과', '특수교육학과']
+            },
+            social_intelligence: {
+                name: '사회지능',
+                virtue: '인간애(Humanity)',
+                description: '사회적 상황을 이해하고 적절히 대응하는 능력',
+                holland: ['S', 'E'],
+                questions: [
+                    '우리 아이(나)는 다른 사람의 감정이나 상황을 잘 파악한다.',
+                    '우리 아이(나)는 분위기를 읽고 적절하게 행동한다.',
+                    '우리 아이(나)는 다양한 사람들과 잘 어울린다.',
+                    '우리 아이(나)는 상대방이 원하는 것을 잘 알아챈다.'
+                ],
+                development: [
+                    '인형극이나 역할놀이, 연극 동아리 활동에 참여하게 해주세요. 다른 사람의 입장이 되어보는 경험이 사회지능을 키워줍니다.',
+                    '"이런 상황에서 친구는 어떤 기분일까?", "어떻게 하면 좋았을까?" 등 다양한 상황에 대해 함께 이야기 나눠보세요.',
+                    '사진이나 영상 속 사람들의 표정과 몸짓을 보고 감정을 맞춰보는 게임을 해보세요. 비언어적 신호를 읽는 능력이 길러집니다.',
+                    '모둠 프로젝트나 팀 활동에 참여할 기회를 주세요. 협력하며 다양한 사람들과 소통하는 경험을 쌓을 수 있습니다.'
+                ],
+                careers: ['인사담당자', '정치인', '협상가', '세일즈 전문가', '이벤트 기획자', '홍보전문가'],
+                majors: ['심리학과', '경영학과', '커뮤니케이션학과', '정치학과', '홍보학과']
+            },
+            // 용기 (Courage)
+            bravery: {
+                name: '용감성',
+                virtue: '용기(Courage)',
+                description: '어려움이나 위험에도 불구하고 올바른 일을 하는 용기',
+                holland: ['R', 'E'],
+                questions: [
+                    '우리 아이(나)는 두려운 상황에서도 용기 있게 행동한다.',
+                    '우리 아이(나)는 불의를 보면 참지 못하고 나선다.',
+                    '우리 아이(나)는 위험한 상황에서도 침착하게 대처한다.',
+                    '우리 아이(나)는 남들 앞에서 자기 의견을 당당히 말한다.'
+                ],
+                development: [
+                    '처음 해보는 것에 도전하는 작은 과제를 설정해 주세요. 성공 경험이 쌓이면 더 큰 도전에도 용기를 낼 수 있습니다.',
+                    '실패해도 괜찮다는 것을 자주 알려주세요. "실패는 배움의 기회야"라는 메시지가 두려움을 줄여줍니다.',
+                    '넬슨 만델라, 유관순 등 용기 있게 행동한 인물들의 이야기를 함께 읽고 이야기 나눠보세요.',
+                    '새로운 학원, 캠프, 모임 등 낯선 환경에 적응하는 경험을 주세요. 처음엔 어려워도 점점 자신감이 생깁니다.'
+                ],
+                careers: ['소방관', '경찰관', '군인', '탐험가', '스턴트맨', '구조대원', '응급구조사'],
+                majors: ['경찰행정학과', '소방방재학과', '군사학과', '응급구조학과', '체육학과']
+            },
+            persistence: {
+                name: '끈기',
+                virtue: '용기(Courage)',
+                description: '목표를 향해 꾸준히 노력하고 완수하는 능력',
+                holland: ['R', 'C'],
+                questions: [
+                    '우리 아이(나)는 어려운 일도 포기하지 않고 끝까지 해낸다.',
+                    '우리 아이(나)는 시작한 일은 반드시 마무리한다.',
+                    '우리 아이(나)는 실패해도 다시 도전한다.',
+                    '우리 아이(나)는 장기적인 목표를 위해 꾸준히 노력한다.'
+                ],
+                development: [
+                    '퍼즐 완성하기, 모형 만들기 등 며칠에 걸쳐 완성하는 장기 프로젝트를 함께 해보세요. 완성의 기쁨을 경험하게 됩니다.',
+                    '수영, 피아노, 태권도 등 꾸준한 연습이 필요한 활동을 시켜보세요. 매일 조금씩 실력이 느는 것을 느끼게 해주세요.',
+                    '작은 목표(책 한 권 읽기, 줄넘기 100개 등)를 세우고 달성하는 경험을 쌓게 해주세요. 성취감이 끈기를 키워줍니다.',
+                    '실패했을 때 "다시 해볼까?"라고 격려해 주세요. 실패 후 다시 도전하는 경험이 진짜 끈기를 만들어줍니다.'
+                ],
+                careers: ['운동선수', '연구원', '작가', '기업가', '프로그래머', '장인', '예술가'],
+                majors: ['체육학과', '자연과학계열', '공학계열', '경영학과', '예술계열']
+            },
+            honesty: {
+                name: '진실성',
+                virtue: '용기(Courage)',
+                description: '진실되고 정직하게 행동하며 약속을 지키는 성향',
+                holland: ['C', 'I'],
+                questions: [
+                    '우리 아이(나)는 거짓말을 하지 않고 정직하게 행동한다.',
+                    '우리 아이(나)는 자신의 실수를 솔직히 인정한다.',
+                    '우리 아이(나)는 약속을 소중히 여기고 잘 지킨다.',
+                    '우리 아이(나)는 겉과 속이 다르지 않게 행동한다.'
+                ],
+                development: [
+                    '아이가 솔직하게 말했을 때 혼내기보다 "솔직하게 말해줘서 고마워"라고 칭찬해 주세요. 정직이 안전하다고 느끼게 해주세요.',
+                    '거짓말을 했을 때 벌보다는 거짓말의 결과에 대해 차분히 이야기 나눠주세요. 신뢰가 깨지면 어떤 일이 생기는지 알려주세요.',
+                    '작은 약속도 꼭 지키도록 격려하고, 부모님도 아이와의 약속을 꼭 지켜주세요. 약속의 소중함을 몸으로 배웁니다.',
+                    '부모가 먼저 실수를 인정하고 사과하는 모습을 보여주세요. 솔직함의 좋은 모델이 됩니다.'
+                ],
+                careers: ['판사', '검사', '회계사', '감사관', '언론인', '윤리학자', '품질관리사'],
+                majors: ['법학과', '회계학과', '언론정보학과', '철학과', '행정학과']
+            },
+            zest: {
+                name: '활력',
+                virtue: '용기(Courage)',
+                description: '삶에 대한 열정과 활력이 넘치는 성향',
+                holland: ['E', 'S'],
+                questions: [
+                    '우리 아이(나)는 에너지가 넘치고 활기차게 생활한다.',
+                    '우리 아이(나)는 아침에 일어나면 하루가 기대된다.',
+                    '우리 아이(나)는 열정적으로 활동에 참여한다.',
+                    '우리 아이(나)는 주변 사람들에게 긍정적인 에너지를 준다.'
+                ],
+                development: [
+                    '매일 30분 이상 몸을 움직이는 운동 습관을 들여주세요. 규칙적인 운동이 에너지의 원천이 됩니다.',
+                    '주말에는 공원, 산, 바다 등 야외에서 활동하는 시간을 가져보세요. 자연 속에서 에너지를 충전할 수 있습니다.',
+                    '새로운 스포츠, 댄스, 놀이 등 신나는 활동에 도전하게 해주세요. 새로운 것에 대한 설렘이 활력을 줍니다.',
+                    '충분한 수면(8-10시간)과 균형 잡힌 식사를 챙겨주세요. 건강한 몸이 활력의 기본입니다.'
+                ],
+                careers: ['스포츠 강사', '이벤트 기획자', '영업사원', '여행가이드', 'MC', '체육교사', '레크리에이션 강사'],
+                majors: ['체육학과', '레저스포츠학과', '관광학과', '이벤트학과']
+            },
+            // 절제 (Temperance)
+            forgiveness: {
+                name: '용서',
+                virtue: '절제(Temperance)',
+                description: '타인의 실수를 이해하고 용서하는 능력',
+                holland: ['S', 'A'],
+                questions: [
+                    '우리 아이(나)는 다른 사람의 잘못을 용서하고 넘어갈 줄 안다.',
+                    '우리 아이(나)는 싸운 친구와도 금방 화해한다.',
+                    '우리 아이(나)는 복수심을 품지 않는다.',
+                    '우리 아이(나)는 상대방의 입장에서 이해하려고 노력한다.'
+                ],
+                development: [
+                    '친구와 다퉜을 때 "어떻게 화해할 수 있을까?"를 함께 이야기해 보세요. 갈등 해결 방법을 함께 찾아가는 과정이 중요합니다.',
+                    '용서에 관한 그림책이나 영화를 함께 보고, 용서가 왜 중요한지, 용서하면 어떤 기분인지 이야기 나눠보세요.',
+                    '화가 날 때 심호흡하기, 10까지 세기 등 분노를 조절하는 방법을 알려주고 함께 연습해 보세요.',
+                    '"그 친구는 왜 그랬을까?", "그 친구 입장이었다면?" 등의 질문으로 상대방 입장에서 생각해보는 연습을 해보세요.'
+                ],
+                careers: ['중재자', '상담사', '분쟁조정관', '종교지도자', '평화활동가', '외교관'],
+                majors: ['심리학과', '사회복지학과', '법학과', '신학과', '평화학과']
+            },
+            humility: {
+                name: '겸손',
+                virtue: '절제(Temperance)',
+                description: '자신의 성취를 과시하지 않고 겸손한 태도를 유지하는 성향',
+                holland: ['S', 'C'],
+                questions: [
+                    '우리 아이(나)는 자신을 뽐내지 않고 겸손하게 행동한다.',
+                    '우리 아이(나)는 칭찬을 받아도 우쭐대지 않는다.',
+                    '우리 아이(나)는 다른 사람의 공로를 인정해준다.',
+                    '우리 아이(나)는 자신의 부족한 점을 인정할 줄 안다.'
+                ],
+                development: [
+                    '성공했을 때 "도와준 사람은 누가 있었니?"라고 물어보세요. 다른 사람의 기여를 인정하는 습관을 기를 수 있습니다.',
+                    '축구, 합창단 등 팀으로 활동하는 경험을 주세요. 혼자가 아닌 함께 이루는 것의 가치를 배웁니다.',
+                    '실수했을 때 변명보다 인정하는 것이 멋있다고 알려주세요. 부모님이 먼저 실수를 인정하는 모습을 보여주면 좋습니다.',
+                    '"모르는 것이 있어도 괜찮아. 배우면 되니까"라는 메시지를 자주 전해주세요. 배움의 자세가 겸손의 시작입니다.'
+                ],
+                careers: ['학자', '연구원', '종교인', '사회봉사자', '멘토', '코치'],
+                majors: ['인문학계열', '신학과', '사회복지학과', '교육학과']
+            },
+            prudence: {
+                name: '신중성',
+                virtue: '절제(Temperance)',
+                description: '결정을 내리기 전에 신중하게 고려하는 능력',
+                holland: ['C', 'I'],
+                questions: [
+                    '우리 아이(나)는 행동하기 전에 잘 생각하고 조심스럽게 결정한다.',
+                    '우리 아이(나)는 충동적으로 행동하지 않는다.',
+                    '우리 아이(나)는 결정의 결과를 미리 생각한다.',
+                    '우리 아이(나)는 계획을 세우고 그에 따라 행동한다.'
+                ],
+                development: [
+                    '용돈 사용, 주말 계획 등을 정할 때 "어떤 선택지가 있을까?", "각각의 장단점은?" 하고 함께 생각해 보세요.',
+                    '무언가를 결정할 때 종이에 장점과 단점을 적어보게 해주세요. 시각화하면 더 신중하게 판단할 수 있습니다.',
+                    '"이렇게 하면 어떤 일이 일어날까?"라고 질문하며 결정의 결과를 미리 예상해보는 습관을 길러주세요.',
+                    '주간 계획표나 할 일 목록을 함께 만들어보세요. 계획을 세우고 실행하는 경험이 신중성을 키워줍니다.'
+                ],
+                careers: ['재무설계사', '위험관리사', '변호사', '안전관리자', '품질관리사', '전략기획자'],
+                majors: ['경영학과', '금융학과', '법학과', '안전공학과', '행정학과']
+            },
+            self_regulation: {
+                name: '자기조절',
+                virtue: '절제(Temperance)',
+                description: '충동을 억제하고 감정을 조절하는 능력',
+                holland: ['C', 'R'],
+                questions: [
+                    '우리 아이(나)는 감정이나 행동을 잘 조절한다.',
+                    '우리 아이(나)는 하기 싫은 일도 해야 할 때는 한다.',
+                    '우리 아이(나)는 유혹에 잘 넘어가지 않는다.',
+                    '우리 아이(나)는 화가 나도 행동으로 표출하지 않는다.'
+                ],
+                development: [
+                    '매일 저녁 오늘 느낀 감정을 간단히 적는 감정 일기를 써보게 해주세요. 자신의 감정을 인식하는 것이 조절의 첫걸음입니다.',
+                    '하루 5분 조용히 앉아 호흡에 집중하는 마음챙김 시간을 가져보세요. 아이용 명상 앱을 활용해도 좋습니다.',
+                    '정해진 시간에 일어나고, 밥 먹고, 공부하는 규칙적인 생활 습관을 유지해 주세요. 규칙적인 생활이 자기조절의 기반이 됩니다.',
+                    '작은 목표를 세우고 달성 여부를 스스로 체크하게 해주세요. 자기 평가 습관이 자기조절 능력을 키워줍니다.'
+                ],
+                careers: ['심리상담사', '운동선수', '명상지도자', '코치', '교육자', '자기계발 전문가'],
+                majors: ['심리학과', '체육학과', '교육학과', '명상학과']
+            },
+            // 정의 (Justice)
+            citizenship: {
+                name: '시민의식',
+                virtue: '정의(Justice)',
+                description: '공동체의 일원으로서 책임감을 가지고 기여하는 성향',
+                holland: ['S', 'E'],
+                questions: [
+                    '우리 아이(나)는 단체나 사회를 위해 기꺼이 기여한다.',
+                    '우리 아이(나)는 학교나 동네 행사에 적극적으로 참여한다.',
+                    '우리 아이(나)는 공공 규칙을 잘 지킨다.',
+                    '우리 아이(나)는 환경이나 사회 문제에 관심을 보인다.'
+                ],
+                development: [
+                    '학교 학생회, 동아리 활동, 마을 행사 등에 적극적으로 참여하게 해주세요. 공동체의 일원으로서 역할을 경험할 수 있습니다.',
+                    '분리수거, 플로깅(쓰레기 줍기), 나무 심기 등 환경보호 활동에 함께 참여해 보세요. 지구 시민으로서의 책임감을 배웁니다.',
+                    '뉴스를 함께 보며 투표, 민주주의, 시민의 권리와 의무에 대해 이야기 나눠보세요. 사회에 대한 관심을 키워줍니다.',
+                    '양로원, 지역아동센터, 유기동물 보호소 등에서 봉사활동을 함께 해보세요. 사회에 기여하는 기쁨을 느낄 수 있습니다.'
+                ],
+                careers: ['공무원', '사회활동가', 'NGO 활동가', '정치인', '환경운동가', '지역개발 전문가'],
+                majors: ['행정학과', '정치학과', '사회학과', '환경학과', '국제개발학과']
+            },
+            fairness: {
+                name: '공정성',
+                virtue: '정의(Justice)',
+                description: '편견 없이 모두를 동등하게 대하는 성향',
+                holland: ['S', 'C'],
+                questions: [
+                    '우리 아이(나)는 모든 사람을 공정하게 대한다.',
+                    '우리 아이(나)는 편을 가르지 않고 중립적으로 판단한다.',
+                    '우리 아이(나)는 불공평한 상황을 보면 문제 제기한다.',
+                    '우리 아이(나)는 자기 것을 나눌 때 공평하게 나눈다.'
+                ],
+                development: [
+                    '게임이나 놀이에서 규칙을 정하고 지키는 경험을 주세요. "왜 규칙이 필요할까?"에 대해 함께 이야기 나눠보세요.',
+                    '다양한 문화, 장애, 가족 형태에 관한 책이나 영상을 함께 보며 다양성의 가치에 대해 이야기해 주세요.',
+                    '형제나 친구 사이에 갈등이 생겼을 때 한쪽 편을 들지 말고, 양쪽 이야기를 다 듣고 공정하게 해결하는 모습을 보여주세요.',
+                    '"모든 사람은 똑같이 소중해"라는 메시지를 자주 전해주세요. 외모, 성별, 배경으로 차별하지 않는 태도를 가르쳐 주세요.'
+                ],
+                careers: ['판사', '인권활동가', '노동조합원', '옴부즈맨', '중재자', 'HR전문가'],
+                majors: ['법학과', '인권학과', '노동학과', '사회학과', '행정학과']
+            },
+            leadership: {
+                name: '리더십',
+                virtue: '정의(Justice)',
+                description: '그룹을 이끌고 동기부여하는 능력',
+                holland: ['E', 'S'],
+                questions: [
+                    '우리 아이(나)는 친구들을 이끌고 조직하는 것을 잘한다.',
+                    '우리 아이(나)는 모둠 활동에서 자연스럽게 리더가 된다.',
+                    '우리 아이(나)는 다른 사람들에게 영향력을 미친다.',
+                    '우리 아이(나)는 목표를 정하고 친구들을 이끌어간다.'
+                ],
+                development: [
+                    '학교 조별 과제나 모둠 활동에서 리더 역할을 맡아보게 격려해 주세요. 작은 경험부터 리더십을 키울 수 있습니다.',
+                    '주말 가족 나들이나 저녁 메뉴 등을 아이가 계획하고 진행하게 해보세요. 계획하고 이끄는 경험이 됩니다.',
+                    '동생이나 후배에게 공부를 가르쳐주거나 도와주는 멘토 역할을 해보게 해주세요. 이끄는 것의 책임감을 배웁니다.',
+                    '여름방학 리더십 캠프나 청소년 리더 프로그램에 참가해 보세요. 체계적으로 리더십을 배울 수 있는 기회입니다.'
+                ],
+                careers: ['CEO', '경영자', '정치인', '팀장', '감독', '창업가', '프로젝트 매니저'],
+                majors: ['경영학과', '정치학과', '행정학과', 'MBA', '리더십학과']
+            },
+            // 초월 (Transcendence)
+            appreciation_of_beauty: {
+                name: '심미안',
+                virtue: '초월(Transcendence)',
+                description: '자연, 예술, 일상의 아름다움을 인식하고 감상하는 능력',
+                holland: ['A', 'I'],
+                questions: [
+                    '우리 아이(나)는 아름다운 것을 보면 감동하고 즐긴다.',
+                    '우리 아이(나)는 예술 작품이나 음악에 깊이 빠져든다.',
+                    '우리 아이(나)는 자연의 아름다움에 감탄한다.',
+                    '우리 아이(나)는 일상 속에서 아름다움을 발견한다.'
+                ],
+                development: [
+                    '미술관, 음악회, 전시회 등을 함께 방문해 보세요. 감상 후 "어떤 느낌이 들었어?"라고 물어보며 대화를 나눠보세요.',
+                    '공원, 숲, 바닷가 등 자연 속에서 산책하며 예쁜 꽃, 하늘, 석양 등을 함께 감상해 보세요. 일상 속 아름다움을 발견하는 눈을 키워줍니다.',
+                    '명화, 음악, 건축물 등 다양한 예술 작품을 함께 감상하고 "이 작품의 어떤 점이 좋아?"라고 대화해 보세요.',
+                    '그림 그리기, 사진 찍기, 악기 연주, 노래 부르기 등 직접 아름다움을 창조하는 활동을 해보게 해주세요.'
+                ],
+                careers: ['예술가', '디자이너', '사진작가', '큐레이터', '원예사', '조경사', '뷰티전문가'],
+                majors: ['미술학과', '디자인학과', '사진학과', '조경학과', '원예학과', '미학과']
+            },
+            gratitude: {
+                name: '감사',
+                virtue: '초월(Transcendence)',
+                description: '일상의 축복을 인식하고 감사하는 성향',
+                holland: ['S', 'A'],
+                questions: [
+                    '우리 아이(나)는 작은 것에도 감사함을 느끼고 표현한다.',
+                    '우리 아이(나)는 도움을 받으면 진심으로 고마워한다.',
+                    '우리 아이(나)는 가진 것에 만족하고 감사해한다.',
+                    '우리 아이(나)는 부모나 선생님께 감사 인사를 잘 한다.'
+                ],
+                development: [
+                    '매일 잠들기 전 오늘 감사한 것을 노트에 적는 감사 일기를 써보게 해주세요. 작은 것도 괜찮습니다.',
+                    '저녁 식사 시간에 "오늘 감사한 일 3가지"를 가족이 돌아가며 이야기하는 시간을 가져보세요.',
+                    '스승의 날, 어버이날 등에 진심을 담은 감사 편지를 써보게 해주세요. 평소에도 고마운 사람에게 편지를 쓰면 좋습니다.',
+                    '일상에서 당연하게 여기는 것들(집, 음식, 건강 등)에 대해 "이것이 없다면 어떨까?" 생각해보게 해주세요.'
+                ],
+                careers: ['심리상담사', '웰빙전문가', '라이프코치', '작가', '종교지도자', '힐링전문가'],
+                majors: ['심리학과', '신학과', '문예창작학과', '상담학과']
+            },
+            hope: {
+                name: '낙관성',
+                virtue: '초월(Transcendence)',
+                description: '미래에 대한 희망과 긍정적 기대를 가지는 성향',
+                holland: ['E', 'S'],
+                questions: [
+                    '우리 아이(나)는 미래에 대해 긍정적으로 생각한다.',
+                    '우리 아이(나)는 어려운 상황에서도 희망을 잃지 않는다.',
+                    '우리 아이(나)는 좋은 일이 일어날 것이라고 믿는다.',
+                    '우리 아이(나)는 실패해도 다음에는 잘 될 거라고 생각한다.'
+                ],
+                development: [
+                    '함께 이루고 싶은 목표를 정하고, 그것을 달성하기 위한 구체적인 계획을 세워보세요. 목표가 있으면 희망이 생깁니다.',
+                    '역경을 이겨낸 사람들의 이야기, 해피엔딩 영화 등 긍정적인 콘텐츠를 함께 보고 이야기 나눠보세요.',
+                    '실패했을 때 "이번에 뭘 배웠지?", "다음엔 어떻게 하면 좋을까?"라고 물어보세요. 실패를 성장의 기회로 보는 관점을 키워줍니다.',
+                    '"커서 뭐가 되고 싶어?", "어떤 어른이 되고 싶어?" 등 미래의 꿈에 대해 자주 이야기 나눠보세요. 꿈이 희망의 원천이 됩니다.'
+                ],
+                careers: ['창업가', '투자자', '미래학자', '혁신가', '사회적기업가', '벤처캐피탈리스트'],
+                majors: ['경영학과', '미래학과', '창업학과', '사회혁신학과']
+            },
+            humor: {
+                name: '유머',
+                virtue: '초월(Transcendence)',
+                description: '재미있는 면을 발견하고 다른 사람들에게 기쁨을 주는 능력',
+                holland: ['A', 'E'],
+                questions: [
+                    '우리 아이(나)는 유머 감각이 있고 사람들을 웃게 만든다.',
+                    '우리 아이(나)는 어려운 상황도 유머로 넘기곤 한다.',
+                    '우리 아이(나)는 재미있는 이야기를 잘 만들어낸다.',
+                    '우리 아이(나)는 분위기를 밝게 만드는 재주가 있다.'
+                ],
+                development: [
+                    '가족이 함께 코미디 프로그램이나 재미있는 영화를 보며 웃는 시간을 가져보세요. 유머 감각은 즐거운 경험에서 자랍니다.',
+                    '재미있는 이야기나 개그를 만들어보게 해주세요. 말장난, 상황극 등을 함께 해보면 유머 감각이 발달합니다.',
+                    '남을 놀리거나 상처주는 농담과 모두가 즐거운 유머의 차이를 알려주세요. 건강한 유머 사용법을 가르쳐 주세요.',
+                    '매일 한 번은 가족과 함께 웃는 시간을 가져보세요. 웃음이 넘치는 가정환경이 유머 감각을 키워줍니다.'
+                ],
+                careers: ['코미디언', '방송인', 'MC', '작가', '광고인', '엔터테이너', '유튜버'],
+                majors: ['방송연예과', '문예창작학과', '광고홍보학과', '연극영화학과']
+            },
+            spirituality: {
+                name: '영성',
+                virtue: '초월(Transcendence)',
+                description: '인생의 더 큰 의미와 목적을 추구하는 성향',
+                holland: ['A', 'S'],
+                questions: [
+                    '우리 아이(나)는 삶의 의미나 목적에 대해 생각하는 편이다.',
+                    '우리 아이(나)는 우주나 존재에 대해 깊이 생각한다.',
+                    '우리 아이(나)는 종교나 철학적 주제에 관심을 보인다.',
+                    '우리 아이(나)는 자신보다 큰 무언가와 연결되어 있다고 느낀다.'
+                ],
+                development: [
+                    '숲, 바다, 산 등 자연 속에서 조용히 앉아 생각하거나 명상하는 시간을 가져보세요. 자연이 마음의 평화를 줍니다.',
+                    '"왜 사람은 살까?", "행복이란 뭘까?" 등 삶의 의미에 대한 질문을 아이와 함께 이야기해 보세요. 정답 없이 생각을 나누면 됩니다.',
+                    '세계 여러 나라의 문화, 종교, 전통에 대해 함께 알아보세요. 다양한 삶의 방식을 이해하면 시야가 넓어집니다.',
+                    '봉사활동을 통해 다른 사람을 돕는 경험을 하게 해주세요. 나보다 큰 가치를 위해 기여하는 기쁨을 느낄 수 있습니다.'
+                ],
+                careers: ['종교지도자', '철학자', '명상지도자', '심리치료사', '호스피스 전문가', '영적상담사'],
+                majors: ['신학과', '철학과', '종교학과', '심리학과', '생사학과']
+            }
+        };
+
+        // Holland 유형 설명
+        const hollandTypes = {
+            R: {
+                name: '현실형',
+                fullName: 'Realistic',
+                description: '손으로 직접 만들고 기계를 다루는 것을 좋아합니다. 실용적이고 현실적인 성향으로, 구체적인 결과물을 만들어내는 일에 흥미를 느낍니다.',
+                careers: '기계공학자, 건축가, 농업인, 운동선수, 요리사, 정비사'
+            },
+            I: {
+                name: '탐구형',
+                fullName: 'Investigative',
+                description: '관찰하고 분석하며 문제를 해결하는 것을 좋아합니다. 지적 호기심이 강하고 독립적으로 연구하는 것을 선호합니다.',
+                careers: '과학자, 연구원, 의사, 프로그래머, 데이터분석가'
+            },
+            A: {
+                name: '예술형',
+                fullName: 'Artistic',
+                description: '창의적이고 독창적인 표현을 좋아합니다. 자유로운 환경에서 예술적 활동을 통해 자신을 표현하는 것을 선호합니다.',
+                careers: '예술가, 디자이너, 작가, 음악가, 배우, 사진작가'
+            },
+            S: {
+                name: '사회형',
+                fullName: 'Social',
+                description: '다른 사람들과 함께 일하고 돕는 것을 좋아합니다. 협력적이고 공감 능력이 뛰어나며 사람들을 가르치고 돌보는 일에 보람을 느낍니다.',
+                careers: '교사, 상담사, 사회복지사, 간호사, 심리학자'
+            },
+            E: {
+                name: '진취형',
+                fullName: 'Enterprising',
+                description: '사람들을 이끌고 설득하는 것을 좋아합니다. 목표 지향적이고 경쟁적이며, 조직을 관리하고 영향력을 행사하는 일에 흥미를 느낍니다.',
+                careers: '경영자, 정치인, 변호사, 영업관리자, 창업가'
+            },
+            C: {
+                name: '관습형',
+                fullName: 'Conventional',
+                description: '체계적이고 정확하게 일하는 것을 좋아합니다. 규칙과 절차를 따르며, 데이터를 정리하고 관리하는 일에 능숙합니다.',
+                careers: '회계사, 은행원, 행정직, 비서, 사서, 세무사'
+            }
+        };
+
+        // 100문항 생성 (각 강점당 4~5개 질문, 무작위 섞기)
+        let allQuestions = [];
+        let currentQuestion = 0;
+        let answers = {};
+        let childName = '';
+
+        function generateQuestions() {
+            allQuestions = [];
+
+            Object.keys(strengthsData).forEach(strengthId => {
+                const strength = strengthsData[strengthId];
+                strength.questions.forEach((question, idx) => {
+                    allQuestions.push({
+                        id: `${strengthId}_${idx}`,
+                        strengthId: strengthId,
+                        question: question,
+                        holland: strength.holland
+                    });
+                });
+            });
+
+            // 문항 섞기 (Fisher-Yates shuffle)
+            for (let i = allQuestions.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [allQuestions[i], allQuestions[j]] = [allQuestions[j], allQuestions[i]];
+            }
+        }
+
+        function startTest() {
+            childName = document.getElementById('childName').value.trim();
+
+            if (!childName) {
+                alert('자녀 이름을 입력해주세요.');
+                return;
+            }
+
+            generateQuestions();
+            answers = {};
+
+            document.getElementById('intro-section').style.display = 'none';
+            document.getElementById('question-section').classList.add('active');
+
+            showQuestion(0);
+        }
+
+        function showQuestion(index) {
+            const q = allQuestions[index];
+            const container = document.getElementById('question-container');
+
+            const savedAnswer = answers[q.id] || 0;
+
+            container.innerHTML = `
+                <div class="question-card">
+                    <span class="question-number">문항 ${index + 1}</span>
+                    <h3>${q.question}</h3>
+                    <div class="rating-scale">
+                        <button class="rating-btn ${savedAnswer === 1 ? 'selected' : ''}" onclick="selectRating('${q.id}', 1)">
+                            전혀<br>그렇지 않다
+                        </button>
+                        <button class="rating-btn ${savedAnswer === 2 ? 'selected' : ''}" onclick="selectRating('${q.id}', 2)">
+                            그렇지<br>않다
+                        </button>
+                        <button class="rating-btn ${savedAnswer === 3 ? 'selected' : ''}" onclick="selectRating('${q.id}', 3)">
+                            보통<br>이다
+                        </button>
+                        <button class="rating-btn ${savedAnswer === 4 ? 'selected' : ''}" onclick="selectRating('${q.id}', 4)">
+                            그렇다
+                        </button>
+                        <button class="rating-btn ${savedAnswer === 5 ? 'selected' : ''}" onclick="selectRating('${q.id}', 5)">
+                            매우<br>그렇다
+                        </button>
+                    </div>
+                </div>
+            `;
+
+            // Update progress
+            const progress = ((index + 1) / allQuestions.length) * 100;
+            document.getElementById('progress-fill').style.width = progress + '%';
+            document.getElementById('progress-text').textContent = `${index + 1} / ${allQuestions.length}`;
+
+            // Update navigation buttons
+            document.getElementById('prevBtn').disabled = index === 0;
+
+            if (index === allQuestions.length - 1) {
+                document.getElementById('nextBtn').style.display = 'none';
+                document.getElementById('submitBtn').style.display = 'block';
+            } else {
+                document.getElementById('nextBtn').style.display = 'block';
+                document.getElementById('submitBtn').style.display = 'none';
+            }
+
+            updateNextButton();
+        }
+
+        function selectRating(questionId, rating) {
+            answers[questionId] = rating;
+
+            // Update button styles
+            const buttons = document.querySelectorAll('.rating-btn');
+            buttons.forEach((btn, index) => {
+                if (index + 1 === rating) {
+                    btn.classList.add('selected');
+                } else {
+                    btn.classList.remove('selected');
+                }
+            });
+
+            updateNextButton();
+        }
+
+        function updateNextButton() {
+            const currentQ = allQuestions[currentQuestion];
+            const hasAnswer = answers[currentQ.id] > 0;
+            document.getElementById('nextBtn').disabled = !hasAnswer;
+            document.getElementById('submitBtn').disabled = !hasAnswer;
+        }
+
+        function nextQuestion() {
+            if (currentQuestion < allQuestions.length - 1) {
+                currentQuestion++;
+                showQuestion(currentQuestion);
+            }
+        }
+
+        function prevQuestion() {
+            if (currentQuestion > 0) {
+                currentQuestion--;
+                showQuestion(currentQuestion);
+            }
+        }
+
+        function showResults() {
+            // Calculate scores for each strength
+            const strengthScores = {};
+            Object.keys(strengthsData).forEach(id => {
+                strengthScores[id] = { total: 0, count: 0 };
+            });
+
+            // Calculate Holland scores (with count for averaging)
+            const hollandScores = {
+                R: { total: 0, count: 0 },
+                I: { total: 0, count: 0 },
+                A: { total: 0, count: 0 },
+                S: { total: 0, count: 0 },
+                E: { total: 0, count: 0 },
+                C: { total: 0, count: 0 }
+            };
+
+            allQuestions.forEach(q => {
+                const answer = answers[q.id] || 3;
+
+                // Strength scores
+                strengthScores[q.strengthId].total += answer;
+                strengthScores[q.strengthId].count += 1;
+
+                // Holland scores
+                q.holland.forEach(h => {
+                    hollandScores[h].total += answer;
+                    hollandScores[h].count += 1;
+                });
+            });
+
+            // Calculate Holland averages
+            const hollandAverages = {};
+            Object.keys(hollandScores).forEach(type => {
+                hollandAverages[type] = hollandScores[type].count > 0
+                    ? hollandScores[type].total / hollandScores[type].count
+                    : 0;
+            });
+
+            // Calculate averages for strengths
+            const strengthResults = Object.keys(strengthsData).map(id => ({
+                id: id,
+                ...strengthsData[id],
+                score: strengthScores[id].count > 0
+                    ? strengthScores[id].total / strengthScores[id].count
+                    : 0
+            }));
+
+            // Sort by score (descending)
+            strengthResults.sort((a, b) => b.score - a.score);
+
+            // Get top 5 with tie handling
+            const fifthScore = strengthResults[4].score;
+            let topStrengths = strengthResults.filter((s, idx) => idx < 5 || s.score === fifthScore);
+            const hasTie = topStrengths.length > 5;
+
+            // Sort Holland scores by average
+            const hollandSorted = Object.entries(hollandAverages)
+                .sort((a, b) => b[1] - a[1]);
+            const topThreeHolland = hollandSorted.slice(0, 3).map(h => h[0]);
+            const maxHollandScore = Math.max(...Object.values(hollandAverages));
+
+            // Hide question section, show results
+            document.getElementById('question-section').classList.remove('active');
+            document.getElementById('results-section').classList.add('active');
+
+            // Set name
+            document.getElementById('resultName').textContent = childName;
+
+            // Change page title for print/save
+            document.title = '진로성격강점검사 - ' + childName;
+
+            // Display Holland results
+            const hollandCodeContainer = document.getElementById('holland-code');
+            hollandCodeContainer.innerHTML = topThreeHolland.map(h =>
+                `<div class="code-letter">${h}</div>`
+            ).join('');
+
+            const hollandBarsContainer = document.getElementById('holland-bars');
+            hollandBarsContainer.innerHTML = hollandSorted.map(([type, score]) => `
+                <div class="holland-bar-item">
+                    <span class="type-name">${hollandTypes[type].name} (${type})</span>
+                    <div class="bar">
+                        <div class="bar-fill ${type}" style="width: ${(score / maxHollandScore) * 100}%"></div>
+                    </div>
+                    <span class="score">${score.toFixed(1)}</span>
+                </div>
+            `).join('');
+
+            // Find all top Holland types with same highest score
+            const topHollandScore = hollandSorted[0][1];
+            const topHollandTypes = hollandSorted.filter(([type, score]) => score === topHollandScore).map(([type]) => type);
+
+            let hollandDescriptionHTML = '';
+            if (topHollandTypes.length > 1) {
+                hollandDescriptionHTML = `
+                    <div class="tie-notice" style="margin-bottom: 15px;">
+                        <strong>안내:</strong> 동일한 최고 점수를 받은 유형이 ${topHollandTypes.length}개 있습니다.
+                        이는 다양한 영역에 고른 관심과 적성을 가지고 있음을 의미합니다.
+                    </div>
+                `;
+            }
+
+            topHollandTypes.forEach((type, idx) => {
+                hollandDescriptionHTML += `
+                    <div class="holland-type-detail" style="${idx > 0 ? 'margin-top: 20px; padding-top: 20px; border-top: 1px solid rgba(255,255,255,0.1);' : ''}">
+                        <h4>${hollandTypes[type].name} (${hollandTypes[type].fullName}) 유형</h4>
+                        <p>${hollandTypes[type].description}</p>
+                        <p style="margin-top:10px;"><strong>관련 직업:</strong> ${hollandTypes[type].careers}</p>
+                    </div>
+                `;
+            });
+
+            document.getElementById('holland-description').innerHTML = hollandDescriptionHTML;
+
+            // Display top strengths
+            const container = document.getElementById('top-strengths');
+
+            if (hasTie) {
+                container.innerHTML = `
+                    <h3>상위 대표 강점 (${topStrengths.length}개)</h3>
+                    <div class="tie-notice">
+                        <strong>안내:</strong> 동일한 점수를 받은 강점이 있어 상위 5개 이상의 강점이 표시되었습니다.
+                        이는 해당 강점들이 비슷한 수준으로 발달되어 있음을 의미합니다.
+                        다양한 강점을 고르게 가지고 있는 것은 긍정적인 특성입니다.
+                    </div>
+                `;
+            } else {
+                container.innerHTML = '<h3>상위 5가지 대표 강점</h3>';
+            }
+
+            topStrengths.forEach((strength, index) => {
+                const scorePercent = (strength.score / 5) * 100;
+
+                container.innerHTML += `
+                    <div class="strength-card">
+                        <div style="display: flex; align-items: center; margin-bottom: 10px;">
+                            <span class="rank">${index + 1}</span>
+                            <div>
+                                <div class="strength-name">${strength.name}</div>
+                                <div class="virtue-name">${strength.virtue}</div>
+                            </div>
+                        </div>
+                        <div class="score-bar">
+                            <div class="score-fill" style="width: ${scorePercent}%"></div>
+                        </div>
+                        <p style="color: #ccc; margin-bottom: 15px;">${strength.description}</p>
+
+                        <div class="strength-details">
+                            <div class="detail-section">
+                                <h4>지금 해야 할 일 (강점 계발 방법)</h4>
+                                <ul>
+                                    ${strength.development.map(d => `<li>${d}</li>`).join('')}
+                                </ul>
+                            </div>
+
+                            <div class="detail-section">
+                                <h4>관련 직업군</h4>
+                                <div class="career-tags">
+                                    ${strength.careers.map(c => `<span class="career-tag">${c}</span>`).join('')}
+                                </div>
+                            </div>
+
+                            <div class="detail-section">
+                                <h4>관련 전공 및 전문영역</h4>
+                                <div class="career-tags">
+                                    ${strength.majors.map(m => `<span class="career-tag">${m}</span>`).join('')}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            });
+        }
+
+        function restartTest() {
+            currentQuestion = 0;
+            answers = {};
+            childName = '';
+
+            document.getElementById('childName').value = '';
+
+            document.getElementById('results-section').classList.remove('active');
+            document.getElementById('intro-section').style.display = 'block';
+
+            // Reset page title
+            document.title = '진로성격강점검사';
+        }
+    </script>
+</body>
+</html>

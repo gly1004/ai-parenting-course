@@ -1,0 +1,14 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(gh repo create:*)",
+      "Bash(git mv:*)",
+      "Bash(git commit:*)",
+      "Bash(git push)",
+      "Bash(start:*)",
+      "Bash(gh api:*)",
+      "Bash(timeout /t 10 /nobreak)",
+      "Bash(git add:*)"
+    ]
+  }
+}

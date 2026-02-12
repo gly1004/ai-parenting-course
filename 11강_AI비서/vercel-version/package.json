@@ -1,0 +1,8 @@
+{
+  "name": "ai-tool-consultant",
+  "version": "1.0.0",
+  "description": "부모와 아이를 위한 AI 도구 추천 서비스",
+  "scripts": {
+    "dev": "vercel dev"
+  }
+}

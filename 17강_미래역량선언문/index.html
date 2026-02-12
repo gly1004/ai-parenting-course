@@ -1,0 +1,1123 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>우리 가족 미래역량 선언문</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Malgun Gothic', '맑은 고딕', 'Segoe UI', sans-serif;
+            background: linear-gradient(135deg, #1a2a4a 0%, #2d4a6f 100%);
+            min-height: 100vh;
+            color: #fff;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 720px;
+            margin: 0 auto;
+        }
+
+        /* 헤더 */
+        header {
+            text-align: center;
+            padding: 40px 20px 30px;
+            margin-bottom: 10px;
+        }
+
+        header h1 {
+            font-size: 2rem;
+            color: #f39c12;
+            margin-bottom: 12px;
+            text-shadow: 0 0 20px rgba(243, 156, 18, 0.3);
+            letter-spacing: 2px;
+        }
+
+        header p {
+            color: #b0bec5;
+            font-size: 1rem;
+            line-height: 1.6;
+        }
+
+        /* 진행 바 */
+        .progress-container {
+            background: rgba(255,255,255,0.08);
+            border-radius: 20px;
+            height: 10px;
+            margin-bottom: 8px;
+            overflow: hidden;
+        }
+
+        .progress-bar {
+            height: 100%;
+            background: linear-gradient(90deg, #f39c12, #f1c40f);
+            border-radius: 20px;
+            transition: width 0.5s ease;
+            width: 0%;
+        }
+
+        .progress-text {
+            text-align: center;
+            margin-bottom: 28px;
+            color: #f39c12;
+            font-size: 0.9rem;
+            font-weight: bold;
+        }
+
+        /* 스텝 공통 */
+        .step {
+            display: none;
+            animation: fadeIn 0.5s ease;
+        }
+
+        .step.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(15px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .step-card {
+            background: rgba(255,255,255,0.06);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 16px;
+            padding: 30px;
+            backdrop-filter: blur(10px);
+        }
+
+        .step-title {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 24px;
+        }
+
+        .step-number {
+            background: linear-gradient(135deg, #f39c12, #e67e22);
+            color: #fff;
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 1rem;
+            flex-shrink: 0;
+        }
+
+        .step-title h2 {
+            font-size: 1.25rem;
+            color: #f39c12;
+        }
+
+        /* 입력 필드 */
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-size: 0.95rem;
+            color: #cfd8dc;
+            font-weight: bold;
+        }
+
+        .form-group input,
+        .form-group textarea {
+            width: 100%;
+            padding: 14px 16px;
+            border: 1px solid rgba(243, 156, 18, 0.3);
+            border-radius: 10px;
+            background: rgba(255,255,255,0.07);
+            color: #fff;
+            font-size: 1rem;
+            font-family: inherit;
+            transition: border-color 0.3s, box-shadow 0.3s;
+            outline: none;
+        }
+
+        .form-group input:focus,
+        .form-group textarea:focus {
+            border-color: #f39c12;
+            box-shadow: 0 0 12px rgba(243, 156, 18, 0.2);
+        }
+
+        .form-group input::placeholder,
+        .form-group textarea::placeholder {
+            color: rgba(255,255,255,0.35);
+        }
+
+        .form-group textarea {
+            resize: vertical;
+            min-height: 60px;
+        }
+
+        .date-display {
+            background: rgba(243, 156, 18, 0.1);
+            border: 1px solid rgba(243, 156, 18, 0.25);
+            border-radius: 10px;
+            padding: 14px 16px;
+            color: #f1c40f;
+            font-size: 1rem;
+            font-weight: bold;
+        }
+
+        /* 역량 카드 그리드 */
+        .competency-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            margin-bottom: 10px;
+        }
+
+        .competency-card {
+            background: rgba(255,255,255,0.05);
+            border: 2px solid rgba(255,255,255,0.1);
+            border-radius: 12px;
+            padding: 16px 14px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: center;
+            user-select: none;
+            position: relative;
+        }
+
+        .competency-card:hover {
+            background: rgba(243, 156, 18, 0.08);
+            border-color: rgba(243, 156, 18, 0.4);
+            transform: translateY(-2px);
+        }
+
+        .competency-card.selected {
+            background: rgba(243, 156, 18, 0.15);
+            border-color: #f39c12;
+            box-shadow: 0 0 16px rgba(243, 156, 18, 0.2);
+        }
+
+        .competency-card.selected::after {
+            content: '';
+            position: absolute;
+            top: 8px;
+            right: 8px;
+            width: 22px;
+            height: 22px;
+            background: #f39c12;
+            border-radius: 50%;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='white'%3E%3Cpath d='M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z'/%3E%3C/svg%3E");
+            background-size: 14px;
+            background-repeat: no-repeat;
+            background-position: center;
+        }
+
+        .competency-card.disabled {
+            opacity: 0.4;
+            cursor: not-allowed;
+        }
+
+        .competency-card.disabled:hover {
+            transform: none;
+            background: rgba(255,255,255,0.05);
+            border-color: rgba(255,255,255,0.1);
+        }
+
+        .competency-icon {
+            font-size: 1.6rem;
+            margin-bottom: 8px;
+            display: block;
+        }
+
+        .competency-name {
+            font-size: 0.88rem;
+            color: #e0e0e0;
+            font-weight: bold;
+            line-height: 1.4;
+        }
+
+        .competency-card.selected .competency-name {
+            color: #f1c40f;
+        }
+
+        .select-info {
+            text-align: center;
+            color: #b0bec5;
+            font-size: 0.85rem;
+            margin-bottom: 18px;
+        }
+
+        .select-count {
+            color: #f39c12;
+            font-weight: bold;
+            font-size: 1.1rem;
+        }
+
+        /* 실천 다짐 */
+        .practice-item {
+            margin-bottom: 20px;
+        }
+
+        .practice-label {
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+            margin-bottom: 8px;
+        }
+
+        .practice-number {
+            background: linear-gradient(135deg, #f39c12, #e67e22);
+            color: #fff;
+            width: 26px;
+            height: 26px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.8rem;
+            font-weight: bold;
+            flex-shrink: 0;
+            margin-top: 1px;
+        }
+
+        .practice-prompt {
+            color: #cfd8dc;
+            font-size: 0.93rem;
+            line-height: 1.5;
+        }
+
+        .practice-prompt strong {
+            color: #f1c40f;
+        }
+
+        /* 버튼 */
+        .btn-group {
+            display: flex;
+            gap: 12px;
+            margin-top: 28px;
+        }
+
+        .btn {
+            flex: 1;
+            padding: 14px 24px;
+            border: none;
+            border-radius: 10px;
+            font-size: 1rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-family: inherit;
+        }
+
+        .btn-prev {
+            background: rgba(255,255,255,0.1);
+            color: #b0bec5;
+            border: 1px solid rgba(255,255,255,0.15);
+        }
+
+        .btn-prev:hover {
+            background: rgba(255,255,255,0.15);
+            color: #fff;
+        }
+
+        .btn-next {
+            background: linear-gradient(135deg, #f39c12, #e67e22);
+            color: #fff;
+            box-shadow: 0 4px 15px rgba(243, 156, 18, 0.3);
+        }
+
+        .btn-next:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(243, 156, 18, 0.4);
+        }
+
+        .btn-next:disabled {
+            opacity: 0.4;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        /* 선언문 카드 */
+        .declaration-card {
+            background: linear-gradient(160deg, #fdf6e3 0%, #fef9ef 40%, #fff8e1 100%);
+            border-radius: 20px;
+            padding: 40px 32px;
+            color: #2c3e50;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.3);
+            animation: cardAppear 0.8s ease;
+        }
+
+        @keyframes cardAppear {
+            from { opacity: 0; transform: scale(0.92) translateY(20px); }
+            to { opacity: 1; transform: scale(1) translateY(0); }
+        }
+
+        .declaration-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 6px;
+            background: linear-gradient(90deg, #f39c12, #e67e22, #f1c40f, #e67e22, #f39c12);
+        }
+
+        .declaration-card::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 6px;
+            background: linear-gradient(90deg, #f39c12, #e67e22, #f1c40f, #e67e22, #f39c12);
+        }
+
+        .decl-border {
+            border: 2px solid #d4a843;
+            border-radius: 14px;
+            padding: 32px 24px;
+            position: relative;
+        }
+
+        .decl-corner {
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            border-color: #c8a24e;
+        }
+
+        .decl-corner.tl { top: -2px; left: -2px; border-top: 3px solid #c8a24e; border-left: 3px solid #c8a24e; border-radius: 4px 0 0 0; }
+        .decl-corner.tr { top: -2px; right: -2px; border-top: 3px solid #c8a24e; border-right: 3px solid #c8a24e; border-radius: 0 4px 0 0; }
+        .decl-corner.bl { bottom: -2px; left: -2px; border-bottom: 3px solid #c8a24e; border-left: 3px solid #c8a24e; border-radius: 0 0 0 4px; }
+        .decl-corner.br { bottom: -2px; right: -2px; border-bottom: 3px solid #c8a24e; border-right: 3px solid #c8a24e; border-radius: 0 0 4px 0; }
+
+        .decl-header {
+            text-align: center;
+            margin-bottom: 28px;
+        }
+
+        .decl-header h2 {
+            font-size: 1.5rem;
+            color: #8b6914;
+            letter-spacing: 4px;
+            margin-bottom: 6px;
+        }
+
+        .decl-ornament {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            margin: 12px 0;
+            color: #c8a24e;
+        }
+
+        .decl-ornament .line {
+            width: 60px;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, #c8a24e, transparent);
+        }
+
+        .decl-ornament .diamond {
+            width: 8px;
+            height: 8px;
+            background: #c8a24e;
+            transform: rotate(45deg);
+        }
+
+        .decl-info {
+            text-align: center;
+            margin-bottom: 24px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid rgba(200, 162, 78, 0.3);
+        }
+
+        .decl-info .names {
+            font-size: 1.1rem;
+            color: #34495e;
+            margin-bottom: 6px;
+            font-weight: bold;
+        }
+
+        .decl-info .date {
+            font-size: 0.9rem;
+            color: #7f8c8d;
+        }
+
+        .decl-section {
+            margin-bottom: 22px;
+        }
+
+        .decl-section-title {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.95rem;
+            color: #8b6914;
+            font-weight: bold;
+            margin-bottom: 12px;
+        }
+
+        .decl-section-title .icon {
+            width: 22px;
+            height: 22px;
+            background: #f39c12;
+            color: #fff;
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.75rem;
+        }
+
+        .decl-competency-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            justify-content: center;
+        }
+
+        .decl-competency-tag {
+            background: linear-gradient(135deg, #fdf2d1, #fce9b8);
+            border: 1px solid #d4a843;
+            color: #7a5d10;
+            padding: 8px 18px;
+            border-radius: 25px;
+            font-size: 0.9rem;
+            font-weight: bold;
+        }
+
+        .decl-practice-list {
+            list-style: none;
+        }
+
+        .decl-practice-list li {
+            padding: 10px 14px;
+            background: rgba(243, 156, 18, 0.06);
+            border-left: 3px solid #f39c12;
+            border-radius: 0 8px 8px 0;
+            margin-bottom: 8px;
+            font-size: 0.93rem;
+            color: #34495e;
+            line-height: 1.5;
+        }
+
+        .decl-footer {
+            text-align: center;
+            margin-top: 28px;
+            padding-top: 20px;
+            border-top: 1px solid rgba(200, 162, 78, 0.3);
+        }
+
+        .decl-signature {
+            font-size: 1.2rem;
+            color: #8b6914;
+            font-weight: bold;
+            letter-spacing: 2px;
+        }
+
+        .decl-stamp {
+            display: inline-block;
+            margin-top: 12px;
+            width: 60px;
+            height: 60px;
+            border: 3px solid #c0392b;
+            border-radius: 50%;
+            color: #c0392b;
+            font-size: 0.65rem;
+            font-weight: bold;
+            line-height: 1.2;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-left: auto;
+            margin-right: auto;
+            transform: rotate(-10deg);
+            opacity: 0.7;
+        }
+
+        /* 결과 하단 버튼 */
+        .result-actions {
+            display: flex;
+            gap: 12px;
+            margin-top: 28px;
+        }
+
+        .btn-restart {
+            flex: 1;
+            padding: 14px 24px;
+            border: 2px solid #f39c12;
+            border-radius: 10px;
+            background: transparent;
+            color: #f39c12;
+            font-size: 1rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-family: inherit;
+        }
+
+        .btn-restart:hover {
+            background: rgba(243, 156, 18, 0.15);
+        }
+
+        /* 하단 명언 */
+        .footer-quote {
+            text-align: center;
+            margin-top: 40px;
+            padding: 24px 20px;
+            border-top: 1px solid rgba(255,255,255,0.08);
+        }
+
+        .footer-quote p {
+            color: #78909c;
+            font-size: 0.88rem;
+            line-height: 1.7;
+            font-style: italic;
+        }
+
+        .footer-quote .author {
+            color: #f39c12;
+            font-style: normal;
+            font-weight: bold;
+            margin-top: 6px;
+            display: block;
+        }
+
+        /* 반응형 */
+        @media (max-width: 600px) {
+            body {
+                padding: 12px;
+            }
+
+            header {
+                padding: 28px 12px 20px;
+            }
+
+            header h1 {
+                font-size: 1.5rem;
+                letter-spacing: 1px;
+            }
+
+            header p {
+                font-size: 0.9rem;
+            }
+
+            .step-card {
+                padding: 22px 18px;
+            }
+
+            .competency-grid {
+                grid-template-columns: 1fr 1fr;
+                gap: 8px;
+            }
+
+            .competency-card {
+                padding: 12px 8px;
+            }
+
+            .competency-icon {
+                font-size: 1.3rem;
+                margin-bottom: 5px;
+            }
+
+            .competency-name {
+                font-size: 0.78rem;
+            }
+
+            .declaration-card {
+                padding: 24px 16px;
+            }
+
+            .decl-border {
+                padding: 24px 16px;
+            }
+
+            .decl-header h2 {
+                font-size: 1.2rem;
+                letter-spacing: 2px;
+            }
+
+            .decl-competency-tag {
+                padding: 6px 14px;
+                font-size: 0.82rem;
+            }
+
+            .btn-group {
+                flex-direction: column;
+            }
+
+            .result-actions {
+                flex-direction: column;
+            }
+        }
+
+        /* 에러/유효성 */
+        .input-error {
+            border-color: #e74c3c !important;
+            box-shadow: 0 0 8px rgba(231, 76, 60, 0.2) !important;
+        }
+
+        .error-msg {
+            color: #e74c3c;
+            font-size: 0.82rem;
+            margin-top: 6px;
+            display: none;
+        }
+
+        .error-msg.show {
+            display: block;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- 헤더 -->
+        <header>
+            <h1>우리 가족 미래역량 선언문</h1>
+            <p>AI 시대, 자녀와 함께 성장할 역량을 선언합니다</p>
+        </header>
+
+        <!-- 진행 바 (결과 제외) -->
+        <div id="progressArea">
+            <div class="progress-container">
+                <div class="progress-bar" id="progressBar"></div>
+            </div>
+            <div class="progress-text" id="progressText">1단계 / 3단계</div>
+        </div>
+
+        <!-- 1단계: 가족 정보 입력 -->
+        <div class="step active" id="step1">
+            <div class="step-card">
+                <div class="step-title">
+                    <div class="step-number">1</div>
+                    <h2>가족 정보 입력</h2>
+                </div>
+
+                <div class="form-group">
+                    <label for="parentName">부모 이름</label>
+                    <input type="text" id="parentName" placeholder="부모님 이름을 입력해 주세요" maxlength="20">
+                    <div class="error-msg" id="parentNameError">이름을 입력해 주세요.</div>
+                </div>
+
+                <div class="form-group">
+                    <label for="childName">자녀 이름</label>
+                    <input type="text" id="childName" placeholder="자녀 이름을 입력해 주세요" maxlength="20">
+                    <div class="error-msg" id="childNameError">이름을 입력해 주세요.</div>
+                </div>
+
+                <div class="form-group">
+                    <label>오늘 날짜</label>
+                    <div class="date-display" id="todayDate"></div>
+                </div>
+
+                <div class="btn-group">
+                    <div style="flex:1;"></div>
+                    <button class="btn btn-next" onclick="goToStep(2)">다음 단계</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- 2단계: 역량 선택 -->
+        <div class="step" id="step2">
+            <div class="step-card">
+                <div class="step-title">
+                    <div class="step-number">2</div>
+                    <h2>우리 가족이 키울 역량 선택</h2>
+                </div>
+
+                <div class="select-info">
+                    아래 10가지 역량 중 <span class="select-count"><span id="selectCount">0</span> / 3</span>개를 선택해 주세요.
+                </div>
+
+                <div class="competency-grid" id="competencyGrid">
+                    <div class="competency-card" data-name="질문하고 사유하는 힘" onclick="toggleCompetency(this)">
+                        <span class="competency-icon">&#10068;</span>
+                        <span class="competency-name">질문하고<br>사유하는 힘</span>
+                    </div>
+                    <div class="competency-card" data-name="비판적 사고력" onclick="toggleCompetency(this)">
+                        <span class="competency-icon">&#128270;</span>
+                        <span class="competency-name">비판적<br>사고력</span>
+                    </div>
+                    <div class="competency-card" data-name="창의적 문제해결력" onclick="toggleCompetency(this)">
+                        <span class="competency-icon">&#128161;</span>
+                        <span class="competency-name">창의적<br>문제해결력</span>
+                    </div>
+                    <div class="competency-card" data-name="회복탄력성" onclick="toggleCompetency(this)">
+                        <span class="competency-icon">&#127793;</span>
+                        <span class="competency-name">회복탄력성</span>
+                    </div>
+                    <div class="competency-card" data-name="마음근육 (성장 마인드셋)" onclick="toggleCompetency(this)">
+                        <span class="competency-icon">&#128170;</span>
+                        <span class="competency-name">마음근육<br>(성장 마인드셋)</span>
+                    </div>
+                    <div class="competency-card" data-name="자기조절능력" onclick="toggleCompetency(this)">
+                        <span class="competency-icon">&#9878;&#65039;</span>
+                        <span class="competency-name">자기조절능력</span>
+                    </div>
+                    <div class="competency-card" data-name="공감 능력" onclick="toggleCompetency(this)">
+                        <span class="competency-icon">&#128149;</span>
+                        <span class="competency-name">공감 능력</span>
+                    </div>
+                    <div class="competency-card" data-name="협력 역량" onclick="toggleCompetency(this)">
+                        <span class="competency-icon">&#129309;</span>
+                        <span class="competency-name">협력 역량</span>
+                    </div>
+                    <div class="competency-card" data-name="실천 역량" onclick="toggleCompetency(this)">
+                        <span class="competency-icon">&#127919;</span>
+                        <span class="competency-name">실천 역량</span>
+                    </div>
+                    <div class="competency-card" data-name="메타 AI 역량" onclick="toggleCompetency(this)">
+                        <span class="competency-icon">&#129302;</span>
+                        <span class="competency-name">메타 AI 역량</span>
+                    </div>
+                </div>
+
+                <div class="error-msg" id="competencyError" style="text-align:center;">3개의 역량을 선택해 주세요.</div>
+
+                <div class="btn-group">
+                    <button class="btn btn-prev" onclick="goToStep(1)">이전</button>
+                    <button class="btn btn-next" id="step2Next" onclick="goToStep(3)">다음 단계</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- 3단계: 실천 다짐 -->
+        <div class="step" id="step3">
+            <div class="step-card">
+                <div class="step-title">
+                    <div class="step-number">3</div>
+                    <h2>실천 다짐 작성</h2>
+                </div>
+
+                <div class="practice-item">
+                    <div class="practice-label">
+                        <div class="practice-number">1</div>
+                        <div class="practice-prompt">우리 가족은 <strong id="comp1Label">________</strong>을(를) 위해 이렇게 실천하겠습니다</div>
+                    </div>
+                    <div class="form-group" style="margin-bottom:0;">
+                        <textarea id="practice1" placeholder="실천 다짐을 작성해 주세요" rows="2"></textarea>
+                    </div>
+                </div>
+
+                <div class="practice-item">
+                    <div class="practice-label">
+                        <div class="practice-number">2</div>
+                        <div class="practice-prompt">우리 가족은 <strong id="comp2Label">________</strong>을(를) 위해 이렇게 실천하겠습니다</div>
+                    </div>
+                    <div class="form-group" style="margin-bottom:0;">
+                        <textarea id="practice2" placeholder="실천 다짐을 작성해 주세요" rows="2"></textarea>
+                    </div>
+                </div>
+
+                <div class="practice-item">
+                    <div class="practice-label">
+                        <div class="practice-number">3</div>
+                        <div class="practice-prompt">우리 가족은 <strong id="comp3Label">________</strong>을(를) 위해 이렇게 실천하겠습니다</div>
+                    </div>
+                    <div class="form-group" style="margin-bottom:0;">
+                        <textarea id="practice3" placeholder="실천 다짐을 작성해 주세요" rows="2"></textarea>
+                    </div>
+                </div>
+
+                <div class="error-msg" id="practiceError" style="text-align:center;">모든 실천 다짐을 작성해 주세요.</div>
+
+                <div class="btn-group">
+                    <button class="btn btn-prev" onclick="goToStep(2)">이전</button>
+                    <button class="btn btn-next" onclick="showDeclaration()">선언문 완성하기</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- 4단계: 선언문 완성 카드 -->
+        <div class="step" id="step4">
+            <div class="declaration-card" id="declarationCard">
+                <div class="decl-border">
+                    <div class="decl-corner tl"></div>
+                    <div class="decl-corner tr"></div>
+                    <div class="decl-corner bl"></div>
+                    <div class="decl-corner br"></div>
+
+                    <div class="decl-header">
+                        <h2>우리 가족 미래역량 선언문</h2>
+                        <div class="decl-ornament">
+                            <div class="line"></div>
+                            <div class="diamond"></div>
+                            <div class="line"></div>
+                        </div>
+                    </div>
+
+                    <div class="decl-info">
+                        <div class="names" id="declNames"></div>
+                        <div class="date" id="declDate"></div>
+                    </div>
+
+                    <div class="decl-section">
+                        <div class="decl-section-title">
+                            <div class="icon">&#9733;</div>
+                            우리 가족이 키울 3가지 역량
+                        </div>
+                        <div class="decl-competency-list" id="declCompetencies"></div>
+                    </div>
+
+                    <div class="decl-section">
+                        <div class="decl-section-title">
+                            <div class="icon">&#10003;</div>
+                            우리의 실천 다짐
+                        </div>
+                        <ul class="decl-practice-list" id="declPractices"></ul>
+                    </div>
+
+                    <div class="decl-footer">
+                        <div class="decl-signature" id="declSignature"></div>
+                        <div class="decl-stamp">선언<br>완료</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="result-actions">
+                <button class="btn-restart" onclick="restart()">다시 만들기</button>
+            </div>
+        </div>
+
+        <!-- 하단 명언 -->
+        <div class="footer-quote">
+            <p>"교육의 목적은 지식의 전달이 아니라, 배움의 열정을 불러일으키는 것이다."<span class="author">- 아인슈타인</span></p>
+        </div>
+    </div>
+
+    <script>
+        // 상태
+        let currentStep = 1;
+        let selectedCompetencies = [];
+
+        // 오늘 날짜 표시
+        (function() {
+            const now = new Date();
+            const y = now.getFullYear();
+            const m = String(now.getMonth() + 1).padStart(2, '0');
+            const d = String(now.getDate()).padStart(2, '0');
+            const days = ['일', '월', '화', '수', '목', '금', '토'];
+            const dayName = days[now.getDay()];
+            document.getElementById('todayDate').textContent = y + '년 ' + m + '월 ' + d + '일 (' + dayName + ')';
+        })();
+
+        // 진행 바 업데이트
+        function updateProgress(step) {
+            const pct = Math.round((step / 3) * 100);
+            document.getElementById('progressBar').style.width = pct + '%';
+            document.getElementById('progressText').textContent = step + '단계 / 3단계';
+        }
+
+        // 에러 초기화
+        function clearErrors() {
+            document.querySelectorAll('.error-msg').forEach(e => e.classList.remove('show'));
+            document.querySelectorAll('.input-error').forEach(e => e.classList.remove('input-error'));
+        }
+
+        // 스텝 이동
+        function goToStep(step) {
+            clearErrors();
+
+            // 유효성 검사
+            if (currentStep === 1 && step > 1) {
+                const pName = document.getElementById('parentName').value.trim();
+                const cName = document.getElementById('childName').value.trim();
+                let valid = true;
+
+                if (!pName) {
+                    document.getElementById('parentName').classList.add('input-error');
+                    document.getElementById('parentNameError').classList.add('show');
+                    valid = false;
+                }
+                if (!cName) {
+                    document.getElementById('childName').classList.add('input-error');
+                    document.getElementById('childNameError').classList.add('show');
+                    valid = false;
+                }
+                if (!valid) return;
+            }
+
+            if (currentStep === 2 && step > 2) {
+                if (selectedCompetencies.length !== 3) {
+                    document.getElementById('competencyError').classList.add('show');
+                    return;
+                }
+            }
+
+            // 3단계 진입 시 역량 라벨 업데이트
+            if (step === 3) {
+                document.getElementById('comp1Label').textContent = selectedCompetencies[0] || '________';
+                document.getElementById('comp2Label').textContent = selectedCompetencies[1] || '________';
+                document.getElementById('comp3Label').textContent = selectedCompetencies[2] || '________';
+            }
+
+            currentStep = step;
+
+            // 모든 스텝 숨기기
+            document.querySelectorAll('.step').forEach(s => s.classList.remove('active'));
+            document.getElementById('step' + step).classList.add('active');
+
+            // 진행 바
+            if (step <= 3) {
+                document.getElementById('progressArea').style.display = 'block';
+                updateProgress(step);
+            } else {
+                document.getElementById('progressArea').style.display = 'none';
+            }
+
+            // 상단으로 스크롤
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        // 역량 선택 토글
+        function toggleCompetency(card) {
+            if (card.classList.contains('disabled') && !card.classList.contains('selected')) {
+                return;
+            }
+
+            const name = card.getAttribute('data-name');
+
+            if (card.classList.contains('selected')) {
+                // 선택 해제
+                card.classList.remove('selected');
+                selectedCompetencies = selectedCompetencies.filter(c => c !== name);
+            } else {
+                if (selectedCompetencies.length >= 3) return;
+                // 선택
+                card.classList.add('selected');
+                selectedCompetencies.push(name);
+            }
+
+            // 카운트 업데이트
+            document.getElementById('selectCount').textContent = selectedCompetencies.length;
+
+            // 3개 선택 시 나머지 비활성화
+            const allCards = document.querySelectorAll('.competency-card');
+            if (selectedCompetencies.length >= 3) {
+                allCards.forEach(c => {
+                    if (!c.classList.contains('selected')) {
+                        c.classList.add('disabled');
+                    }
+                });
+            } else {
+                allCards.forEach(c => c.classList.remove('disabled'));
+            }
+
+            // 에러 숨기기
+            if (selectedCompetencies.length === 3) {
+                document.getElementById('competencyError').classList.remove('show');
+            }
+        }
+
+        // 선언문 표시
+        function showDeclaration() {
+            clearErrors();
+
+            // 실천 다짐 유효성 검사
+            const p1 = document.getElementById('practice1').value.trim();
+            const p2 = document.getElementById('practice2').value.trim();
+            const p3 = document.getElementById('practice3').value.trim();
+
+            if (!p1 || !p2 || !p3) {
+                document.getElementById('practiceError').classList.add('show');
+                if (!p1) document.getElementById('practice1').classList.add('input-error');
+                if (!p2) document.getElementById('practice2').classList.add('input-error');
+                if (!p3) document.getElementById('practice3').classList.add('input-error');
+                return;
+            }
+
+            const parentName = document.getElementById('parentName').value.trim();
+            const childName = document.getElementById('childName').value.trim();
+            const dateStr = document.getElementById('todayDate').textContent;
+
+            // 선언문 채우기
+            document.getElementById('declNames').textContent = parentName + ' · ' + childName;
+            document.getElementById('declDate').textContent = dateStr;
+
+            // 역량 태그
+            const compContainer = document.getElementById('declCompetencies');
+            compContainer.innerHTML = '';
+            selectedCompetencies.forEach(name => {
+                const tag = document.createElement('span');
+                tag.className = 'decl-competency-tag';
+                tag.textContent = name;
+                compContainer.appendChild(tag);
+            });
+
+            // 실천 다짐
+            const practiceList = document.getElementById('declPractices');
+            practiceList.innerHTML = '';
+            const practices = [
+                { comp: selectedCompetencies[0], text: p1 },
+                { comp: selectedCompetencies[1], text: p2 },
+                { comp: selectedCompetencies[2], text: p3 }
+            ];
+            practices.forEach(item => {
+                const li = document.createElement('li');
+                li.innerHTML = '<strong style="color:#8b6914;">[' + item.comp + ']</strong> ' + item.text;
+                practiceList.appendChild(li);
+            });
+
+            // 서명 - 부모 이름 성(첫 글자) 기반
+            const familySurname = parentName.charAt(0);
+            document.getElementById('declSignature').textContent = familySurname + '씨 가족 일동';
+
+            // 스텝 이동
+            currentStep = 4;
+            document.querySelectorAll('.step').forEach(s => s.classList.remove('active'));
+            document.getElementById('step4').classList.add('active');
+            document.getElementById('progressArea').style.display = 'none';
+
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        // 다시 만들기
+        function restart() {
+            // 초기화
+            document.getElementById('parentName').value = '';
+            document.getElementById('childName').value = '';
+            document.getElementById('practice1').value = '';
+            document.getElementById('practice2').value = '';
+            document.getElementById('practice3').value = '';
+
+            selectedCompetencies = [];
+            document.querySelectorAll('.competency-card').forEach(c => {
+                c.classList.remove('selected', 'disabled');
+            });
+            document.getElementById('selectCount').textContent = '0';
+
+            clearErrors();
+            goToStep(1);
+        }
+
+        // Enter 키로 다음 단계
+        document.getElementById('parentName').addEventListener('keydown', function(e) {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                document.getElementById('childName').focus();
+            }
+        });
+
+        document.getElementById('childName').addEventListener('keydown', function(e) {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                goToStep(2);
+            }
+        });
+
+        // 초기 진행 바
+        updateProgress(1);
+    </script>
+</body>
+</html>

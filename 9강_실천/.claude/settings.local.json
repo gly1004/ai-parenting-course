@@ -1,0 +1,8 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(start \"\" \"C:\\\\Users\\\\gly10\\\\Desktop\\\\9강_실천\\\\자녀_실천역량_부모용_테스트.txt\")",
+      "Bash(npx netlify-cli deploy:*)"
+    ]
+  }
+}

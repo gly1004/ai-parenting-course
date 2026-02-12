@@ -1,0 +1,1142 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>우리 아이 메타 AI 역량 진단</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Malgun Gothic', '맑은 고딕', sans-serif;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            min-height: 100vh;
+            color: #fff;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        /* 헤더 */
+        .header {
+            text-align: center;
+            padding: 40px 20px;
+            border-bottom: 2px solid #00d9a5;
+            margin-bottom: 30px;
+        }
+
+        .header h1 {
+            font-size: 1.8rem;
+            color: #00d9a5;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            color: #aaa;
+            font-size: 0.95rem;
+            line-height: 1.6;
+        }
+
+        /* 진행 바 */
+        .progress-container {
+            background: rgba(255,255,255,0.1);
+            border-radius: 10px;
+            height: 8px;
+            margin-bottom: 30px;
+            overflow: hidden;
+        }
+
+        .progress-bar {
+            height: 100%;
+            background: linear-gradient(90deg, #00d9a5, #00b894);
+            border-radius: 10px;
+            transition: width 0.3s ease;
+            width: 0%;
+        }
+
+        .progress-text {
+            text-align: center;
+            margin-bottom: 20px;
+            color: #00d9a5;
+            font-size: 0.9rem;
+        }
+
+        /* 섹션 제목 */
+        .section-title {
+            background: rgba(0, 217, 165, 0.1);
+            border-left: 4px solid #00d9a5;
+            padding: 15px 20px;
+            margin-bottom: 25px;
+            border-radius: 0 8px 8px 0;
+        }
+
+        .section-title h2 {
+            color: #00d9a5;
+            font-size: 1.1rem;
+            margin-bottom: 5px;
+        }
+
+        .section-title p {
+            color: #aaa;
+            font-size: 0.85rem;
+        }
+
+        /* 질문 카드 */
+        .question-card {
+            background: rgba(255,255,255,0.05);
+            border-radius: 12px;
+            padding: 25px;
+            margin-bottom: 20px;
+            border: 1px solid rgba(255,255,255,0.1);
+            display: none;
+        }
+
+        .question-card.active {
+            display: block;
+            animation: fadeIn 0.3s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .question-number {
+            display: inline-block;
+            background: #00d9a5;
+            color: #1a1a2e;
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            text-align: center;
+            line-height: 28px;
+            font-weight: bold;
+            font-size: 0.9rem;
+            margin-bottom: 15px;
+        }
+
+        .question-text {
+            font-size: 1.05rem;
+            line-height: 1.7;
+            margin-bottom: 20px;
+            color: #fff;
+        }
+
+        /* 선택지 */
+        .options {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .option {
+            background: rgba(255,255,255,0.05);
+            border: 2px solid rgba(255,255,255,0.1);
+            border-radius: 8px;
+            padding: 15px 20px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+        }
+
+        .option:hover {
+            border-color: #00d9a5;
+            background: rgba(0, 217, 165, 0.1);
+        }
+
+        .option.selected {
+            border-color: #00d9a5;
+            background: rgba(0, 217, 165, 0.2);
+        }
+
+        .option-radio {
+            width: 20px;
+            height: 20px;
+            border: 2px solid #666;
+            border-radius: 50%;
+            margin-right: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .option.selected .option-radio {
+            border-color: #00d9a5;
+        }
+
+        .option.selected .option-radio::after {
+            content: '';
+            width: 10px;
+            height: 10px;
+            background: #00d9a5;
+            border-radius: 50%;
+        }
+
+        .option-text {
+            font-size: 0.95rem;
+        }
+
+        /* 버튼 */
+        .buttons {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 30px;
+            gap: 15px;
+        }
+
+        .btn {
+            padding: 14px 30px;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            font-weight: 600;
+        }
+
+        .btn-prev {
+            background: rgba(255,255,255,0.1);
+            color: #fff;
+        }
+
+        .btn-prev:hover {
+            background: rgba(255,255,255,0.2);
+        }
+
+        .btn-next {
+            background: linear-gradient(90deg, #00d9a5, #00b894);
+            color: #1a1a2e;
+            flex: 1;
+        }
+
+        .btn-next:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 20px rgba(0, 217, 165, 0.3);
+        }
+
+        .btn-next:disabled {
+            background: #444;
+            color: #888;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        /* 시작 화면 */
+        .start-screen {
+            text-align: center;
+            padding: 60px 20px;
+        }
+
+        .start-screen h2 {
+            font-size: 1.5rem;
+            margin-bottom: 20px;
+            color: #00d9a5;
+        }
+
+        .start-screen p {
+            color: #aaa;
+            line-height: 1.8;
+            margin-bottom: 30px;
+        }
+
+        .start-screen .info-box {
+            background: rgba(255,255,255,0.05);
+            border-radius: 12px;
+            padding: 25px;
+            margin-bottom: 30px;
+            text-align: left;
+        }
+
+        .start-screen .info-box h3 {
+            color: #00d9a5;
+            margin-bottom: 15px;
+            font-size: 1rem;
+        }
+
+        .start-screen .info-box ul {
+            list-style: none;
+            color: #ccc;
+        }
+
+        .start-screen .info-box li {
+            padding: 8px 0;
+            padding-left: 25px;
+            position: relative;
+        }
+
+        .start-screen .info-box li::before {
+            content: '>';
+            position: absolute;
+            left: 0;
+            color: #00d9a5;
+        }
+
+        .btn-start {
+            background: linear-gradient(90deg, #00d9a5, #00b894);
+            color: #1a1a2e;
+            padding: 18px 50px;
+            font-size: 1.1rem;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            font-weight: 700;
+            transition: all 0.2s ease;
+        }
+
+        .btn-start:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 30px rgba(0, 217, 165, 0.3);
+        }
+
+        /* 결과 화면 */
+        .result-screen {
+            display: none;
+            padding: 20px 0;
+        }
+
+        /* 총점 헤더 */
+        .result-header {
+            text-align: center;
+            background: linear-gradient(180deg, rgba(0,217,165,0.12) 0%, transparent 100%);
+            border-radius: 24px;
+            padding: 50px 30px 40px;
+            margin-bottom: 30px;
+            position: relative;
+        }
+
+        .result-label {
+            color: #888;
+            font-size: 0.9rem;
+            letter-spacing: 3px;
+            margin-bottom: 15px;
+        }
+
+        .total-score {
+            font-size: 5rem;
+            font-weight: 800;
+            color: #00d9a5;
+            line-height: 1;
+        }
+
+        .total-score small {
+            font-size: 1.8rem;
+            color: #555;
+            font-weight: 400;
+        }
+
+        .level-badge {
+            display: inline-block;
+            padding: 14px 35px;
+            border-radius: 50px;
+            font-weight: 700;
+            font-size: 1.15rem;
+            margin-top: 25px;
+        }
+
+        .level-badge.master {
+            background: linear-gradient(135deg, #00d9a5, #00b894);
+            color: #0d1117;
+            box-shadow: 0 8px 30px rgba(0,217,165,0.35);
+        }
+        .level-badge.growing {
+            background: linear-gradient(135deg, #f1c40f, #e67e22);
+            color: #0d1117;
+            box-shadow: 0 8px 30px rgba(241,196,15,0.35);
+        }
+        .level-badge.beginner {
+            background: linear-gradient(135deg, #3498db, #2980b9);
+            color: #fff;
+            box-shadow: 0 8px 30px rgba(52,152,219,0.35);
+        }
+
+        .level-message {
+            margin-top: 20px;
+            color: #aaa;
+            font-size: 0.95rem;
+            line-height: 1.6;
+        }
+
+        /* 상세 결과 섹션 */
+        .detail-section {
+            margin-top: 10px;
+        }
+
+        .detail-title {
+            color: #666;
+            font-size: 0.85rem;
+            letter-spacing: 2px;
+            margin-bottom: 18px;
+            text-align: center;
+        }
+
+        .score-card {
+            background: rgba(255,255,255,0.03);
+            border-radius: 18px;
+            padding: 24px;
+            margin-bottom: 14px;
+            border: 1px solid rgba(255,255,255,0.06);
+        }
+
+        .score-card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 16px;
+        }
+
+        .score-card-info {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+        }
+
+        .score-icon {
+            width: 44px;
+            height: 44px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.3rem;
+        }
+
+        .score-icon.icon1 { background: rgba(0,217,165,0.15); }
+        .score-icon.icon2 { background: rgba(241,196,15,0.15); }
+        .score-icon.icon3 { background: rgba(52,152,219,0.15); }
+
+        .score-card-info h3 {
+            color: #fff;
+            font-size: 1rem;
+            margin-bottom: 3px;
+            font-weight: 600;
+        }
+
+        .score-card-info .subtitle {
+            color: #666;
+            font-size: 0.82rem;
+        }
+
+        .score-card-result {
+            display: flex;
+            align-items: baseline;
+            gap: 4px;
+        }
+
+        .score-card-result .num {
+            font-size: 1.6rem;
+            font-weight: 700;
+        }
+
+        .score-card-result .num.high { color: #00d9a5; }
+        .score-card-result .num.medium { color: #f1c40f; }
+        .score-card-result .num.low { color: #e74c3c; }
+
+        .score-card-result .max {
+            color: #555;
+            font-size: 0.9rem;
+        }
+
+        .score-bar-container {
+            background: rgba(255,255,255,0.06);
+            border-radius: 6px;
+            height: 8px;
+            overflow: hidden;
+        }
+
+        .score-bar {
+            height: 100%;
+            border-radius: 6px;
+            transition: width 1s ease;
+        }
+
+        .score-bar.high { background: linear-gradient(90deg, #00d9a5, #00b894); }
+        .score-bar.medium { background: linear-gradient(90deg, #f1c40f, #f39c12); }
+        .score-bar.low { background: linear-gradient(90deg, #e74c3c, #c0392b); }
+
+        /* 키워야 할 역량 섹션 */
+        .needs-section {
+            background: linear-gradient(135deg, rgba(231,76,60,0.08) 0%, rgba(241,196,15,0.05) 100%);
+            border: 1px solid rgba(231,76,60,0.2);
+            border-radius: 20px;
+            padding: 30px 25px;
+            margin-top: 35px;
+        }
+
+        .needs-title {
+            color: #e74c3c;
+            font-size: 1rem;
+            font-weight: 700;
+            text-align: center;
+            margin-bottom: 22px;
+            letter-spacing: 1px;
+        }
+
+        .needs-list {
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+        }
+
+        .needs-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 15px;
+            background: rgba(255,255,255,0.03);
+            border-radius: 14px;
+            padding: 18px 20px;
+            border-left: 3px solid #e74c3c;
+        }
+
+        .needs-icon {
+            font-size: 1.4rem;
+            flex-shrink: 0;
+            margin-top: 2px;
+        }
+
+        .needs-content strong {
+            color: #fff;
+            font-size: 0.95rem;
+            display: block;
+            margin-bottom: 6px;
+        }
+
+        .needs-content .needs-desc {
+            color: #aaa;
+            font-size: 0.88rem;
+            line-height: 1.5;
+            margin: 0 0 14px 0;
+        }
+
+        .needs-tip {
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+            background: rgba(0,217,165,0.08);
+            border-radius: 10px;
+            padding: 14px 16px;
+        }
+
+        .needs-tip span {
+            font-size: 1.1rem;
+            flex-shrink: 0;
+        }
+
+        .needs-tip p {
+            color: #00d9a5;
+            font-size: 0.85rem;
+            line-height: 1.6;
+            margin: 0;
+        }
+
+        .needs-perfect {
+            display: none;
+            text-align: center;
+            padding: 20px;
+        }
+
+        .needs-perfect span {
+            font-size: 2.5rem;
+            display: block;
+            margin-bottom: 15px;
+        }
+
+        .needs-perfect p {
+            color: #00d9a5;
+            font-size: 1rem;
+            line-height: 1.6;
+            margin: 0;
+        }
+
+        .needs-section.all-good {
+            background: linear-gradient(135deg, rgba(0,217,165,0.08) 0%, rgba(0,184,148,0.05) 100%);
+            border-color: rgba(0,217,165,0.2);
+        }
+
+        .needs-section.all-good .needs-title {
+            color: #00d9a5;
+        }
+
+        /* 푸터 */
+        .result-footer {
+            text-align: center;
+            margin-top: 40px;
+            padding: 40px 25px;
+            background: rgba(0,217,165,0.04);
+            border-radius: 20px;
+            border: 1px solid rgba(0,217,165,0.1);
+        }
+
+        .result-footer .quote {
+            color: #00d9a5;
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin-bottom: 15px;
+            line-height: 1.7;
+        }
+
+        .result-footer .sub {
+            color: #666;
+            font-size: 0.9rem;
+            line-height: 1.6;
+        }
+
+        .btn-restart {
+            margin-top: 30px;
+            background: #00d9a5;
+            color: #0d1117;
+            padding: 16px 50px;
+            border: none;
+            border-radius: 50px;
+            font-size: 1rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .btn-restart:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(0,217,165,0.35);
+        }
+
+
+        /* 푸터 */
+        .footer {
+            text-align: center;
+            padding: 30px;
+            color: #666;
+            font-size: 0.8rem;
+            border-top: 1px solid rgba(255,255,255,0.1);
+            margin-top: 40px;
+        }
+
+        /* 반응형 */
+        @media (max-width: 600px) {
+            .header h1 { font-size: 1.4rem; }
+            .question-text { font-size: 1rem; }
+            .btn { padding: 14px 20px; }
+            .btn-prev { flex: 0 0 auto; }
+            .btn-next { flex: 1; }
+            .total-score { font-size: 2.5rem; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>우리 아이의 메타 AI 역량 진단</h1>
+            <p>부모용 질문지</p>
+        </div>
+
+        <!-- 시작 화면 -->
+        <div class="start-screen" id="startScreen">
+            <h2>메타 AI 마스터가 되는 3가지 힘</h2>
+            <p>우리 아이가 AI 시대의 주인이 될 준비가 되어 있는지<br>10가지 질문으로 알아보세요.</p>
+
+            <div class="info-box">
+                <h3>측정 영역</h3>
+                <ul>
+                    <li><strong>메커니즘 리터러시</strong> - AI가 어떻게 작동하는지 아는 힘</li>
+                    <li><strong>에틱스 리터러시</strong> - 옳고 그름을 가려내는 힘</li>
+                    <li><strong>프롬프트 리터러시</strong> - 제대로 지시하고 부리는 힘</li>
+                </ul>
+            </div>
+
+            <button class="btn-start" onclick="startTest()">테스트 시작하기</button>
+        </div>
+
+        <!-- 테스트 화면 -->
+        <div id="testScreen" style="display: none;">
+            <div class="progress-text" id="progressText">1 / 10</div>
+            <div class="progress-container">
+                <div class="progress-bar" id="progressBar"></div>
+            </div>
+
+            <!-- 질문 1 -->
+            <div class="question-card active" id="q1">
+                <span class="question-number">1</span>
+                <p class="question-text">아이가 "AI는 어떻게 답을 만들어내는 거야?"와 같이<br>기술의 작동 원리에 궁금증을 보인 적이 있나요?</p>
+                <div class="options">
+                    <div class="option" onclick="selectOption(1, 4)"><div class="option-radio"></div><span class="option-text">자주 있다</span></div>
+                    <div class="option" onclick="selectOption(1, 3)"><div class="option-radio"></div><span class="option-text">가끔 있다</span></div>
+                    <div class="option" onclick="selectOption(1, 2)"><div class="option-radio"></div><span class="option-text">거의 없다</span></div>
+                    <div class="option" onclick="selectOption(1, 1)"><div class="option-radio"></div><span class="option-text">전혀 없다</span></div>
+                </div>
+            </div>
+
+            <!-- 질문 2 -->
+            <div class="question-card" id="q2">
+                <span class="question-number">2</span>
+                <p class="question-text">아이가 AI, 컴퓨터, 앱 등이 왜 그렇게 작동하는지<br>원인과 결과를 따져보며 이해하려는 모습을 보이나요?</p>
+                <div class="options">
+                    <div class="option" onclick="selectOption(2, 4)"><div class="option-radio"></div><span class="option-text">자주 있다</span></div>
+                    <div class="option" onclick="selectOption(2, 3)"><div class="option-radio"></div><span class="option-text">가끔 있다</span></div>
+                    <div class="option" onclick="selectOption(2, 2)"><div class="option-radio"></div><span class="option-text">거의 없다</span></div>
+                    <div class="option" onclick="selectOption(2, 1)"><div class="option-radio"></div><span class="option-text">전혀 없다</span></div>
+                </div>
+            </div>
+
+            <!-- 질문 3 -->
+            <div class="question-card" id="q3">
+                <span class="question-number">3</span>
+                <p class="question-text">아이가 새로운 기술이나 도구를 접했을 때, 사용법만 익히는 것이 아니라<br>"이게 왜 이렇게 되는 거지?"라며 구조를 파악하려 하나요?</p>
+                <div class="options">
+                    <div class="option" onclick="selectOption(3, 4)"><div class="option-radio"></div><span class="option-text">자주 있다</span></div>
+                    <div class="option" onclick="selectOption(3, 3)"><div class="option-radio"></div><span class="option-text">가끔 있다</span></div>
+                    <div class="option" onclick="selectOption(3, 2)"><div class="option-radio"></div><span class="option-text">거의 없다</span></div>
+                    <div class="option" onclick="selectOption(3, 1)"><div class="option-radio"></div><span class="option-text">전혀 없다</span></div>
+                </div>
+            </div>
+
+            <!-- 질문 4 -->
+            <div class="question-card" id="q4">
+                <span class="question-number">4</span>
+                <p class="question-text">아이가 인터넷, 유튜브, AI 등에서 얻은 정보를<br>"이게 정말 맞는 말일까?" 하고 의심해 본 적이 있나요?</p>
+                <div class="options">
+                    <div class="option" onclick="selectOption(4, 4)"><div class="option-radio"></div><span class="option-text">자주 있다</span></div>
+                    <div class="option" onclick="selectOption(4, 3)"><div class="option-radio"></div><span class="option-text">가끔 있다</span></div>
+                    <div class="option" onclick="selectOption(4, 2)"><div class="option-radio"></div><span class="option-text">거의 없다</span></div>
+                    <div class="option" onclick="selectOption(4, 1)"><div class="option-radio"></div><span class="option-text">전혀 없다</span></div>
+                </div>
+            </div>
+
+            <!-- 질문 5 -->
+            <div class="question-card" id="q5">
+                <span class="question-number">5</span>
+                <p class="question-text">아이가 어떤 정보를 접했을 때, 다른 출처(책, 뉴스, 어른 등)와<br>비교해서 확인하려는 습관이 있나요?</p>
+                <div class="options">
+                    <div class="option" onclick="selectOption(5, 4)"><div class="option-radio"></div><span class="option-text">자주 있다</span></div>
+                    <div class="option" onclick="selectOption(5, 3)"><div class="option-radio"></div><span class="option-text">가끔 있다</span></div>
+                    <div class="option" onclick="selectOption(5, 2)"><div class="option-radio"></div><span class="option-text">거의 없다</span></div>
+                    <div class="option" onclick="selectOption(5, 1)"><div class="option-radio"></div><span class="option-text">전혀 없다</span></div>
+                </div>
+            </div>
+
+            <!-- 질문 6 -->
+            <div class="question-card" id="q6">
+                <span class="question-number">6</span>
+                <p class="question-text">아이가 "이건 한쪽 의견만 말하는 것 같아" 또는 "이건 광고 같아"라며<br>편향되거나 과장된 정보를 스스로 걸러낸 적이 있나요?</p>
+                <div class="options">
+                    <div class="option" onclick="selectOption(6, 4)"><div class="option-radio"></div><span class="option-text">자주 있다</span></div>
+                    <div class="option" onclick="selectOption(6, 3)"><div class="option-radio"></div><span class="option-text">가끔 있다</span></div>
+                    <div class="option" onclick="selectOption(6, 2)"><div class="option-radio"></div><span class="option-text">거의 없다</span></div>
+                    <div class="option" onclick="selectOption(6, 1)"><div class="option-radio"></div><span class="option-text">전혀 없다</span></div>
+                </div>
+            </div>
+
+            <!-- 질문 7 -->
+            <div class="question-card" id="q7">
+                <span class="question-number">7</span>
+                <p class="question-text">아이가 틀린 정보나 가짜 뉴스를 발견했을 때,<br>왜 틀렸는지 근거를 들어 설명할 수 있나요?</p>
+                <div class="options">
+                    <div class="option" onclick="selectOption(7, 4)"><div class="option-radio"></div><span class="option-text">잘 설명한다</span></div>
+                    <div class="option" onclick="selectOption(7, 3)"><div class="option-radio"></div><span class="option-text">어느 정도 설명한다</span></div>
+                    <div class="option" onclick="selectOption(7, 2)"><div class="option-radio"></div><span class="option-text">설명하기 어려워한다</span></div>
+                    <div class="option" onclick="selectOption(7, 1)"><div class="option-radio"></div><span class="option-text">관심이 없다</span></div>
+                </div>
+            </div>
+
+            <!-- 질문 8 -->
+            <div class="question-card" id="q8">
+                <span class="question-number">8</span>
+                <p class="question-text">아이가 무언가를 검색하거나 질문할 때, 원하는 답을 얻기 위해<br>질문을 구체적으로 다듬거나 바꿔서 시도하는 편인가요?</p>
+                <div class="options">
+                    <div class="option" onclick="selectOption(8, 4)"><div class="option-radio"></div><span class="option-text">자주 있다</span></div>
+                    <div class="option" onclick="selectOption(8, 3)"><div class="option-radio"></div><span class="option-text">가끔 있다</span></div>
+                    <div class="option" onclick="selectOption(8, 2)"><div class="option-radio"></div><span class="option-text">거의 없다</span></div>
+                    <div class="option" onclick="selectOption(8, 1)"><div class="option-radio"></div><span class="option-text">전혀 없다</span></div>
+                </div>
+            </div>
+
+            <!-- 질문 9 -->
+            <div class="question-card" id="q9">
+                <span class="question-number">9</span>
+                <p class="question-text">아이가 자신이 원하는 것을 명확하게 표현하고,<br>상대방(사람이든 기계든)이 이해하기 쉽게 설명하는 편인가요?</p>
+                <div class="options">
+                    <div class="option" onclick="selectOption(9, 4)"><div class="option-radio"></div><span class="option-text">잘 하는 편이다</span></div>
+                    <div class="option" onclick="selectOption(9, 3)"><div class="option-radio"></div><span class="option-text">보통이다</span></div>
+                    <div class="option" onclick="selectOption(9, 2)"><div class="option-radio"></div><span class="option-text">어려워하는 편이다</span></div>
+                    <div class="option" onclick="selectOption(9, 1)"><div class="option-radio"></div><span class="option-text">많이 어려워한다</span></div>
+                </div>
+            </div>
+
+            <!-- 질문 10 -->
+            <div class="question-card" id="q10">
+                <span class="question-number">10</span>
+                <p class="question-text">아이가 결과물이 마음에 들지 않을 때, "다시 해줘"가 아니라<br>구체적으로 어떻게 바꿔달라고 요청할 줄 아나요?<br><small style="color:#888">(예: "더 짧게", "예시를 넣어서", "초등학생도 알게" 등)</small></p>
+                <div class="options">
+                    <div class="option" onclick="selectOption(10, 4)"><div class="option-radio"></div><span class="option-text">잘 하는 편이다</span></div>
+                    <div class="option" onclick="selectOption(10, 3)"><div class="option-radio"></div><span class="option-text">보통이다</span></div>
+                    <div class="option" onclick="selectOption(10, 2)"><div class="option-radio"></div><span class="option-text">어려워하는 편이다</span></div>
+                    <div class="option" onclick="selectOption(10, 1)"><div class="option-radio"></div><span class="option-text">많이 어려워한다</span></div>
+                </div>
+            </div>
+
+            <div class="buttons">
+                <button class="btn btn-prev" id="prevBtn" onclick="prevQuestion()" style="display: none;">이전</button>
+                <button class="btn btn-next" id="nextBtn" onclick="nextQuestion()" disabled>다음</button>
+            </div>
+        </div>
+
+        <!-- 결과 화면 -->
+        <div class="result-screen" id="resultScreen">
+            <!-- 총점 헤더 -->
+            <div class="result-header">
+                <p class="result-label">TOTAL SCORE</p>
+                <div class="total-score">
+                    <span id="totalScore">0</span><small>/40</small>
+                </div>
+                <div class="level-badge" id="levelBadge">메타 AI 마스터</div>
+                <p class="level-message" id="levelMessage">우리 아이는 AI를 도구로 활용할 줄 아는 메타 AI 마스터입니다!</p>
+            </div>
+
+            <!-- 상세 결과 -->
+            <div class="detail-section">
+                <p class="detail-title">DETAIL ANALYSIS</p>
+
+                <div class="score-card" id="score1">
+                    <div class="score-card-header">
+                        <div class="score-card-info">
+                            <div class="score-icon icon1">&#9881;</div>
+                            <div>
+                                <h3>메커니즘 리터러시</h3>
+                                <p class="subtitle">어떻게 작동하는지 아는 힘</p>
+                            </div>
+                        </div>
+                        <div class="score-card-result">
+                            <span class="num high" id="scoreText1">0</span>
+                            <span class="max">/12</span>
+                        </div>
+                    </div>
+                    <div class="score-bar-container">
+                        <div class="score-bar" id="bar1" style="width: 0%"></div>
+                    </div>
+                </div>
+
+                <div class="score-card" id="score2">
+                    <div class="score-card-header">
+                        <div class="score-card-info">
+                            <div class="score-icon icon2">&#9878;</div>
+                            <div>
+                                <h3>에틱스 리터러시</h3>
+                                <p class="subtitle">옳고 그름을 가려내는 힘</p>
+                            </div>
+                        </div>
+                        <div class="score-card-result">
+                            <span class="num high" id="scoreText2">0</span>
+                            <span class="max">/16</span>
+                        </div>
+                    </div>
+                    <div class="score-bar-container">
+                        <div class="score-bar" id="bar2" style="width: 0%"></div>
+                    </div>
+                </div>
+
+                <div class="score-card" id="score3">
+                    <div class="score-card-header">
+                        <div class="score-card-info">
+                            <div class="score-icon icon3">&#9997;</div>
+                            <div>
+                                <h3>프롬프트 리터러시</h3>
+                                <p class="subtitle">제대로 지시하고 부리는 힘</p>
+                            </div>
+                        </div>
+                        <div class="score-card-result">
+                            <span class="num high" id="scoreText3">0</span>
+                            <span class="max">/12</span>
+                        </div>
+                    </div>
+                    <div class="score-bar-container">
+                        <div class="score-bar" id="bar3" style="width: 0%"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 키워야 할 역량 안내 -->
+            <div class="needs-section" id="needsSection">
+                <p class="needs-title">우리 아이에게 필요한 역량</p>
+                <div class="needs-list" id="needsList">
+                    <div class="needs-item" id="need1">
+                        <span class="needs-icon">&#9881;</span>
+                        <div class="needs-content">
+                            <strong>메커니즘 리터러시</strong>
+                            <p class="needs-desc">AI가 어떻게 작동하는지 이해하는 힘을 키워주세요.</p>
+                            <div class="needs-tip">
+                                <span>&#128161;</span>
+                                <p>"AI는 수많은 글을 읽고 패턴을 배워서 답을 만들어내"처럼 원리를 쉽게 설명해주는 대화를 자주 나눠보세요.</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="needs-item" id="need2">
+                        <span class="needs-icon">&#9878;</span>
+                        <div class="needs-content">
+                            <strong>에틱스 리터러시</strong>
+                            <p class="needs-desc">정보의 옳고 그름을 스스로 판단하는 힘을 키워주세요.</p>
+                            <div class="needs-tip">
+                                <span>&#128161;</span>
+                                <p>AI 답변을 함께 검증해보는 "할루시네이션 탐정단" 놀이나 "이 정보가 맞는지 같이 찾아볼까?" 교차 검증 습관을 들여주세요.</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="needs-item" id="need3">
+                        <span class="needs-icon">&#9997;</span>
+                        <div class="needs-content">
+                            <strong>프롬프트 리터러시</strong>
+                            <p class="needs-desc">AI에게 명확하게 지시하고 원하는 결과를 얻는 힘을 키워주세요.</p>
+                            <div class="needs-tip">
+                                <span>&#128161;</span>
+                                <p>"그림 그려줘" vs "고흐 화풍으로 행복한 강아지를 그려줘"의 결과 차이를 직접 비교해보는 실습을 해보세요.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="needs-perfect" id="needsPerfect">
+                    <span>&#127881;</span>
+                    <p>축하합니다! 우리 아이는 모든 영역에서 우수한 메타 AI 역량을 갖추고 있습니다.</p>
+                </div>
+            </div>
+
+            <!-- 푸터 -->
+            <div class="result-footer">
+                <p class="quote">"AI를 가장 잘 쓰는 아이는<br>AI 없이도 생각할 줄 아는 아이입니다."</p>
+                <p class="sub">기술에 휘둘리지 않는 주체적인 마음이 아이의 미래를 결정합니다.</p>
+                <button class="btn-restart" onclick="restartTest()">다시 테스트하기</button>
+            </div>
+        </div>
+
+        <div class="footer">
+            출처: 제10강 기술의 주인 되기 - 메타 AI 역량이란 무엇인가?
+        </div>
+    </div>
+
+    <script>
+        let currentQuestion = 1;
+        let answers = {};
+        const totalQuestions = 10;
+
+        function startTest() {
+            document.getElementById('startScreen').style.display = 'none';
+            document.getElementById('testScreen').style.display = 'block';
+            updateProgress();
+        }
+
+        function selectOption(questionNum, score) {
+            answers[questionNum] = score;
+
+            // 선택 표시
+            const card = document.getElementById('q' + questionNum);
+            const options = card.querySelectorAll('.option');
+            options.forEach(opt => opt.classList.remove('selected'));
+            event.currentTarget.classList.add('selected');
+
+            // 다음 버튼 활성화
+            document.getElementById('nextBtn').disabled = false;
+        }
+
+        function nextQuestion() {
+            if (currentQuestion < totalQuestions) {
+                // 현재 질문 숨기기
+                document.getElementById('q' + currentQuestion).classList.remove('active');
+
+                currentQuestion++;
+
+                // 다음 질문 보이기
+                document.getElementById('q' + currentQuestion).classList.add('active');
+
+                // 진행 상태 업데이트
+                updateProgress();
+
+                // 이전 버튼 표시
+                document.getElementById('prevBtn').style.display = 'block';
+
+                // 다음 버튼 상태 업데이트
+                if (answers[currentQuestion]) {
+                    document.getElementById('nextBtn').disabled = false;
+                } else {
+                    document.getElementById('nextBtn').disabled = true;
+                }
+
+                // 마지막 질문이면 버튼 텍스트 변경
+                if (currentQuestion === totalQuestions) {
+                    document.getElementById('nextBtn').textContent = '결과 보기';
+                }
+            } else {
+                showResult();
+            }
+        }
+
+        function prevQuestion() {
+            if (currentQuestion > 1) {
+                document.getElementById('q' + currentQuestion).classList.remove('active');
+                currentQuestion--;
+                document.getElementById('q' + currentQuestion).classList.add('active');
+
+                updateProgress();
+
+                document.getElementById('nextBtn').textContent = '다음';
+                document.getElementById('nextBtn').disabled = false;
+
+                if (currentQuestion === 1) {
+                    document.getElementById('prevBtn').style.display = 'none';
+                }
+            }
+        }
+
+        function updateProgress() {
+            const progress = (currentQuestion / totalQuestions) * 100;
+            document.getElementById('progressBar').style.width = progress + '%';
+            document.getElementById('progressText').textContent = currentQuestion + ' / ' + totalQuestions;
+        }
+
+        function showResult() {
+            document.getElementById('testScreen').style.display = 'none';
+            document.getElementById('resultScreen').style.display = 'block';
+
+            // 페이지 상단으로 스크롤
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+
+            // 점수 계산
+            const score1 = (answers[1] || 0) + (answers[2] || 0) + (answers[3] || 0);
+            const score2 = (answers[4] || 0) + (answers[5] || 0) + (answers[6] || 0) + (answers[7] || 0);
+            const score3 = (answers[8] || 0) + (answers[9] || 0) + (answers[10] || 0);
+            const totalScore = score1 + score2 + score3;
+
+            // 결과 표시 (애니메이션)
+            setTimeout(() => {
+                document.getElementById('totalScore').textContent = totalScore;
+
+                // 레벨 판정
+                const badge = document.getElementById('levelBadge');
+                const message = document.getElementById('levelMessage');
+                if (totalScore >= 32) {
+                    badge.textContent = '메타 AI 마스터';
+                    badge.className = 'level-badge master';
+                    message.textContent = '우리 아이는 AI를 도구로 활용할 줄 아는 메타 AI 마스터입니다!';
+                } else if (totalScore >= 20) {
+                    badge.textContent = '성장하는 AI 사용자';
+                    badge.className = 'level-badge growing';
+                    message.textContent = '조금만 더 연습하면 AI를 자유자재로 다룰 수 있어요!';
+                } else {
+                    badge.textContent = 'AI 역량 입문자';
+                    badge.className = 'level-badge beginner';
+                    message.textContent = '지금부터 차근차근 메타 AI 역량을 키워가요!';
+                }
+
+                // 영역별 점수
+                document.getElementById('scoreText1').textContent = score1;
+                document.getElementById('scoreText2').textContent = score2;
+                document.getElementById('scoreText3').textContent = score3;
+
+                // 막대 그래프
+                const percent1 = (score1 / 12) * 100;
+                const percent2 = (score2 / 16) * 100;
+                const percent3 = (score3 / 12) * 100;
+
+                document.getElementById('bar1').style.width = percent1 + '%';
+                document.getElementById('bar2').style.width = percent2 + '%';
+                document.getElementById('bar3').style.width = percent3 + '%';
+
+                // 색상 적용
+                setScoreColor('bar1', 'scoreText1', percent1);
+                setScoreColor('bar2', 'scoreText2', percent2);
+                setScoreColor('bar3', 'scoreText3', percent3);
+
+                // 키워야 할 역량 표시
+                const need1 = document.getElementById('need1');
+                const need2 = document.getElementById('need2');
+                const need3 = document.getElementById('need3');
+                const needsSection = document.getElementById('needsSection');
+                const needsList = document.getElementById('needsList');
+                const needsPerfect = document.getElementById('needsPerfect');
+
+                need1.style.display = percent1 < 70 ? 'flex' : 'none';
+                need2.style.display = percent2 < 70 ? 'flex' : 'none';
+                need3.style.display = percent3 < 70 ? 'flex' : 'none';
+
+                // 모든 영역이 70% 이상이면 축하 메시지 표시
+                if (percent1 >= 70 && percent2 >= 70 && percent3 >= 70) {
+                    needsList.style.display = 'none';
+                    needsPerfect.style.display = 'block';
+                    needsSection.classList.add('all-good');
+                    document.querySelector('.needs-title').textContent = '우리 아이의 메타 AI 역량';
+                } else {
+                    needsList.style.display = 'flex';
+                    needsPerfect.style.display = 'none';
+                    needsSection.classList.remove('all-good');
+                    document.querySelector('.needs-title').textContent = '우리 아이에게 필요한 역량';
+                }
+
+            }, 300);
+        }
+
+        function setScoreColor(barId, textId, percent) {
+            const bar = document.getElementById(barId);
+            const text = document.getElementById(textId);
+
+            bar.classList.remove('high', 'medium', 'low');
+            text.classList.remove('high', 'medium', 'low');
+
+            let colorClass;
+            if (percent >= 70) {
+                colorClass = 'high';
+            } else if (percent >= 40) {
+                colorClass = 'medium';
+            } else {
+                colorClass = 'low';
+            }
+
+            bar.classList.add(colorClass);
+            text.classList.add(colorClass);
+        }
+
+        function restartTest() {
+            currentQuestion = 1;
+            answers = {};
+
+            // 모든 선택 초기화
+            document.querySelectorAll('.option').forEach(opt => opt.classList.remove('selected'));
+
+            // 화면 전환
+            document.getElementById('resultScreen').style.display = 'none';
+            document.getElementById('startScreen').style.display = 'block';
+
+            // 질문 카드 초기화
+            document.querySelectorAll('.question-card').forEach((card, index) => {
+                if (index === 0) {
+                    card.classList.add('active');
+                } else {
+                    card.classList.remove('active');
+                }
+            });
+
+            // 버튼 초기화
+            document.getElementById('prevBtn').style.display = 'none';
+            document.getElementById('nextBtn').textContent = '다음';
+            document.getElementById('nextBtn').disabled = true;
+
+            // 막대 그래프 초기화
+            document.getElementById('bar1').style.width = '0%';
+            document.getElementById('bar2').style.width = '0%';
+            document.getElementById('bar3').style.width = '0%';
+
+            // 키워야 할 역량 섹션 초기화
+            document.getElementById('need1').style.display = 'flex';
+            document.getElementById('need2').style.display = 'flex';
+            document.getElementById('need3').style.display = 'flex';
+            document.getElementById('needsList').style.display = 'flex';
+            document.getElementById('needsPerfect').style.display = 'none';
+            document.getElementById('needsSection').classList.remove('all-good');
+            document.querySelector('.needs-title').textContent = '우리 아이에게 필요한 역량';
+        }
+    </script>
+</body>
+</html>

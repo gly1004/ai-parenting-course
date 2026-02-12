@@ -1,0 +1,1082 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>꿈의 안내자 자가진단 테스트</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+            min-height: 100vh;
+            padding: 20px;
+            color: #fff;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        header {
+            text-align: center;
+            padding: 40px 20px;
+            margin-bottom: 30px;
+        }
+
+        header h1 {
+            font-size: 2.2rem;
+            color: #4aeadc;
+            margin-bottom: 15px;
+            text-shadow: 0 0 20px rgba(74, 234, 220, 0.3);
+        }
+
+        header p {
+            color: #a0a0a0;
+            font-size: 1.1rem;
+        }
+
+        .progress-bar {
+            background: rgba(255,255,255,0.1);
+            border-radius: 20px;
+            height: 12px;
+            margin-bottom: 30px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            background: linear-gradient(90deg, #4aeadc, #4a90ea);
+            height: 100%;
+            width: 0%;
+            transition: width 0.5s ease;
+            border-radius: 20px;
+        }
+
+        .progress-text {
+            text-align: center;
+            margin-bottom: 20px;
+            color: #4aeadc;
+            font-weight: bold;
+        }
+
+        .question-card {
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 16px;
+            padding: 30px;
+            margin-bottom: 20px;
+            backdrop-filter: blur(10px);
+            display: none;
+            animation: fadeIn 0.5s ease;
+        }
+
+        .question-card.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .question-number {
+            display: inline-block;
+            background: linear-gradient(135deg, #4aeadc, #4a90ea);
+            color: #1a1a2e;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-weight: bold;
+            margin-bottom: 20px;
+        }
+
+        .question-text {
+            font-size: 1.3rem;
+            line-height: 1.8;
+            margin-bottom: 30px;
+        }
+
+        .options {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+        }
+
+        .option-btn {
+            padding: 15px 50px;
+            font-size: 1.1rem;
+            border: 2px solid rgba(255,255,255,0.2);
+            border-radius: 12px;
+            background: rgba(255,255,255,0.05);
+            color: #fff;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .option-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+        }
+
+        .option-btn.yes:hover {
+            background: rgba(74, 234, 220, 0.2);
+            border-color: #4aeadc;
+        }
+
+        .option-btn.no:hover {
+            background: rgba(255, 107, 107, 0.2);
+            border-color: #ff6b6b;
+        }
+
+        .option-btn.selected-yes {
+            background: rgba(74, 234, 220, 0.3);
+            border-color: #4aeadc;
+        }
+
+        .option-btn.selected-no {
+            background: rgba(255, 107, 107, 0.3);
+            border-color: #ff6b6b;
+        }
+
+        /* 결과 화면 */
+        .result-card {
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 16px;
+            padding: 40px;
+            text-align: center;
+            display: none;
+            animation: fadeIn 0.5s ease;
+        }
+
+        .result-card.active {
+            display: block;
+        }
+
+        .result-score {
+            font-size: 5rem;
+            font-weight: bold;
+            background: linear-gradient(135deg, #4aeadc, #4a90ea);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 10px;
+        }
+
+        .result-label {
+            font-size: 1.2rem;
+            color: #a0a0a0;
+            margin-bottom: 30px;
+        }
+
+        .result-title {
+            font-size: 2rem;
+            margin-bottom: 20px;
+            color: #4aeadc;
+        }
+
+        /* 부족한 부분 & 보완 방법 박스 */
+        .improvement-box {
+            background: linear-gradient(135deg, rgba(255, 170, 100, 0.1), rgba(255, 107, 107, 0.1));
+            border: 1px solid rgba(255, 170, 100, 0.3);
+            border-radius: 16px;
+            padding: 25px;
+            margin: 25px 0;
+            text-align: left;
+        }
+
+        .improvement-box h3 {
+            color: #ffaa64;
+            font-size: 1.2rem;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .improvement-box h3::before {
+            content: "◈";
+            font-size: 1.1rem;
+        }
+
+        .improvement-section {
+            margin-bottom: 25px;
+            padding: 20px;
+            border-radius: 12px;
+        }
+
+        .improvement-section:last-child {
+            margin-bottom: 0;
+        }
+
+        /* 심각한 약점 (0-1점) 스타일 */
+        .improvement-section.critical {
+            background: rgba(255, 107, 107, 0.1);
+            border: 1px solid rgba(255, 107, 107, 0.3);
+        }
+
+        .improvement-section.critical h4 {
+            color: #ff6b6b;
+            font-size: 1.05rem;
+            margin-bottom: 10px;
+            padding-bottom: 8px;
+            border-bottom: 1px solid rgba(255, 107, 107, 0.3);
+        }
+
+        .improvement-section.critical .level-badge {
+            display: inline-block;
+            background: rgba(255, 107, 107, 0.3);
+            color: #ff6b6b;
+            padding: 3px 10px;
+            border-radius: 12px;
+            font-size: 0.75rem;
+            margin-left: 10px;
+            font-weight: bold;
+        }
+
+        /* 보완 필요 (2점) 스타일 */
+        .improvement-section.moderate {
+            background: rgba(255, 200, 100, 0.1);
+            border: 1px solid rgba(255, 200, 100, 0.3);
+        }
+
+        .improvement-section.moderate h4 {
+            color: #ffc864;
+            font-size: 1.05rem;
+            margin-bottom: 10px;
+            padding-bottom: 8px;
+            border-bottom: 1px solid rgba(255, 200, 100, 0.3);
+        }
+
+        .improvement-section.moderate .level-badge {
+            display: inline-block;
+            background: rgba(255, 200, 100, 0.3);
+            color: #ffc864;
+            padding: 3px 10px;
+            border-radius: 12px;
+            font-size: 0.75rem;
+            margin-left: 10px;
+            font-weight: bold;
+        }
+
+        /* 축하 메시지 스타일 */
+        .improvement-section.success {
+            background: rgba(74, 234, 220, 0.1);
+            border: 1px solid rgba(74, 234, 220, 0.3);
+        }
+
+        .improvement-section.success h4 {
+            color: #4aeadc;
+            font-size: 1.05rem;
+            margin-bottom: 10px;
+            padding-bottom: 8px;
+            border-bottom: 1px solid rgba(74, 234, 220, 0.3);
+        }
+
+        .improvement-section p {
+            color: #d0d0d0;
+            line-height: 1.8;
+            font-size: 0.95rem;
+            margin-bottom: 10px;
+        }
+
+        .tip-box {
+            background: rgba(74, 234, 220, 0.1);
+            border-left: 3px solid #4aeadc;
+            padding: 12px 15px;
+            margin-top: 10px;
+            border-radius: 0 8px 8px 0;
+        }
+
+        .tip-box strong {
+            color: #4aeadc;
+        }
+
+        .tip-box p {
+            margin: 0;
+            font-size: 0.9rem;
+        }
+
+        /* 영역별 점수 */
+        .result-details {
+            background: rgba(0,0,0,0.2);
+            border-radius: 12px;
+            padding: 25px;
+            margin: 25px 0;
+            text-align: left;
+        }
+
+        .result-details h3 {
+            color: #4aeadc;
+            margin-bottom: 15px;
+            font-size: 1.1rem;
+        }
+
+        .category-item {
+            padding: 15px 0;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .category-item:last-child {
+            border-bottom: none;
+        }
+
+        .category-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 8px;
+        }
+
+        .category-name {
+            color: #4aeadc;
+            font-weight: bold;
+            font-size: 1.05rem;
+        }
+
+        .category-desc {
+            color: #a0a0a0;
+            font-size: 0.85rem;
+            margin-bottom: 10px;
+            line-height: 1.5;
+        }
+
+        .category-bar {
+            width: 100%;
+            height: 8px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 4px;
+            overflow: hidden;
+        }
+
+        .category-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #4aeadc, #4a90ea);
+            border-radius: 4px;
+            transition: width 1s ease;
+        }
+
+        .category-fill.low {
+            background: linear-gradient(90deg, #ff6b6b, #ffaa64);
+        }
+
+        .category-fill.moderate {
+            background: linear-gradient(90deg, #ffaa64, #ffd700);
+        }
+
+        .restart-btn {
+            padding: 15px 40px;
+            font-size: 1.1rem;
+            background: linear-gradient(135deg, #4aeadc, #4a90ea);
+            border: none;
+            border-radius: 12px;
+            color: #1a1a2e;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            margin-top: 20px;
+        }
+
+        .restart-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 30px rgba(74, 234, 220, 0.3);
+        }
+
+        footer {
+            text-align: center;
+            padding: 30px;
+            color: #606060;
+            font-size: 0.9rem;
+        }
+
+        @media (max-width: 600px) {
+            body {
+                padding: 10px;
+            }
+
+            .container {
+                max-width: 100%;
+            }
+
+            header {
+                padding: 25px 15px;
+                margin-bottom: 20px;
+            }
+
+            header h1 {
+                font-size: 1.5rem;
+            }
+
+            header p {
+                font-size: 0.95rem;
+            }
+
+            .question-card {
+                padding: 20px 15px;
+            }
+
+            .question-text {
+                font-size: 1.05rem;
+                line-height: 1.6;
+            }
+
+            .options {
+                flex-direction: column;
+                gap: 12px;
+            }
+
+            .option-btn {
+                width: 100%;
+                padding: 14px 30px;
+            }
+
+            .result-card {
+                padding: 25px 15px;
+            }
+
+            .result-score {
+                font-size: 3.5rem;
+            }
+
+            .result-title {
+                font-size: 1.4rem;
+            }
+
+            .result-details {
+                padding: 15px;
+            }
+
+            .result-details h3 {
+                font-size: 1rem;
+            }
+
+            .category-item {
+                padding: 12px 0;
+            }
+
+            .category-header {
+                flex-wrap: nowrap;
+            }
+
+            .category-name {
+                font-size: 0.95rem;
+            }
+
+            .category-desc {
+                font-size: 0.8rem;
+                line-height: 1.4;
+            }
+
+            .improvement-box {
+                padding: 15px;
+            }
+
+            .improvement-box h3 {
+                font-size: 1rem;
+            }
+
+            .improvement-section {
+                padding: 15px;
+                margin-bottom: 15px;
+            }
+
+            .improvement-section h4 {
+                font-size: 0.95rem;
+            }
+
+            .improvement-section p {
+                font-size: 0.85rem;
+            }
+
+            .level-badge {
+                font-size: 0.7rem !important;
+                padding: 2px 8px !important;
+            }
+
+            .tip-box {
+                padding: 10px 12px;
+            }
+
+            .tip-box ul {
+                margin-left: 15px !important;
+                font-size: 0.85rem;
+            }
+
+            .restart-btn {
+                padding: 12px 30px;
+                font-size: 1rem;
+            }
+
+            footer {
+                padding: 20px;
+                font-size: 0.8rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>나는 꿈의 안내자인가?</h1>
+            <p>자녀의 학습 주체성을 키우는 부모 자가진단 테스트</p>
+        </header>
+
+        <div class="progress-text">질문 <span id="currentQ">1</span> / 20</div>
+        <div class="progress-bar">
+            <div class="progress-fill" id="progressFill"></div>
+        </div>
+
+        <!-- ========== 관찰 영역 (Q1-Q5) ========== -->
+        <div class="question-card active" data-question="1" data-category="observe">
+            <span class="question-number">Q1</span>
+            <p class="question-text">나는 아이가 무언가에 몰입하는 순간을 판단하지 않고 사진이나 글로 기록하고 있는가?</p>
+            <div class="options">
+                <button class="option-btn yes" onclick="selectAnswer(1, true)">예</button>
+                <button class="option-btn no" onclick="selectAnswer(1, false)">아니오</button>
+            </div>
+        </div>
+
+        <div class="question-card" data-question="2" data-category="observe">
+            <span class="question-number">Q2</span>
+            <p class="question-text">나는 아이가 "시간 가는 줄 몰랐던 경험"이 무엇인지 알고 있는가?</p>
+            <div class="options">
+                <button class="option-btn yes" onclick="selectAnswer(2, true)">예</button>
+                <button class="option-btn no" onclick="selectAnswer(2, false)">아니오</button>
+            </div>
+        </div>
+
+        <div class="question-card" data-question="3" data-category="observe">
+            <span class="question-number">Q3</span>
+            <p class="question-text">나는 아이의 엉뚱한 관심사에 "이런 걸 왜 좋아해?"라고 묻기보다 그 안에서 강점을 찾으려 노력하는가?</p>
+            <div class="options">
+                <button class="option-btn yes" onclick="selectAnswer(3, true)">예</button>
+                <button class="option-btn no" onclick="selectAnswer(3, false)">아니오</button>
+            </div>
+        </div>
+
+        <div class="question-card" data-question="4" data-category="observe">
+            <span class="question-number">Q4</span>
+            <p class="question-text">나는 아이가 어떤 활동을 할 때 눈이 반짝이고 설레는지 알고 있는가?</p>
+            <div class="options">
+                <button class="option-btn yes" onclick="selectAnswer(4, true)">예</button>
+                <button class="option-btn no" onclick="selectAnswer(4, false)">아니오</button>
+            </div>
+        </div>
+
+        <div class="question-card" data-question="5" data-category="observe">
+            <span class="question-number">Q5</span>
+            <p class="question-text">나는 아이의 관심사가 변할 때 그 변화의 이유를 함께 탐색하고 있는가?</p>
+            <div class="options">
+                <button class="option-btn yes" onclick="selectAnswer(5, true)">예</button>
+                <button class="option-btn no" onclick="selectAnswer(5, false)">아니오</button>
+            </div>
+        </div>
+
+        <!-- ========== 연결 영역 (Q6-Q10) ========== -->
+        <div class="question-card" data-question="6" data-category="connect">
+            <span class="question-number">Q6</span>
+            <p class="question-text">나는 현재 아이의 배움이 미래의 목적과 어떻게 연결되는지 함께 대화하고 있는가?</p>
+            <div class="options">
+                <button class="option-btn yes" onclick="selectAnswer(6, true)">예</button>
+                <button class="option-btn no" onclick="selectAnswer(6, false)">아니오</button>
+            </div>
+        </div>
+
+        <div class="question-card" data-question="7" data-category="connect">
+            <span class="question-number">Q7</span>
+            <p class="question-text">나는 매주 정기적으로 아이와 하브루타(질문과 토론)를 하는 시간을 갖고 있는가?</p>
+            <div class="options">
+                <button class="option-btn yes" onclick="selectAnswer(7, true)">예</button>
+                <button class="option-btn no" onclick="selectAnswer(7, false)">아니오</button>
+            </div>
+        </div>
+
+        <div class="question-card" data-question="8" data-category="connect">
+            <span class="question-number">Q8</span>
+            <p class="question-text">나는 직업의 이름보다 실제로 그들이 하는 일을 보여주기 위해 다큐멘터리, 현장 방문 등 다양한 역할에 노출시키고 있는가?</p>
+            <div class="options">
+                <button class="option-btn yes" onclick="selectAnswer(8, true)">예</button>
+                <button class="option-btn no" onclick="selectAnswer(8, false)">아니오</button>
+            </div>
+        </div>
+
+        <div class="question-card" data-question="9" data-category="connect">
+            <span class="question-number">Q9</span>
+            <p class="question-text">나는 아이에게 "이 공부가 네 꿈과 어떻게 연결될까?" 같은 의미 부여 대화를 하고 있는가?</p>
+            <div class="options">
+                <button class="option-btn yes" onclick="selectAnswer(9, true)">예</button>
+                <button class="option-btn no" onclick="selectAnswer(9, false)">아니오</button>
+            </div>
+        </div>
+
+        <div class="question-card" data-question="10" data-category="connect">
+            <span class="question-number">Q10</span>
+            <p class="question-text">나는 아이가 배우는 교과목이 실제 세상에서 어떻게 쓰이는지 예시를 들어 설명해주고 있는가?</p>
+            <div class="options">
+                <button class="option-btn yes" onclick="selectAnswer(10, true)">예</button>
+                <button class="option-btn no" onclick="selectAnswer(10, false)">아니오</button>
+            </div>
+        </div>
+
+        <!-- ========== 지지 영역 (Q11-Q15) ========== -->
+        <div class="question-card" data-question="11" data-category="support">
+            <span class="question-number">Q11</span>
+            <p class="question-text">나는 결과(성적, 등수)보다 탐색의 과정 자체를 축하하고 지지하고 있는가?</p>
+            <div class="options">
+                <button class="option-btn yes" onclick="selectAnswer(11, true)">예</button>
+                <button class="option-btn no" onclick="selectAnswer(11, false)">아니오</button>
+            </div>
+        </div>
+
+        <div class="question-card" data-question="12" data-category="support">
+            <span class="question-number">Q12</span>
+            <p class="question-text">나는 아이가 스스로 알람 맞추기, 가방 챙기기 등 나이에 맞는 책임을 지도록 하고 있는가?</p>
+            <div class="options">
+                <button class="option-btn yes" onclick="selectAnswer(12, true)">예</button>
+                <button class="option-btn no" onclick="selectAnswer(12, false)">아니오</button>
+            </div>
+        </div>
+
+        <div class="question-card" data-question="13" data-category="support">
+            <span class="question-number">Q13</span>
+            <p class="question-text">나는 아이가 실패했을 때 비난보다 "다음엔 어떻게 하면 좋을까?"라고 함께 고민하는가?</p>
+            <div class="options">
+                <button class="option-btn yes" onclick="selectAnswer(13, true)">예</button>
+                <button class="option-btn no" onclick="selectAnswer(13, false)">아니오</button>
+            </div>
+        </div>
+
+        <div class="question-card" data-question="14" data-category="support">
+            <span class="question-number">Q14</span>
+            <p class="question-text">나는 아이의 작은 성장과 노력을 구체적으로 인정하고 칭찬하고 있는가?</p>
+            <div class="options">
+                <button class="option-btn yes" onclick="selectAnswer(14, true)">예</button>
+                <button class="option-btn no" onclick="selectAnswer(14, false)">아니오</button>
+            </div>
+        </div>
+
+        <div class="question-card" data-question="15" data-category="support">
+            <span class="question-number">Q15</span>
+            <p class="question-text">나는 아이가 스스로 결정할 수 있는 기회를 충분히 주고 있는가?</p>
+            <div class="options">
+                <button class="option-btn yes" onclick="selectAnswer(15, true)">예</button>
+                <button class="option-btn no" onclick="selectAnswer(15, false)">아니오</button>
+            </div>
+        </div>
+
+        <!-- ========== 정체성 영역 (Q16-Q20) ========== -->
+        <div class="question-card" data-question="16" data-category="identity">
+            <span class="question-number">Q16</span>
+            <p class="question-text">나는 "너를 가장 잘 표현하는 단어 3개는 뭐니?" 같은 자아 발견 질문을 아이에게 하고 있는가?</p>
+            <div class="options">
+                <button class="option-btn yes" onclick="selectAnswer(16, true)">예</button>
+                <button class="option-btn no" onclick="selectAnswer(16, false)">아니오</button>
+            </div>
+        </div>
+
+        <div class="question-card" data-question="17" data-category="identity">
+            <span class="question-number">Q17</span>
+            <p class="question-text">나는 아이의 미래를 부모가 만들어주는 것이 아니라, 아이가 스스로 걷게 돕는 것이라고 믿고 실천하는가?</p>
+            <div class="options">
+                <button class="option-btn yes" onclick="selectAnswer(17, true)">예</button>
+                <button class="option-btn no" onclick="selectAnswer(17, false)">아니오</button>
+            </div>
+        </div>
+
+        <div class="question-card" data-question="18" data-category="identity">
+            <span class="question-number">Q18</span>
+            <p class="question-text">나는 아이에게 "넌 어떤 걸 할 때 가장 행복하니?"라고 물어본 적이 있는가?</p>
+            <div class="options">
+                <button class="option-btn yes" onclick="selectAnswer(18, true)">예</button>
+                <button class="option-btn no" onclick="selectAnswer(18, false)">아니오</button>
+            </div>
+        </div>
+
+        <div class="question-card" data-question="19" data-category="identity">
+            <span class="question-number">Q19</span>
+            <p class="question-text">나는 아이가 자신의 강점과 약점을 스스로 이야기할 수 있도록 대화하고 있는가?</p>
+            <div class="options">
+                <button class="option-btn yes" onclick="selectAnswer(19, true)">예</button>
+                <button class="option-btn no" onclick="selectAnswer(19, false)">아니오</button>
+            </div>
+        </div>
+
+        <div class="question-card" data-question="20" data-category="identity">
+            <span class="question-number">Q20</span>
+            <p class="question-text">나는 아이에게 "미래에 어떤 사람으로 기억되고 싶어?"라고 물어본 적이 있는가?</p>
+            <div class="options">
+                <button class="option-btn yes" onclick="selectAnswer(20, true)">예</button>
+                <button class="option-btn no" onclick="selectAnswer(20, false)">아니오</button>
+            </div>
+        </div>
+
+        <!-- 결과 화면 -->
+        <div class="result-card" id="resultCard">
+            <div class="result-score" id="resultScore">0</div>
+            <div class="result-label">/ 20점</div>
+            <h2 class="result-title" id="resultTitle"></h2>
+
+            <!-- 영역별 점수 -->
+            <div class="result-details">
+                <h3>영역별 점수</h3>
+
+                <div class="category-item">
+                    <div class="category-header">
+                        <span class="category-name">관찰</span>
+                        <span id="observeScore">0/5</span>
+                    </div>
+                    <p class="category-desc">아이의 몰입 순간과 관심사를 포착하고 기록하는 능력입니다. 꿈 안내자의 첫 번째 역할은 아이의 설렘의 순간을 발견하는 것입니다.</p>
+                    <div class="category-bar">
+                        <div class="category-fill" id="observeBar" style="width: 0%"></div>
+                    </div>
+                </div>
+
+                <div class="category-item">
+                    <div class="category-header">
+                        <span class="category-name">연결</span>
+                        <span id="connectScore">0/5</span>
+                    </div>
+                    <p class="category-desc">현재의 배움과 미래의 꿈을 연결하는 대화 능력입니다. 하브루타와 다양한 경험을 통해 학습의 의미를 깨닫게 돕습니다.</p>
+                    <div class="category-bar">
+                        <div class="category-fill" id="connectBar" style="width: 0%"></div>
+                    </div>
+                </div>
+
+                <div class="category-item">
+                    <div class="category-header">
+                        <span class="category-name">지지</span>
+                        <span id="supportScore">0/5</span>
+                    </div>
+                    <p class="category-desc">결과보다 과정을 응원하고, 나이에 맞는 책임감을 키워주는 능력입니다. 실패를 두려워하지 않는 도전 정신을 길러줍니다.</p>
+                    <div class="category-bar">
+                        <div class="category-fill" id="supportBar" style="width: 0%"></div>
+                    </div>
+                </div>
+
+                <div class="category-item">
+                    <div class="category-header">
+                        <span class="category-name">정체성</span>
+                        <span id="identityScore">0/5</span>
+                    </div>
+                    <p class="category-desc">아이가 "나는 누구인가"를 탐색하도록 돕는 능력입니다. 자아 정체성이 확립된 아이는 스스로 목표를 세우고 나아갑니다.</p>
+                    <div class="category-bar">
+                        <div class="category-fill" id="identityBar" style="width: 0%"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 부족한 부분 & 보완 방법 박스 -->
+            <div class="improvement-box" id="improvementBox">
+                <h3>성장을 위한 맞춤 가이드</h3>
+                <div id="improvementContent"></div>
+            </div>
+
+            <button class="restart-btn" onclick="restartTest()">다시 테스트하기</button>
+        </div>
+
+        <footer>
+            출처: 제16강 AI시대의 부모 - 꿈 여정의 안내자 되기
+        </footer>
+    </div>
+
+    <script>
+        let answers = {};
+        let currentQuestion = 1;
+        const totalQuestions = 20;
+
+        const categoryMap = {
+            1: 'observe', 2: 'observe', 3: 'observe', 4: 'observe', 5: 'observe',
+            6: 'connect', 7: 'connect', 8: 'connect', 9: 'connect', 10: 'connect',
+            11: 'support', 12: 'support', 13: 'support', 14: 'support', 15: 'support',
+            16: 'identity', 17: 'identity', 18: 'identity', 19: 'identity', 20: 'identity'
+        };
+
+        // 영역별 설명 데이터
+        const categoryInfo = {
+            observe: {
+                name: '관찰',
+                // 심각한 약점 (0-1점)
+                weak: '관찰 영역에 집중이 필요합니다',
+                weakDetail: '아이가 무엇에 몰입하는지, 어떤 순간에 눈이 반짝이는지 아직 충분히 파악하지 못하고 있습니다. 아이의 작은 관심사가 미래 꿈의 씨앗이 될 수 있습니다. 꿈 안내자의 첫 번째 역할은 아이의 설렘의 순간을 포착하는 것입니다.',
+                tips: [
+                    '이번 주부터 아이가 집중하는 모습을 사진이나 메모로 기록해보세요.',
+                    '"시간 가는 줄 몰랐던 적 있어?"라고 자연스럽게 물어보세요.',
+                    '아이의 엉뚱한 관심사도 "왜 좋아해?"보다 "어떤 점이 재미있어?"로 질문을 바꿔보세요.',
+                    '아이가 눈을 반짝이며 이야기하는 순간을 놓치지 마세요.',
+                    '관심사가 바뀔 때 "왜 바뀌었어?"가 아닌 "새로운 게 궁금해졌구나!"로 반응해보세요.'
+                ],
+                // 보완 필요 (2점)
+                moderate: '관찰 영역을 조금 더 보완하면 좋겠습니다',
+                moderateDetail: '아이의 관심사를 어느 정도 파악하고 계시지만, 좀 더 세심한 관찰이 필요합니다. 아이가 몰입하는 순간을 기록하고 그 패턴을 발견하면 꿈의 방향을 찾는 데 큰 도움이 됩니다.',
+                moderateTips: [
+                    '아이가 집중하는 모습을 발견하면 메모해두는 습관을 들여보세요.',
+                    '"오늘 뭐 할 때 제일 재미있었어?"라고 저녁 식사 때 물어보세요.',
+                    '아이의 관심사가 바뀔 때 그 이유를 함께 탐색해보세요.'
+                ]
+            },
+            connect: {
+                name: '연결',
+                // 심각한 약점 (0-1점)
+                weak: '연결 영역에 집중이 필요합니다',
+                weakDetail: '아이가 현재 배우는 것이 미래와 어떻게 연결되는지 대화가 부족합니다. 학습의 의미를 모르면 아이는 공부를 "해야 하는 것"으로만 느낍니다. "나는 ~를 위해 오늘 ~를 공부한다"는 의미 부여가 학습 동기의 핵심입니다.',
+                tips: [
+                    '매주 하루를 정해 아이와 15분씩 질문과 토론 시간(하브루타)을 가져보세요.',
+                    '"이걸 배우면 나중에 뭘 할 수 있을까?" 함께 상상해보세요.',
+                    '다큐멘터리, 직업 체험, 현장 방문 등으로 다양한 역할을 보여주세요.',
+                    '"이 공부가 네 꿈과 어떻게 연결될까?" 의미 부여 대화를 시도해보세요.',
+                    '수학, 과학 등 교과목이 실생활에서 어떻게 쓰이는지 예시를 들어주세요.'
+                ],
+                // 보완 필요 (2점)
+                moderate: '연결 영역을 조금 더 보완하면 좋겠습니다',
+                moderateDetail: '배움과 미래를 연결하는 대화를 시작하셨지만, 더 자주 그리고 깊이 있게 나눠보세요. 아이가 "왜 공부하는지" 스스로 의미를 찾을 수 있도록 도와주세요.',
+                moderateTips: [
+                    '일주일에 한 번, 아이와 "오늘 배운 것 중 나중에 쓸모있을 것" 이야기해보세요.',
+                    '뉴스나 일상에서 교과목과 연결되는 사례를 함께 찾아보세요.',
+                    '아이가 관심 있는 직업이 실제로 어떤 일을 하는지 영상으로 보여주세요.'
+                ]
+            },
+            support: {
+                name: '지지',
+                // 심각한 약점 (0-1점)
+                weak: '지지 영역에 집중이 필요합니다',
+                weakDetail: '성적이나 결과에 집중하다 보면 아이는 실패를 두려워하게 됩니다. 또한, 아이가 져야 할 책임을 대신 지고 있을 수 있습니다. 부모의 역할은 "행복한 아이"가 아니라 "책임감 있는 성인"을 만드는 것입니다.',
+                tips: [
+                    '"몇 점 받았어?" 대신 "오늘 뭘 새롭게 알게 됐어?"로 질문을 바꿔보세요.',
+                    '내일부터 알람 맞추기, 가방 챙기기를 아이에게 맡겨보세요.',
+                    '실수했을 때 "괜찮아, 다음엔 어떻게 하면 좋을까?"로 대화해보세요.',
+                    '아이의 작은 노력도 구체적으로 칭찬해주세요. "열심히 했네"보다 "어제보다 집중 시간이 늘었구나!"',
+                    '아이가 스스로 선택하고 결정할 기회를 더 많이 만들어주세요.'
+                ],
+                // 보완 필요 (2점)
+                moderate: '지지 영역을 조금 더 보완하면 좋겠습니다',
+                moderateDetail: '아이를 응원하고 계시지만, 결과보다 과정을 칭찬하는 습관과 아이 스스로 책임지는 기회를 더 늘려보세요. 작은 실패도 성장의 발판이 될 수 있습니다.',
+                moderateTips: [
+                    '시험 결과보다 "어떤 부분을 열심히 준비했어?"라고 과정을 물어보세요.',
+                    '아이가 할 수 있는 작은 책임(정리정돈, 준비물 챙기기)을 하나씩 맡겨보세요.',
+                    '실수했을 때 혼내기보다 "다음엔 어떻게 하면 좋을까?" 함께 고민해보세요.'
+                ]
+            },
+            identity: {
+                name: '정체성',
+                // 심각한 약점 (0-1점)
+                weak: '정체성 영역에 집중이 필요합니다',
+                weakDetail: '아이가 자신을 이해하고 표현할 기회가 부족합니다. "나는 누구인가"에 대한 탐색 없이는 진정한 꿈을 찾기 어렵습니다. 학습 주체성은 "나를 아는 것(Identity)"에서 시작됩니다.',
+                tips: [
+                    '"너를 가장 잘 표현하는 단어 3개는 뭘까?" 함께 이야기해보세요.',
+                    '"미래에 어떤 사람으로 기억되고 싶어?"라고 물어보세요.',
+                    '아이의 미래를 만들어주려 하지 말고, 스스로 걷도록 옆에서 함께 걸어주세요.',
+                    '"넌 어떤 걸 할 때 가장 행복해?"라는 질문으로 자기 이해를 도와주세요.',
+                    '아이가 자신의 강점과 약점을 스스로 말할 수 있도록 대화를 이끌어주세요.'
+                ],
+                // 보완 필요 (2점)
+                moderate: '정체성 영역을 조금 더 보완하면 좋겠습니다',
+                moderateDetail: '아이의 자아 탐색을 돕고 계시지만, 더 깊은 대화가 필요합니다. 아이가 자신의 강점, 가치관, 미래 모습을 스스로 표현할 수 있도록 질문을 던져주세요.',
+                moderateTips: [
+                    '"오늘 네가 잘한 것 하나만 말해볼래?"로 자기 인식을 도와주세요.',
+                    '아이가 좋아하는 것과 잘하는 것의 차이를 함께 이야기해보세요.',
+                    '"10년 후 넌 어떤 모습일 것 같아?" 미래를 상상하는 대화를 나눠보세요.'
+                ]
+            }
+        };
+
+        function selectAnswer(questionNum, isYes) {
+            answers[questionNum] = isYes;
+
+            const card = document.querySelector(`[data-question="${questionNum}"]`);
+            const buttons = card.querySelectorAll('.option-btn');
+            buttons.forEach(btn => {
+                btn.classList.remove('selected-yes', 'selected-no');
+            });
+
+            if (isYes) {
+                buttons[0].classList.add('selected-yes');
+            } else {
+                buttons[1].classList.add('selected-no');
+            }
+
+            setTimeout(() => {
+                if (questionNum < totalQuestions) {
+                    goToQuestion(questionNum + 1);
+                } else {
+                    showResult();
+                }
+            }, 300);
+        }
+
+        function goToQuestion(num) {
+            currentQuestion = num;
+
+            document.querySelectorAll('.question-card').forEach(card => {
+                card.classList.remove('active');
+            });
+
+            document.querySelector(`[data-question="${num}"]`).classList.add('active');
+
+            document.getElementById('currentQ').textContent = num;
+            document.getElementById('progressFill').style.width = ((num - 1) / totalQuestions * 100) + '%';
+        }
+
+        function showResult() {
+            document.querySelectorAll('.question-card').forEach(card => {
+                card.classList.remove('active');
+            });
+
+            document.getElementById('progressFill').style.width = '100%';
+            document.getElementById('currentQ').textContent = '완료';
+
+            // 점수 계산
+            let totalScore = 0;
+            let categoryScores = {
+                observe: 0,
+                connect: 0,
+                support: 0,
+                identity: 0
+            };
+
+            for (let q in answers) {
+                if (answers[q]) {
+                    totalScore++;
+                    categoryScores[categoryMap[q]]++;
+                }
+            }
+
+            document.getElementById('resultCard').classList.add('active');
+
+            // 점수 애니메이션
+            let displayScore = 0;
+            const scoreInterval = setInterval(() => {
+                if (displayScore < totalScore) {
+                    displayScore++;
+                    document.getElementById('resultScore').textContent = displayScore;
+                } else {
+                    clearInterval(scoreInterval);
+                }
+            }, 80);
+
+            // 결과 타이틀
+            const resultTitle = document.getElementById('resultTitle');
+            if (totalScore >= 16) {
+                resultTitle.textContent = "훌륭한 꿈의 안내자입니다!";
+            } else if (totalScore >= 11) {
+                resultTitle.textContent = "성장하는 꿈의 안내자입니다!";
+            } else if (totalScore >= 6) {
+                resultTitle.textContent = "꿈의 안내자로 가는 길 위에 있습니다";
+            } else {
+                resultTitle.textContent = "오늘부터 꿈의 안내자가 되어보세요!";
+            }
+
+            // 강점, 보완필요, 약점 분석
+            const maxByCategory = { observe: 5, connect: 5, support: 5, identity: 5 };
+            let strongAreas = [];      // 4-5점 (80% 이상)
+            let moderateAreas = [];    // 2-3점 (40-60%)
+            let weakAreas = [];        // 0-1점 (40% 미만)
+
+            for (let cat in categoryScores) {
+                const score = categoryScores[cat];
+                if (score >= 4) {
+                    strongAreas.push(cat);
+                } else if (score >= 2) {
+                    moderateAreas.push(cat);
+                } else {
+                    weakAreas.push(cat);
+                }
+            }
+
+            // 부족한 부분 & 보완 방법 박스
+            let improvementHTML = '';
+
+            if (weakAreas.length === 0 && moderateAreas.length === 0) {
+                // 모든 영역이 3점 이상인 경우
+                improvementHTML = `
+                    <div class="improvement-section success">
+                        <h4>축하합니다! 모든 영역이 균형 잡혀 있습니다</h4>
+                        <p>관찰, 연결, 지지, 정체성 모든 영역에서 좋은 점수를 받으셨습니다. 지금처럼 아이의 꿈 여정을 함께 해주세요. 아이의 미래는 부모가 만들어주는 것이 아니라, 아이가 스스로 걷게 돕는 것입니다.</p>
+                        <div class="tip-box">
+                            <p><strong>Tip:</strong> 꾸준함이 중요합니다. 매주 '질문의 날'을 정해 아이와 대화하는 습관을 유지해주세요. 나침반(자아 발견), 지도(세상 탐색), 안내자(대화)의 역할을 계속 이어가세요.</p>
+                        </div>
+                    </div>
+                `;
+            } else {
+                // 심각한 약점 (0-1점) 먼저 표시
+                weakAreas.forEach(area => {
+                    improvementHTML += `
+                        <div class="improvement-section critical">
+                            <h4>${categoryInfo[area].weak}<span class="level-badge">집중 필요</span></h4>
+                            <p>${categoryInfo[area].weakDetail}</p>
+                            <div class="tip-box">
+                                <p><strong>이렇게 시작해보세요:</strong></p>
+                                <ul style="margin: 10px 0 0 20px; line-height: 1.8;">
+                                    ${categoryInfo[area].tips.map(tip => `<li>${tip}</li>`).join('')}
+                                </ul>
+                            </div>
+                        </div>
+                    `;
+                });
+
+                // 보완 필요 (2점) 표시
+                moderateAreas.forEach(area => {
+                    improvementHTML += `
+                        <div class="improvement-section moderate">
+                            <h4>${categoryInfo[area].moderate}<span class="level-badge">보완 필요</span></h4>
+                            <p>${categoryInfo[area].moderateDetail}</p>
+                            <div class="tip-box">
+                                <p><strong>이렇게 보완해보세요:</strong></p>
+                                <ul style="margin: 10px 0 0 20px; line-height: 1.8;">
+                                    ${categoryInfo[area].moderateTips.map(tip => `<li>${tip}</li>`).join('')}
+                                </ul>
+                            </div>
+                        </div>
+                    `;
+                });
+            }
+
+            document.getElementById('improvementContent').innerHTML = improvementHTML;
+
+            // 영역별 점수 막대 표시
+            setTimeout(() => {
+                const categories = ['observe', 'connect', 'support', 'identity'];
+                categories.forEach(cat => {
+                    const bar = document.getElementById(cat + 'Bar');
+                    const score = categoryScores[cat];
+                    const percentage = (score / maxByCategory[cat]) * 100;
+                    bar.style.width = percentage + '%';
+
+                    // 클래스 초기화
+                    bar.classList.remove('low', 'moderate');
+
+                    if (score <= 1) {
+                        bar.classList.add('low');        // 0-1점: 빨강-주황
+                    } else if (score <= 3) {
+                        bar.classList.add('moderate');   // 2-3점: 주황-노랑
+                    }
+                    // 4-5점: 기본 청록색
+                });
+
+                document.getElementById('observeScore').textContent = categoryScores.observe + '/5';
+                document.getElementById('connectScore').textContent = categoryScores.connect + '/5';
+                document.getElementById('supportScore').textContent = categoryScores.support + '/5';
+                document.getElementById('identityScore').textContent = categoryScores.identity + '/5';
+            }, 500);
+        }
+
+        function restartTest() {
+            answers = {};
+            currentQuestion = 1;
+
+            document.getElementById('resultCard').classList.remove('active');
+
+            document.querySelectorAll('.option-btn').forEach(btn => {
+                btn.classList.remove('selected-yes', 'selected-no');
+            });
+
+            goToQuestion(1);
+            document.getElementById('progressFill').style.width = '0%';
+        }
+    </script>
+</body>
+</html>

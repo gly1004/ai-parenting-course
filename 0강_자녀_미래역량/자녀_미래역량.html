@@ -1,0 +1,919 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>자녀의 미래 역량</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Malgun Gothic', 'Apple SD Gothic Neo', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 40px 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        h1 {
+            text-align: center;
+            color: white;
+            font-size: 2.5rem;
+            margin-bottom: 40px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 25px;
+        }
+
+        .card {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 40px rgba(0,0,0,0.3);
+        }
+
+        .card-number {
+            display: inline-block;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            width: 35px;
+            height: 35px;
+            border-radius: 50%;
+            text-align: center;
+            line-height: 35px;
+            font-weight: bold;
+            margin-bottom: 15px;
+        }
+
+        .card h2 {
+            color: #333;
+            font-size: 1.3rem;
+            margin-bottom: 15px;
+            cursor: pointer;
+            transition: color 0.3s;
+        }
+
+        .card h2:hover {
+            color: #667eea;
+            text-decoration: underline;
+        }
+
+        .card h2 span {
+            color: #667eea;
+            font-size: 0.9rem;
+            font-weight: normal;
+        }
+
+        .card ul {
+            list-style: none;
+        }
+
+        .card li {
+            padding: 8px 0;
+            padding-left: 25px;
+            position: relative;
+            color: #555;
+            line-height: 1.5;
+        }
+
+        .card li::before {
+            content: "✓";
+            position: absolute;
+            left: 0;
+            color: #667eea;
+            font-weight: bold;
+        }
+
+        footer {
+            text-align: center;
+            margin-top: 50px;
+            color: white;
+            opacity: 0.8;
+        }
+
+        /* 파워포인트 스타일 모달 */
+        .ppt-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.95);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .ppt-overlay.active {
+            display: flex;
+        }
+
+        .ppt-slide {
+            width: 90%;
+            max-width: 1000px;
+            height: 80vh;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            border-radius: 10px;
+            padding: 50px;
+            position: relative;
+            box-shadow: 0 0 50px rgba(102, 126, 234, 0.5);
+            overflow-y: auto;
+        }
+
+        .ppt-close {
+            position: absolute;
+            top: 20px;
+            right: 25px;
+            font-size: 2rem;
+            color: white;
+            cursor: pointer;
+            opacity: 0.7;
+            transition: opacity 0.3s;
+        }
+
+        .ppt-close:hover {
+            opacity: 1;
+        }
+
+        .ppt-header {
+            text-align: center;
+            margin-bottom: 40px;
+            padding-bottom: 20px;
+            border-bottom: 3px solid #667eea;
+        }
+
+        .ppt-header h2 {
+            color: white;
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+        }
+
+        .ppt-header .eng-title {
+            color: #667eea;
+            font-size: 1.2rem;
+        }
+
+        .ppt-content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 40px;
+        }
+
+        .ppt-section {
+            background: rgba(255,255,255,0.05);
+            border-radius: 10px;
+            padding: 25px;
+            border-left: 4px solid #667eea;
+        }
+
+        .ppt-section h3 {
+            color: #667eea;
+            font-size: 1.3rem;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .ppt-section h3::before {
+            content: "";
+            display: inline-block;
+            width: 8px;
+            height: 8px;
+            background: #667eea;
+            border-radius: 50%;
+        }
+
+        .ppt-section ul {
+            list-style: none;
+        }
+
+        .ppt-section li {
+            color: #ddd;
+            padding: 10px 0;
+            padding-left: 20px;
+            position: relative;
+            line-height: 1.6;
+            font-size: 1rem;
+        }
+
+        .ppt-section li::before {
+            content: "▸";
+            position: absolute;
+            left: 0;
+            color: #764ba2;
+        }
+
+
+        .ppt-close-btn {
+            position: absolute;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 12px 40px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+
+        .ppt-close-btn:hover {
+            transform: translateX(-50%) scale(1.05);
+            box-shadow: 0 5px 20px rgba(102, 126, 234, 0.5);
+        }
+
+        .click-hint {
+            font-size: 0.8rem;
+            color: #999;
+            text-align: center;
+            margin-top: 10px;
+        }
+
+        @media (max-width: 768px) {
+            .ppt-content {
+                grid-template-columns: 1fr;
+            }
+            .ppt-slide {
+                padding: 30px;
+                height: 90vh;
+            }
+            .ppt-header h2 {
+                font-size: 1.8rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>자녀의 미래 역량</h1>
+        <p class="click-hint">각 역량의 제목을 클릭하면 상세 내용을 볼 수 있습니다</p>
+        <br><br>
+
+        <div class="grid">
+            <div class="card">
+                <div class="card-number">1</div>
+                <h2 onclick="openSlide(0)">비판적 사고력 <span>Critical Thinking</span></h2>
+                <ul>
+                    <li>정보를 분석하고 평가하는 능력</li>
+                    <li>논리적으로 문제를 해결하는 능력</li>
+                    <li>다양한 관점에서 상황을 바라보는 능력</li>
+                </ul>
+            </div>
+
+            <div class="card">
+                <div class="card-number">2</div>
+                <h2 onclick="openSlide(1)">창의력 <span>Creativity</span></h2>
+                <ul>
+                    <li>새로운 아이디어를 생성하는 능력</li>
+                    <li>기존의 것을 새롭게 조합하는 능력</li>
+                    <li>혁신적인 해결책을 찾는 능력</li>
+                </ul>
+            </div>
+
+            <div class="card">
+                <div class="card-number">3</div>
+                <h2 onclick="openSlide(2)">의사소통 능력 <span>Communication</span></h2>
+                <ul>
+                    <li>자신의 생각을 명확하게 표현하는 능력</li>
+                    <li>경청하고 이해하는 능력</li>
+                    <li>다양한 매체를 활용한 소통 능력</li>
+                </ul>
+            </div>
+
+            <div class="card">
+                <div class="card-number">4</div>
+                <h2 onclick="openSlide(3)">협업 능력 <span>Collaboration</span></h2>
+                <ul>
+                    <li>팀원들과 효과적으로 협력하는 능력</li>
+                    <li>다양성을 존중하고 포용하는 능력</li>
+                    <li>공동의 목표를 향해 함께 나아가는 능력</li>
+                </ul>
+            </div>
+
+            <div class="card">
+                <div class="card-number">5</div>
+                <h2 onclick="openSlide(4)">디지털 리터러시 <span>Digital Literacy</span></h2>
+                <ul>
+                    <li>디지털 도구를 효과적으로 활용하는 능력</li>
+                    <li>온라인 정보를 비판적으로 평가하는 능력</li>
+                    <li>디지털 윤리와 안전에 대한 이해</li>
+                </ul>
+            </div>
+
+            <div class="card">
+                <div class="card-number">6</div>
+                <h2 onclick="openSlide(5)">자기주도 학습력 <span>Self-Directed Learning</span></h2>
+                <ul>
+                    <li>스스로 학습 목표를 설정하는 능력</li>
+                    <li>평생 학습에 대한 열정과 습관</li>
+                    <li>자기 성찰과 개선 능력</li>
+                </ul>
+            </div>
+
+            <div class="card">
+                <div class="card-number">7</div>
+                <h2 onclick="openSlide(6)">적응력과 유연성 <span>Adaptability & Flexibility</span></h2>
+                <ul>
+                    <li>변화하는 환경에 빠르게 적응하는 능력</li>
+                    <li>불확실성을 수용하고 대처하는 능력</li>
+                    <li>새로운 기술과 방법을 배우는 능력</li>
+                </ul>
+            </div>
+
+            <div class="card">
+                <div class="card-number">8</div>
+                <h2 onclick="openSlide(7)">감성 지능 <span>Emotional Intelligence</span></h2>
+                <ul>
+                    <li>자신의 감정을 인식하고 관리하는 능력</li>
+                    <li>타인의 감정을 이해하고 공감하는 능력</li>
+                    <li>건강한 인간관계를 형성하는 능력</li>
+                </ul>
+            </div>
+
+            <div class="card">
+                <div class="card-number">9</div>
+                <h2 onclick="openSlide(8)">문제 해결 능력 <span>Problem Solving</span></h2>
+                <ul>
+                    <li>복잡한 문제를 분석하는 능력</li>
+                    <li>창의적인 해결책을 도출하는 능력</li>
+                    <li>실행하고 결과를 평가하는 능력</li>
+                </ul>
+            </div>
+
+            <div class="card">
+                <div class="card-number">10</div>
+                <h2 onclick="openSlide(9)">글로벌 역량 <span>Global Competence</span></h2>
+                <ul>
+                    <li>다문화에 대한 이해와 존중</li>
+                    <li>외국어 능력</li>
+                    <li>글로벌 이슈에 대한 관심과 이해</li>
+                </ul>
+            </div>
+
+            <div class="card">
+                <div class="card-number">11</div>
+                <h2 onclick="openSlide(10)">기업가 정신 <span>Entrepreneurship</span></h2>
+                <ul>
+                    <li>기회를 포착하는 능력</li>
+                    <li>위험을 감수하고 도전하는 용기</li>
+                    <li>가치를 창출하는 능력</li>
+                </ul>
+            </div>
+
+            <div class="card">
+                <div class="card-number">12</div>
+                <h2 onclick="openSlide(11)">데이터 리터러시 <span>Data Literacy</span></h2>
+                <ul>
+                    <li>데이터를 읽고 해석하는 능력</li>
+                    <li>데이터 기반 의사결정 능력</li>
+                    <li>기본적인 코딩과 알고리즘 이해</li>
+                </ul>
+            </div>
+        </div>
+
+        <footer>
+            <p>우리 아이의 밝은 미래를 위한 12가지 핵심 역량</p>
+        </footer>
+    </div>
+
+    <!-- 파워포인트 스타일 오버레이 -->
+    <div class="ppt-overlay" id="pptOverlay">
+        <div class="ppt-slide" id="pptSlide">
+            <span class="ppt-close" onclick="closeSlide()">&times;</span>
+            <div class="ppt-header">
+                <h2 id="slideTitle"></h2>
+                <div class="eng-title" id="slideEngTitle"></div>
+            </div>
+            <div class="ppt-content" id="slideContent"></div>
+            <button class="ppt-close-btn" onclick="closeSlide()">닫기</button>
+        </div>
+    </div>
+
+    <script>
+        const slidesData = [
+            {
+                title: "비판적 사고력",
+                engTitle: "Critical Thinking",
+                sections: [
+                    {
+                        title: "정의",
+                        items: [
+                            "주어진 정보를 객관적으로 분석하고 평가하는 능력",
+                            "사실과 의견을 구분하고 논리적 오류를 파악하는 능력",
+                            "편견 없이 다양한 관점에서 문제를 바라보는 능력"
+                        ]
+                    },
+                    {
+                        title: "중요성",
+                        items: [
+                            "가짜 뉴스와 잘못된 정보를 구별할 수 있음",
+                            "합리적인 의사결정을 내릴 수 있음",
+                            "복잡한 문제 상황에서 최선의 해결책을 찾을 수 있음"
+                        ]
+                    },
+                    {
+                        title: "개발 방법",
+                        items: [
+                            "'왜?'라는 질문을 습관화하기",
+                            "다양한 출처의 정보 비교하기",
+                            "토론과 논쟁에 참여하기"
+                        ]
+                    },
+                    {
+                        title: "활동 예시",
+                        items: [
+                            "뉴스 기사의 사실 여부 검증하기",
+                            "찬반 토론 참여하기",
+                            "과학 실험을 통해 가설 검증하기"
+                        ]
+                    }
+                ]
+            },
+            {
+                title: "창의력",
+                engTitle: "Creativity",
+                sections: [
+                    {
+                        title: "정의",
+                        items: [
+                            "기존에 없던 새로운 아이디어를 생각해내는 능력",
+                            "서로 다른 개념을 연결하여 새로운 것을 만드는 능력",
+                            "문제를 독창적인 방식으로 해결하는 능력"
+                        ]
+                    },
+                    {
+                        title: "중요성",
+                        items: [
+                            "AI가 대체하기 어려운 인간 고유의 능력",
+                            "혁신과 발명의 원동력",
+                            "변화하는 시대에 새로운 가치를 창출할 수 있음"
+                        ]
+                    },
+                    {
+                        title: "개발 방법",
+                        items: [
+                            "다양한 경험과 자극에 노출되기",
+                            "실패를 두려워하지 않는 환경 조성",
+                            "자유로운 상상과 놀이 시간 확보"
+                        ]
+                    },
+                    {
+                        title: "활동 예시",
+                        items: [
+                            "브레인스토밍 활동",
+                            "예술 활동 (그림, 음악, 글쓰기)",
+                            "레고나 블록으로 자유롭게 만들기"
+                        ]
+                    }
+                ]
+            },
+            {
+                title: "의사소통 능력",
+                engTitle: "Communication",
+                sections: [
+                    {
+                        title: "정의",
+                        items: [
+                            "자신의 생각과 감정을 명확하게 전달하는 능력",
+                            "상대방의 말을 주의 깊게 듣고 이해하는 능력",
+                            "상황에 맞게 적절한 방식으로 소통하는 능력"
+                        ]
+                    },
+                    {
+                        title: "중요성",
+                        items: [
+                            "모든 인간관계의 기초가 되는 역량",
+                            "협업과 팀워크에 필수적",
+                            "리더십 발휘의 핵심 요소"
+                        ]
+                    },
+                    {
+                        title: "개발 방법",
+                        items: [
+                            "독서를 통한 어휘력 향상",
+                            "발표와 프레젠테이션 연습",
+                            "경청하는 습관 기르기"
+                        ]
+                    },
+                    {
+                        title: "활동 예시",
+                        items: [
+                            "가족 회의에서 의견 발표하기",
+                            "독후감이나 일기 쓰기",
+                            "역할극이나 연극 활동 참여"
+                        ]
+                    }
+                ]
+            },
+            {
+                title: "협업 능력",
+                engTitle: "Collaboration",
+                sections: [
+                    {
+                        title: "정의",
+                        items: [
+                            "공동의 목표를 위해 다른 사람들과 함께 일하는 능력",
+                            "각자의 강점을 살려 시너지를 만드는 능력",
+                            "갈등을 조율하고 합의를 이끌어내는 능력"
+                        ]
+                    },
+                    {
+                        title: "중요성",
+                        items: [
+                            "현대 사회의 대부분의 일은 협업으로 이루어짐",
+                            "다양한 전문성을 가진 사람들과의 협력이 필수",
+                            "혼자서는 해결하기 어려운 복잡한 문제 해결 가능"
+                        ]
+                    },
+                    {
+                        title: "개발 방법",
+                        items: [
+                            "팀 스포츠나 단체 활동 참여",
+                            "역할 분담과 책임감 경험하기",
+                            "다양한 사람들과 어울리는 기회 만들기"
+                        ]
+                    },
+                    {
+                        title: "활동 예시",
+                        items: [
+                            "그룹 프로젝트 수행하기",
+                            "동아리나 클럽 활동",
+                            "봉사활동 참여하기"
+                        ]
+                    }
+                ]
+            },
+            {
+                title: "디지털 리터러시",
+                engTitle: "Digital Literacy",
+                sections: [
+                    {
+                        title: "정의",
+                        items: [
+                            "디지털 기기와 도구를 효과적으로 사용하는 능력",
+                            "온라인 정보를 비판적으로 평가하는 능력",
+                            "디지털 환경에서 안전하고 윤리적으로 행동하는 능력"
+                        ]
+                    },
+                    {
+                        title: "중요성",
+                        items: [
+                            "디지털 기술이 일상과 직업의 필수 요소가 됨",
+                            "온라인 사기와 위험으로부터 자신을 보호",
+                            "디지털 도구를 활용한 생산성 향상"
+                        ]
+                    },
+                    {
+                        title: "개발 방법",
+                        items: [
+                            "다양한 디지털 도구 체험하기",
+                            "온라인 안전 교육 받기",
+                            "미디어 리터러시 교육 참여"
+                        ]
+                    },
+                    {
+                        title: "활동 예시",
+                        items: [
+                            "코딩 교육 프로그램 참여",
+                            "디지털 콘텐츠 제작 (영상, 블로그)",
+                            "온라인 정보 팩트체크 연습"
+                        ]
+                    }
+                ]
+            },
+            {
+                title: "자기주도 학습력",
+                engTitle: "Self-Directed Learning",
+                sections: [
+                    {
+                        title: "정의",
+                        items: [
+                            "스스로 학습 목표를 설정하고 계획을 세우는 능력",
+                            "자신에게 맞는 학습 방법을 찾고 실행하는 능력",
+                            "학습 결과를 스스로 평가하고 개선하는 능력"
+                        ]
+                    },
+                    {
+                        title: "중요성",
+                        items: [
+                            "평생 학습 시대에 필수적인 역량",
+                            "빠르게 변화하는 지식과 기술에 적응 가능",
+                            "학교 교육 이후에도 지속적 성장 가능"
+                        ]
+                    },
+                    {
+                        title: "개발 방법",
+                        items: [
+                            "호기심을 자극하는 환경 조성",
+                            "스스로 선택하고 결정하는 기회 제공",
+                            "실패해도 괜찮다는 안전한 환경 만들기"
+                        ]
+                    },
+                    {
+                        title: "활동 예시",
+                        items: [
+                            "관심 분야 프로젝트 직접 기획하기",
+                            "온라인 강의로 새로운 것 배우기",
+                            "학습 일지나 포트폴리오 작성"
+                        ]
+                    }
+                ]
+            },
+            {
+                title: "적응력과 유연성",
+                engTitle: "Adaptability & Flexibility",
+                sections: [
+                    {
+                        title: "정의",
+                        items: [
+                            "새로운 상황이나 환경에 빠르게 적응하는 능력",
+                            "예상치 못한 변화에 유연하게 대처하는 능력",
+                            "기존 방식을 버리고 새로운 방식을 받아들이는 능력"
+                        ]
+                    },
+                    {
+                        title: "중요성",
+                        items: [
+                            "미래 직업의 60%는 아직 존재하지 않음",
+                            "기술과 사회가 빠르게 변화하는 시대",
+                            "위기 상황에서 생존과 성공의 핵심"
+                        ]
+                    },
+                    {
+                        title: "개발 방법",
+                        items: [
+                            "새로운 경험에 자주 노출시키기",
+                            "실패를 학습의 기회로 인식하게 하기",
+                            "변화를 긍정적으로 바라보는 태도 기르기"
+                        ]
+                    },
+                    {
+                        title: "활동 예시",
+                        items: [
+                            "새로운 취미나 활동 시도하기",
+                            "다른 문화나 환경 체험하기",
+                            "계획이 바뀌었을 때 대안 찾기 연습"
+                        ]
+                    }
+                ]
+            },
+            {
+                title: "감성 지능",
+                engTitle: "Emotional Intelligence",
+                sections: [
+                    {
+                        title: "정의",
+                        items: [
+                            "자신의 감정을 인식하고 조절하는 능력",
+                            "타인의 감정을 이해하고 공감하는 능력",
+                            "감정을 긍정적인 방향으로 활용하는 능력"
+                        ]
+                    },
+                    {
+                        title: "중요성",
+                        items: [
+                            "IQ보다 성공을 더 잘 예측하는 요소",
+                            "건강한 인간관계 형성의 핵심",
+                            "정신 건강과 행복에 직접적 영향"
+                        ]
+                    },
+                    {
+                        title: "개발 방법",
+                        items: [
+                            "감정을 표현하고 이야기하는 습관",
+                            "감정 일기 쓰기",
+                            "타인의 입장에서 생각해보기 연습"
+                        ]
+                    },
+                    {
+                        title: "활동 예시",
+                        items: [
+                            "감정 카드 게임하기",
+                            "역할극을 통해 다양한 감정 경험",
+                            "봉사활동을 통한 공감 능력 개발"
+                        ]
+                    }
+                ]
+            },
+            {
+                title: "문제 해결 능력",
+                engTitle: "Problem Solving",
+                sections: [
+                    {
+                        title: "정의",
+                        items: [
+                            "문제를 정확하게 파악하고 분석하는 능력",
+                            "다양한 해결 방안을 도출하는 능력",
+                            "최적의 해결책을 선택하고 실행하는 능력"
+                        ]
+                    },
+                    {
+                        title: "중요성",
+                        items: [
+                            "삶은 끊임없는 문제 해결의 연속",
+                            "복잡한 현대 사회에서 필수적인 역량",
+                            "창의력과 비판적 사고력의 실제 적용"
+                        ]
+                    },
+                    {
+                        title: "개발 방법",
+                        items: [
+                            "바로 답을 알려주지 않고 스스로 찾게 하기",
+                            "실패해도 다시 도전하도록 격려하기",
+                            "문제 해결 과정을 함께 이야기하기"
+                        ]
+                    },
+                    {
+                        title: "활동 예시",
+                        items: [
+                            "퍼즐이나 두뇌 게임 하기",
+                            "과학 실험이나 메이킹 활동",
+                            "일상 속 문제 함께 해결하기"
+                        ]
+                    }
+                ]
+            },
+            {
+                title: "글로벌 역량",
+                engTitle: "Global Competence",
+                sections: [
+                    {
+                        title: "정의",
+                        items: [
+                            "다양한 문화와 가치관을 이해하고 존중하는 능력",
+                            "글로벌 이슈에 관심을 갖고 참여하는 능력",
+                            "다른 문화권 사람들과 효과적으로 소통하는 능력"
+                        ]
+                    },
+                    {
+                        title: "중요성",
+                        items: [
+                            "세계화로 국경을 넘는 협업이 일상화",
+                            "다문화 사회에서의 공존 능력 필요",
+                            "글로벌 문제(환경, 빈곤 등)의 공동 해결 필요"
+                        ]
+                    },
+                    {
+                        title: "개발 방법",
+                        items: [
+                            "다양한 문화 콘텐츠 접하기",
+                            "외국어 학습하기",
+                            "다른 나라 친구 사귀기"
+                        ]
+                    },
+                    {
+                        title: "활동 예시",
+                        items: [
+                            "세계 여러 나라의 음식, 음악, 영화 체험",
+                            "국제 교류 프로그램 참여",
+                            "글로벌 이슈에 대해 토론하기"
+                        ]
+                    }
+                ]
+            },
+            {
+                title: "기업가 정신",
+                engTitle: "Entrepreneurship",
+                sections: [
+                    {
+                        title: "정의",
+                        items: [
+                            "기회를 발견하고 포착하는 능력",
+                            "위험을 감수하고 도전하는 용기",
+                            "새로운 가치를 창출하고 실현하는 능력"
+                        ]
+                    },
+                    {
+                        title: "중요성",
+                        items: [
+                            "평생직장 개념이 사라지는 시대",
+                            "스스로 일자리를 만들어낼 수 있는 능력",
+                            "혁신과 경제 성장의 원동력"
+                        ]
+                    },
+                    {
+                        title: "개발 방법",
+                        items: [
+                            "작은 프로젝트부터 직접 기획하고 실행하기",
+                            "실패를 두려워하지 않는 태도 기르기",
+                            "문제를 기회로 바라보는 시각 개발"
+                        ]
+                    },
+                    {
+                        title: "활동 예시",
+                        items: [
+                            "플리마켓이나 바자회 참여",
+                            "학교 동아리나 프로젝트 리딩",
+                            "창업 아이디어 경진대회 참가"
+                        ]
+                    }
+                ]
+            },
+            {
+                title: "데이터 리터러시",
+                engTitle: "Data Literacy",
+                sections: [
+                    {
+                        title: "정의",
+                        items: [
+                            "데이터를 읽고 이해하며 해석하는 능력",
+                            "데이터를 기반으로 합리적 결정을 내리는 능력",
+                            "데이터를 수집, 분석, 시각화하는 능력"
+                        ]
+                    },
+                    {
+                        title: "중요성",
+                        items: [
+                            "데이터 기반 의사결정이 표준이 되는 시대",
+                            "AI와 빅데이터 시대의 필수 역량",
+                            "잘못된 데이터 해석으로 인한 오류 방지"
+                        ]
+                    },
+                    {
+                        title: "개발 방법",
+                        items: [
+                            "일상에서 데이터 찾고 분석해보기",
+                            "기초 통계 개념 학습하기",
+                            "코딩과 프로그래밍 기초 배우기"
+                        ]
+                    },
+                    {
+                        title: "활동 예시",
+                        items: [
+                            "설문조사 만들고 결과 분석하기",
+                            "그래프와 차트 만들어보기",
+                            "스크래치나 파이썬으로 코딩 배우기"
+                        ]
+                    }
+                ]
+            }
+        ];
+
+        let currentSlide = 0;
+
+        function openSlide(index) {
+            currentSlide = index;
+            renderSlide();
+            document.getElementById('pptOverlay').classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeSlide() {
+            document.getElementById('pptOverlay').classList.remove('active');
+            document.body.style.overflow = 'auto';
+        }
+
+        function renderSlide() {
+            const slide = slidesData[currentSlide];
+            document.getElementById('slideTitle').textContent = slide.title;
+            document.getElementById('slideEngTitle').textContent = slide.engTitle;
+
+            let contentHTML = '';
+            slide.sections.forEach(section => {
+                contentHTML += `
+                    <div class="ppt-section">
+                        <h3>${section.title}</h3>
+                        <ul>
+                            ${section.items.map(item => `<li>${item}</li>`).join('')}
+                        </ul>
+                    </div>
+                `;
+            });
+            document.getElementById('slideContent').innerHTML = contentHTML;
+        }
+
+        // 키보드로 닫기
+        document.addEventListener('keydown', function(e) {
+            if (!document.getElementById('pptOverlay').classList.contains('active')) return;
+            if (e.key === 'Escape') closeSlide();
+        });
+
+        // 오버레이 클릭시 닫기
+        document.getElementById('pptOverlay').addEventListener('click', function(e) {
+            if (e.target === this) closeSlide();
+        });
+    </script>
+</body>
+</html>

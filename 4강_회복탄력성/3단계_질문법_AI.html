@@ -1,0 +1,737 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI와 함께하는 3단계 질문법</title>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Noto Sans KR', sans-serif;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+            min-height: 100vh;
+            padding: 20px;
+            color: white;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .header {
+            text-align: center;
+            padding: 40px 20px;
+            margin-bottom: 30px;
+        }
+
+        .header h1 {
+            font-size: 28px;
+            font-weight: 700;
+            color: #4eeadb;
+            margin-bottom: 15px;
+        }
+
+        .header p {
+            font-size: 16px;
+            color: rgba(255,255,255,0.8);
+            line-height: 1.7;
+        }
+
+        /* API 설정 */
+        .api-section {
+            background: #2d2d44;
+            border-radius: 16px;
+            padding: 25px;
+            margin-bottom: 25px;
+            border: 1px solid rgba(78, 234, 219, 0.2);
+        }
+
+        .api-section h3 {
+            color: #4eeadb;
+            font-size: 16px;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .api-input-group {
+            display: flex;
+            gap: 10px;
+        }
+
+        .api-input {
+            flex: 1;
+            padding: 14px 18px;
+            border: 2px solid rgba(78, 234, 219, 0.3);
+            border-radius: 10px;
+            background: #1a1a2e;
+            color: white;
+            font-size: 14px;
+            font-family: 'Noto Sans KR', sans-serif;
+        }
+
+        .api-input:focus {
+            outline: none;
+            border-color: #4eeadb;
+        }
+
+        .api-input::placeholder {
+            color: rgba(255,255,255,0.4);
+        }
+
+        .api-status {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-top: 12px;
+            font-size: 13px;
+        }
+
+        .status-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: #666;
+        }
+
+        .status-dot.connected {
+            background: #4eeadb;
+            box-shadow: 0 0 10px rgba(78, 234, 219, 0.5);
+        }
+
+        /* 3단계 설명 */
+        .steps-intro {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 12px;
+            margin-bottom: 25px;
+        }
+
+        .step-box {
+            background: #2d2d44;
+            padding: 20px 15px;
+            border-radius: 12px;
+            text-align: center;
+            border: 1px solid rgba(78, 234, 219, 0.15);
+        }
+
+        .step-box .step-num {
+            width: 32px;
+            height: 32px;
+            background: linear-gradient(135deg, #4eeadb, #45b7aa);
+            color: #1a1a2e;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 10px;
+            font-weight: 700;
+            font-size: 14px;
+        }
+
+        .step-box h3 {
+            color: #4eeadb;
+            font-size: 14px;
+            margin-bottom: 6px;
+        }
+
+        .step-box p {
+            font-size: 12px;
+            color: rgba(255,255,255,0.6);
+        }
+
+        /* 입력 섹션 */
+        .input-section {
+            background: #2d2d44;
+            border-radius: 16px;
+            padding: 30px;
+            margin-bottom: 25px;
+            border: 1px solid rgba(78, 234, 219, 0.2);
+        }
+
+        .input-section h3 {
+            color: #4eeadb;
+            font-size: 18px;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .situation-textarea {
+            width: 100%;
+            min-height: 120px;
+            padding: 18px;
+            border: 2px solid rgba(78, 234, 219, 0.3);
+            border-radius: 12px;
+            background: #1a1a2e;
+            color: white;
+            font-size: 16px;
+            font-family: 'Noto Sans KR', sans-serif;
+            resize: vertical;
+            line-height: 1.6;
+        }
+
+        .situation-textarea:focus {
+            outline: none;
+            border-color: #4eeadb;
+        }
+
+        .situation-textarea::placeholder {
+            color: rgba(255,255,255,0.4);
+        }
+
+        .example-situations {
+            margin-top: 15px;
+        }
+
+        .example-situations p {
+            font-size: 13px;
+            color: rgba(255,255,255,0.5);
+            margin-bottom: 10px;
+        }
+
+        .example-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        .example-tag {
+            background: rgba(78, 234, 219, 0.1);
+            border: 1px solid rgba(78, 234, 219, 0.3);
+            padding: 8px 14px;
+            border-radius: 20px;
+            font-size: 13px;
+            color: rgba(255,255,255,0.8);
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .example-tag:hover {
+            background: rgba(78, 234, 219, 0.2);
+            border-color: #4eeadb;
+        }
+
+        .submit-btn {
+            width: 100%;
+            padding: 18px;
+            background: linear-gradient(135deg, #4eeadb, #45b7aa);
+            border: none;
+            border-radius: 12px;
+            color: #1a1a2e;
+            font-size: 18px;
+            font-weight: 700;
+            cursor: pointer;
+            margin-top: 20px;
+            font-family: 'Noto Sans KR', sans-serif;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .submit-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(78, 234, 219, 0.3);
+        }
+
+        .submit-btn:disabled {
+            background: #3d3d5c;
+            color: rgba(255,255,255,0.4);
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        /* 로딩 */
+        .loading {
+            display: none;
+            text-align: center;
+            padding: 40px;
+        }
+
+        .loading.active {
+            display: block;
+        }
+
+        .spinner {
+            width: 50px;
+            height: 50px;
+            border: 4px solid rgba(78, 234, 219, 0.2);
+            border-top-color: #4eeadb;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 20px;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .loading p {
+            color: rgba(255,255,255,0.7);
+            font-size: 15px;
+        }
+
+        /* 결과 섹션 */
+        .result-section {
+            display: none;
+            animation: fadeIn 0.5s ease;
+        }
+
+        .result-section.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .result-card {
+            background: #1a1a2e;
+            border-radius: 20px;
+            overflow: hidden;
+            border: 1px solid rgba(78, 234, 219, 0.3);
+            margin-bottom: 20px;
+        }
+
+        .result-header {
+            background: linear-gradient(135deg, #2d2d44, #3d3d5c);
+            padding: 25px;
+            border-bottom: 1px solid rgba(78, 234, 219, 0.2);
+        }
+
+        .result-header h3 {
+            color: #4eeadb;
+            font-size: 18px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .result-content {
+            padding: 25px;
+        }
+
+        .step-result {
+            background: #2d2d44;
+            border-radius: 14px;
+            padding: 22px;
+            margin-bottom: 18px;
+        }
+
+        .step-result:last-child {
+            margin-bottom: 0;
+        }
+
+        .step-result-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 15px;
+        }
+
+        .step-result-num {
+            width: 30px;
+            height: 30px;
+            background: linear-gradient(135deg, #4eeadb, #45b7aa);
+            color: #1a1a2e;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 14px;
+        }
+
+        .step-result-title {
+            font-size: 16px;
+            font-weight: 700;
+            color: #4eeadb;
+        }
+
+        .step-result-subtitle {
+            font-size: 12px;
+            color: rgba(255,255,255,0.5);
+            margin-left: auto;
+        }
+
+        .question-box {
+            background: rgba(78, 234, 219, 0.1);
+            padding: 15px 18px;
+            border-radius: 10px;
+            margin-bottom: 12px;
+            border-left: 3px solid #4eeadb;
+            font-weight: 500;
+        }
+
+        .answer-box {
+            background: #3d3d5c;
+            padding: 15px 18px;
+            border-radius: 10px;
+            line-height: 1.8;
+            color: rgba(255,255,255,0.9);
+            font-size: 15px;
+        }
+
+        /* 부모의 한마디 */
+        .parent-message-result {
+            background: linear-gradient(135deg, rgba(78, 234, 219, 0.15), rgba(69, 183, 170, 0.1));
+            border-radius: 16px;
+            padding: 30px;
+            text-align: center;
+            border: 1px solid rgba(78, 234, 219, 0.3);
+            margin-top: 20px;
+        }
+
+        .parent-message-result .label {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: linear-gradient(135deg, #4eeadb, #45b7aa);
+            color: #1a1a2e;
+            padding: 8px 20px;
+            border-radius: 20px;
+            font-weight: 700;
+            font-size: 14px;
+            margin-bottom: 18px;
+        }
+
+        .parent-message-result .message {
+            font-size: 20px;
+            font-weight: 600;
+            color: white;
+            line-height: 1.6;
+        }
+
+        /* 다시하기 버튼 */
+        .reset-btn {
+            width: 100%;
+            padding: 16px;
+            background: #2d2d44;
+            border: 2px solid rgba(78, 234, 219, 0.3);
+            border-radius: 12px;
+            color: rgba(255,255,255,0.8);
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            font-family: 'Noto Sans KR', sans-serif;
+            transition: all 0.3s ease;
+            margin-top: 15px;
+        }
+
+        .reset-btn:hover {
+            border-color: #4eeadb;
+            color: #4eeadb;
+        }
+
+        /* 에러 메시지 */
+        .error-message {
+            background: rgba(255, 100, 100, 0.1);
+            border: 1px solid rgba(255, 100, 100, 0.3);
+            border-radius: 12px;
+            padding: 20px;
+            margin-top: 20px;
+            display: none;
+        }
+
+        .error-message.active {
+            display: block;
+        }
+
+        .error-message h4 {
+            color: #ff6b6b;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .error-message p {
+            color: rgba(255,255,255,0.7);
+            font-size: 14px;
+            line-height: 1.6;
+        }
+
+        /* 반응형 */
+        @media (max-width: 768px) {
+            .steps-intro {
+                grid-template-columns: 1fr;
+            }
+
+            .header h1 {
+                font-size: 22px;
+            }
+
+            .api-input-group {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>AI와 함께하는<br>실패를 성장으로 바꾸는 3단계 질문법</h1>
+            <p>아이의 실패 상황을 입력하면, AI가 3단계 질문법에 맞춰<br>부모님께 맞춤 가이드를 제공합니다.</p>
+        </div>
+
+        <!-- API Key는 코드에 내장됨 -->
+
+        <!-- 3단계 소개 -->
+        <div class="steps-intro">
+            <div class="step-box">
+                <div class="step-num">1</div>
+                <h3>분석</h3>
+                <p>객관적 원인 파악</p>
+            </div>
+            <div class="step-box">
+                <div class="step-num">2</div>
+                <h3>교훈</h3>
+                <p>긍정적 의미 부여</p>
+            </div>
+            <div class="step-box">
+                <div class="step-num">3</div>
+                <h3>계획</h3>
+                <p>미래 행동 설계</p>
+            </div>
+        </div>
+
+        <!-- 입력 섹션 -->
+        <div class="input-section" id="inputSection">
+            <h3>📝 아이의 실패 상황을 입력하세요</h3>
+            <textarea id="situationInput" class="situation-textarea" placeholder="예: 우리 아이가 수학 시험에서 60점을 받았어요. 평소에 열심히 공부했는데 결과가 안 좋아서 많이 속상해하고 있어요."></textarea>
+
+            <div class="example-situations">
+                <p>💡 예시 상황을 클릭해보세요:</p>
+                <div class="example-tags">
+                    <span class="example-tag" onclick="setExample('시험 성적이 기대보다 낮게 나왔어요')">시험 성적 부진</span>
+                    <span class="example-tag" onclick="setExample('축구 시합에서 우리 팀이 졌는데, 아이가 결정적인 실수를 했어요')">운동 경기 패배</span>
+                    <span class="example-tag" onclick="setExample('학교에서 발표하다가 긴장해서 말을 더듬고 실수했어요')">발표 실수</span>
+                    <span class="example-tag" onclick="setExample('피아노 학원을 그만두고 싶다고 해요. 너무 어렵대요')">배움 포기</span>
+                    <span class="example-tag" onclick="setExample('친한 친구와 크게 싸워서 학교 가기 싫어해요')">친구 갈등</span>
+                </div>
+            </div>
+
+            <button id="submitBtn" class="submit-btn" onclick="getAIResponse()" disabled>
+                <span>🤖</span> AI에게 가이드 요청하기
+            </button>
+
+            <div class="error-message" id="errorMessage">
+                <h4>⚠️ 오류 발생</h4>
+                <p id="errorText"></p>
+            </div>
+        </div>
+
+        <!-- 로딩 -->
+        <div class="loading" id="loading">
+            <div class="spinner"></div>
+            <p>AI가 맞춤 가이드를 작성하고 있습니다...</p>
+        </div>
+
+        <!-- 결과 섹션 -->
+        <div class="result-section" id="resultSection">
+            <div class="result-card">
+                <div class="result-header">
+                    <h3>🏀 입력하신 상황</h3>
+                </div>
+                <div class="result-content">
+                    <div class="answer-box" id="inputSituation"></div>
+                </div>
+            </div>
+
+            <div class="result-card">
+                <div class="result-header">
+                    <h3>💡 3단계 질문법 가이드</h3>
+                </div>
+                <div class="result-content" id="aiResult">
+                    <!-- AI 응답이 여기에 표시됨 -->
+                </div>
+            </div>
+
+            <button class="reset-btn" onclick="resetForm()">← 다른 상황 입력하기</button>
+        </div>
+    </div>
+
+    <script>
+        const API_KEY = 'YOUR_API_KEY_HERE';
+        const submitBtn = document.getElementById('submitBtn');
+        const situationInput = document.getElementById('situationInput');
+
+        // 상황 입력 감지
+        situationInput.addEventListener('input', checkSubmitEnabled);
+
+        function checkSubmitEnabled() {
+            const situation = situationInput.value.trim();
+            submitBtn.disabled = !(situation.length > 10);
+        }
+
+        // 예시 클릭
+        function setExample(text) {
+            situationInput.value = text;
+            checkSubmitEnabled();
+            situationInput.focus();
+        }
+
+        // AI 응답 요청
+        async function getAIResponse() {
+            const situation = situationInput.value.trim();
+
+            if (!situation) return;
+
+            // UI 상태 변경
+            document.getElementById('inputSection').style.display = 'none';
+            document.getElementById('loading').classList.add('active');
+            document.getElementById('resultSection').classList.remove('active');
+            document.getElementById('errorMessage').classList.remove('active');
+
+            const systemPrompt = `당신은 아이의 회복탄력성을 키워주는 부모교육 전문가입니다.
+부모가 아이의 실패 상황을 설명하면, "실패를 성장 자산으로 바꾸는 3단계 질문법"에 따라 구체적인 가이드를 제공해주세요.
+
+반드시 다음 JSON 형식으로만 응답해주세요:
+{
+    "analysis": {
+        "question": "부모가 아이에게 할 질문 (분석 단계)",
+        "guide": "이 질문을 하는 이유와 부모가 참고할 가이드"
+    },
+    "lesson": {
+        "question": "부모가 아이에게 할 질문 (교훈 단계)",
+        "guide": "이 질문을 하는 이유와 부모가 참고할 가이드"
+    },
+    "plan": {
+        "question": "부모가 아이에게 할 질문 (계획 단계)",
+        "guide": "이 질문을 하는 이유와 부모가 참고할 가이드"
+    },
+    "parentMessage": "부모가 아이에게 해줄 수 있는 따뜻한 한마디 (한 문장)"
+}
+
+3단계 질문법 원칙:
+1. 분석(Analysis): "이번에 어떤 부분이 어려웠을까?" - 비난 없이 객관적으로 원인 파악
+2. 교훈(Lesson): "이 경험에서 배운 점은 무엇이니?" - 실패에 긍정적 의미 부여
+3. 계획(Plan): "다음엔 어떻게 다르게 해볼까?" - 미래 지향적 행동 설계
+
+중요:
+- 아이의 감정을 먼저 공감해주는 질문으로 시작하세요
+- 비난이나 평가가 아닌 호기심 어린 질문을 사용하세요
+- 구체적이고 실천 가능한 계획을 제안하세요
+- 부모의 한마디는 따뜻하고 희망적인 메시지로 작성하세요`;
+
+            try {
+                const response = await fetch('https://api.anthropic.com/v1/messages', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'x-api-key': API_KEY,
+                        'anthropic-version': '2023-06-01',
+                        'anthropic-dangerous-direct-browser-access': 'true'
+                    },
+                    body: JSON.stringify({
+                        model: 'claude-sonnet-4-20250514',
+                        max_tokens: 1500,
+                        messages: [
+                            {
+                                role: 'user',
+                                content: `아이의 실패 상황: ${situation}\n\n위 상황에 대해 3단계 질문법 가이드를 JSON 형식으로 제공해주세요.`
+                            }
+                        ],
+                        system: systemPrompt
+                    })
+                });
+
+                if (!response.ok) {
+                    const errorData = await response.json();
+                    throw new Error(errorData.error?.message || 'API 요청에 실패했습니다.');
+                }
+
+                const data = await response.json();
+                const content = data.content[0].text;
+
+                // JSON 파싱
+                const jsonMatch = content.match(/\{[\s\S]*\}/);
+                if (!jsonMatch) {
+                    throw new Error('응답 형식이 올바르지 않습니다.');
+                }
+
+                const result = JSON.parse(jsonMatch[0]);
+                displayResult(situation, result);
+
+            } catch (error) {
+                console.error('Error:', error);
+                document.getElementById('loading').classList.remove('active');
+                document.getElementById('inputSection').style.display = 'block';
+                document.getElementById('errorMessage').classList.add('active');
+                document.getElementById('errorText').textContent = error.message || '오류가 발생했습니다. API Key를 확인하고 다시 시도해주세요.';
+            }
+        }
+
+        // 결과 표시
+        function displayResult(situation, result) {
+            document.getElementById('loading').classList.remove('active');
+            document.getElementById('inputSituation').textContent = situation;
+
+            const aiResultDiv = document.getElementById('aiResult');
+            aiResultDiv.innerHTML = `
+                <div class="step-result">
+                    <div class="step-result-header">
+                        <div class="step-result-num">1</div>
+                        <div class="step-result-title">분석 (Analysis)</div>
+                        <div class="step-result-subtitle">객관적 원인 파악</div>
+                    </div>
+                    <div class="question-box">"${result.analysis.question}"</div>
+                    <div class="answer-box">${result.analysis.guide}</div>
+                </div>
+
+                <div class="step-result">
+                    <div class="step-result-header">
+                        <div class="step-result-num">2</div>
+                        <div class="step-result-title">교훈 (Lesson)</div>
+                        <div class="step-result-subtitle">긍정적 의미 부여</div>
+                    </div>
+                    <div class="question-box">"${result.lesson.question}"</div>
+                    <div class="answer-box">${result.lesson.guide}</div>
+                </div>
+
+                <div class="step-result">
+                    <div class="step-result-header">
+                        <div class="step-result-num">3</div>
+                        <div class="step-result-title">계획 (Plan)</div>
+                        <div class="step-result-subtitle">미래 행동 설계</div>
+                    </div>
+                    <div class="question-box">"${result.plan.question}"</div>
+                    <div class="answer-box">${result.plan.guide}</div>
+                </div>
+
+                <div class="parent-message-result">
+                    <div class="label">💡 부모의 한마디</div>
+                    <div class="message">"${result.parentMessage}"</div>
+                </div>
+            `;
+
+            document.getElementById('resultSection').classList.add('active');
+        }
+
+        // 폼 리셋
+        function resetForm() {
+            document.getElementById('resultSection').classList.remove('active');
+            document.getElementById('inputSection').style.display = 'block';
+            situationInput.value = '';
+            checkSubmitEnabled();
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        // 페이지 로드 시 초기화
+        checkSubmitEnabled();
+    </script>
+</body>
+</html>

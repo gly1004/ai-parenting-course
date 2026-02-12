@@ -1,0 +1,770 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Tool Consultant - 부모와 아이를 위한 AI 도구 추천</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+            min-height: 100vh;
+            color: #fff;
+        }
+
+        .container {
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        /* Header */
+        header {
+            text-align: center;
+            padding: 40px 0;
+            border-bottom: 2px solid #00d4aa;
+            margin-bottom: 30px;
+        }
+
+        header h1 {
+            font-size: 2.5rem;
+            color: #00d4aa;
+            margin-bottom: 15px;
+        }
+
+        header p {
+            color: #aaa;
+            font-size: 1.1rem;
+            line-height: 1.6;
+        }
+
+        /* API Key Section */
+        .api-section {
+            background: rgba(255,255,255,0.05);
+            border-radius: 15px;
+            padding: 25px;
+            margin-bottom: 30px;
+            border: 1px solid rgba(0,212,170,0.3);
+        }
+
+        .api-section label {
+            display: block;
+            margin-bottom: 10px;
+            color: #00d4aa;
+            font-weight: bold;
+            font-size: 1.1rem;
+        }
+
+        .api-input-group {
+            display: flex;
+            gap: 15px;
+        }
+
+        .api-input-group input {
+            flex: 1;
+            padding: 15px 20px;
+            border: 2px solid rgba(0,212,170,0.3);
+            border-radius: 12px;
+            background: rgba(255,255,255,0.1);
+            color: #fff;
+            font-size: 1rem;
+        }
+
+        .api-input-group input:focus {
+            outline: none;
+            border-color: #00d4aa;
+        }
+
+        .api-input-group button {
+            padding: 15px 35px;
+            background: linear-gradient(135deg, #00d4aa, #00a080);
+            border: none;
+            border-radius: 12px;
+            color: #fff;
+            font-weight: bold;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+
+        .api-input-group button:hover {
+            transform: scale(1.05);
+        }
+
+        .api-status {
+            margin-top: 12px;
+            padding: 10px 18px;
+            border-radius: 8px;
+            font-size: 0.95rem;
+        }
+
+        .api-status.connected {
+            background: rgba(0,212,170,0.2);
+            color: #00d4aa;
+        }
+
+        .api-status.error {
+            background: rgba(255,100,100,0.2);
+            color: #ff6464;
+        }
+
+        /* Activity Input Section */
+        .activity-section {
+            background: rgba(255,255,255,0.05);
+            border-radius: 15px;
+            padding: 30px;
+            margin-bottom: 30px;
+            border: 1px solid rgba(0,212,170,0.3);
+        }
+
+        .activity-section h2 {
+            color: #00d4aa;
+            margin-bottom: 20px;
+            font-size: 1.4rem;
+        }
+
+        .activity-input {
+            width: 100%;
+            padding: 20px;
+            border: 2px solid rgba(0,212,170,0.3);
+            border-radius: 12px;
+            background: rgba(255,255,255,0.1);
+            color: #fff;
+            font-size: 1.1rem;
+            resize: none;
+            height: 120px;
+            font-family: inherit;
+            line-height: 1.6;
+        }
+
+        .activity-input:focus {
+            outline: none;
+            border-color: #00d4aa;
+        }
+
+        .activity-input::placeholder {
+            color: #666;
+        }
+
+        /* Example Activities */
+        .example-activities {
+            margin-top: 20px;
+        }
+
+        .example-activities h4 {
+            color: #888;
+            font-size: 0.95rem;
+            margin-bottom: 12px;
+        }
+
+        .example-chips {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .example-chip {
+            padding: 10px 18px;
+            background: rgba(0,212,170,0.15);
+            border: 1px solid rgba(0,212,170,0.4);
+            border-radius: 25px;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-size: 0.95rem;
+        }
+
+        .example-chip:hover {
+            background: rgba(0,212,170,0.25);
+            transform: translateY(-2px);
+        }
+
+        /* Submit Button */
+        .submit-btn {
+            width: 100%;
+            padding: 18px;
+            background: linear-gradient(135deg, #00d4aa, #00a080);
+            border: none;
+            border-radius: 12px;
+            color: #fff;
+            font-weight: bold;
+            font-size: 1.2rem;
+            cursor: pointer;
+            transition: all 0.2s;
+            margin-top: 20px;
+        }
+
+        .submit-btn:hover:not(:disabled) {
+            transform: scale(1.02);
+            box-shadow: 0 5px 20px rgba(0,212,170,0.3);
+        }
+
+        .submit-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        /* Loading */
+        .loading {
+            text-align: center;
+            padding: 60px;
+        }
+
+        .loading-spinner {
+            width: 60px;
+            height: 60px;
+            border: 4px solid rgba(0,212,170,0.2);
+            border-top-color: #00d4aa;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 20px;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .loading p {
+            color: #00d4aa;
+            font-size: 1.1rem;
+        }
+
+        /* Results Section */
+        .results-section {
+            display: none;
+        }
+
+        .results-header {
+            background: linear-gradient(135deg, rgba(0,212,170,0.2), rgba(0,160,128,0.2));
+            border-radius: 15px;
+            padding: 25px;
+            margin-bottom: 25px;
+            border: 1px solid rgba(0,212,170,0.4);
+        }
+
+        .results-header h2 {
+            color: #00d4aa;
+            margin-bottom: 10px;
+        }
+
+        .results-header p {
+            color: #ccc;
+            line-height: 1.6;
+        }
+
+        /* Tool Cards */
+        .tool-card {
+            background: rgba(255,255,255,0.05);
+            border-radius: 15px;
+            padding: 25px;
+            margin-bottom: 20px;
+            border: 1px solid rgba(0,212,170,0.3);
+            transition: all 0.3s;
+        }
+
+        .tool-card:hover {
+            border-color: #00d4aa;
+            transform: translateY(-3px);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+        }
+
+        .tool-header {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid rgba(0,212,170,0.2);
+        }
+
+        .tool-icon {
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(135deg, #00d4aa, #00a080);
+            border-radius: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.8rem;
+        }
+
+        .tool-info h3 {
+            color: #00d4aa;
+            font-size: 1.4rem;
+            margin-bottom: 5px;
+        }
+
+        .tool-info .category {
+            color: #888;
+            font-size: 0.9rem;
+        }
+
+        .tool-section {
+            margin-bottom: 20px;
+        }
+
+        .tool-section:last-child {
+            margin-bottom: 0;
+        }
+
+        .tool-section h4 {
+            color: #00d4aa;
+            font-size: 1.1rem;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .tool-section h4::before {
+            content: "";
+            width: 4px;
+            height: 20px;
+            background: #00d4aa;
+            border-radius: 2px;
+        }
+
+        .tool-section p {
+            color: #ccc;
+            line-height: 1.7;
+        }
+
+        .tool-section ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .tool-section li {
+            padding: 10px 0;
+            padding-left: 25px;
+            position: relative;
+            color: #ccc;
+            line-height: 1.6;
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+        }
+
+        .tool-section li:last-child {
+            border-bottom: none;
+        }
+
+        .tool-section li::before {
+            content: ">";
+            position: absolute;
+            left: 5px;
+            color: #00d4aa;
+            font-weight: bold;
+        }
+
+        /* Tips Box */
+        .tips-box {
+            background: rgba(102,126,234,0.15);
+            border: 1px solid rgba(102,126,234,0.4);
+            border-radius: 12px;
+            padding: 20px;
+            margin-top: 15px;
+        }
+
+        .tips-box h5 {
+            color: #667eea;
+            margin-bottom: 10px;
+            font-size: 1rem;
+        }
+
+        .tips-box p {
+            color: #aaa;
+            font-size: 0.95rem;
+            line-height: 1.6;
+        }
+
+        /* Link Button */
+        .tool-link {
+            display: inline-block;
+            padding: 12px 25px;
+            background: rgba(0,212,170,0.2);
+            border: 1px solid rgba(0,212,170,0.5);
+            border-radius: 8px;
+            color: #00d4aa;
+            text-decoration: none;
+            font-weight: bold;
+            margin-top: 15px;
+            transition: all 0.2s;
+        }
+
+        .tool-link:hover {
+            background: rgba(0,212,170,0.3);
+            transform: translateX(5px);
+        }
+
+        /* New Search Button */
+        .new-search-btn {
+            width: 100%;
+            padding: 15px;
+            background: transparent;
+            border: 2px solid #00d4aa;
+            border-radius: 12px;
+            color: #00d4aa;
+            font-weight: bold;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: all 0.2s;
+            margin-top: 30px;
+        }
+
+        .new-search-btn:hover {
+            background: rgba(0,212,170,0.1);
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            header h1 {
+                font-size: 1.8rem;
+            }
+
+            .api-input-group {
+                flex-direction: column;
+            }
+
+            .tool-header {
+                flex-direction: column;
+                text-align: center;
+            }
+        }
+
+        /* Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: rgba(255,255,255,0.05);
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: rgba(0,212,170,0.3);
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: rgba(0,212,170,0.5);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>AI Tool Consultant</h1>
+            <p>부모와 아이가 함께 할 활동을 입력하면<br>최적의 AI 도구들을 추천해 드립니다</p>
+        </header>
+
+        <!-- API Key Section -->
+        <div class="api-section">
+            <label>Claude API Key 입력</label>
+            <div class="api-input-group">
+                <input type="password" id="apiKey" placeholder="sk-ant-api... 형식의 API 키를 입력하세요">
+                <button onclick="connectAPI()">연결하기</button>
+            </div>
+            <div id="apiStatus" class="api-status" style="display: none;"></div>
+        </div>
+
+        <!-- Activity Input Section -->
+        <div class="activity-section" id="activitySection">
+            <h2>어떤 활동을 계획하고 계신가요?</h2>
+            <textarea
+                class="activity-input"
+                id="activityInput"
+                placeholder="예: 7살 아이와 함께 동화책을 만들고 싶어요. 아이가 직접 이야기를 구상하고 그림도 넣어서 완성하고 싶습니다."
+            ></textarea>
+
+            <div class="example-activities">
+                <h4>예시 활동 (클릭하면 자동 입력됩니다)</h4>
+                <div class="example-chips">
+                    <div class="example-chip" onclick="setExample('아이와 함께 나만의 동화책을 만들고 싶어요. 스토리도 짜고 삽화도 넣고 싶습니다.')">동화책 만들기</div>
+                    <div class="example-chip" onclick="setExample('초등학생 아이와 주말에 캠핑을 가려고 합니다. 장소 추천과 준비물, 일정을 계획하고 싶어요.')">가족 캠핑 계획</div>
+                    <div class="example-chip" onclick="setExample('아이가 자기만의 캐릭터와 브랜드를 만들고 싶어해요. 로고도 만들고 굿즈 디자인도 해보고 싶습니다.')">브랜드/캐릭터 만들기</div>
+                    <div class="example-chip" onclick="setExample('집에서 아이와 함께 할 수 있는 과학 실험을 찾고 있어요. 재미있으면서 교육적인 것을 원합니다.')">과학 실험하기</div>
+                    <div class="example-chip" onclick="setExample('아이와 함께 간단한 요리를 만들어보려고 해요. 아이가 직접 참여할 수 있는 레시피가 필요합니다.')">함께 요리하기</div>
+                    <div class="example-chip" onclick="setExample('아이가 좋아하는 노래를 직접 만들어보고 싶어해요. 작곡이나 음악 만들기를 해보고 싶습니다.')">음악/노래 만들기</div>
+                    <div class="example-chip" onclick="setExample('아이의 학교 발표 자료를 멋지게 만들고 싶어요. PPT나 영상으로 만들어보려고 합니다.')">발표 자료 만들기</div>
+                    <div class="example-chip" onclick="setExample('아이와 함께 짧은 애니메이션이나 영상을 만들어보고 싶어요.')">영상/애니메이션 만들기</div>
+                </div>
+            </div>
+
+            <button class="submit-btn" id="submitBtn" onclick="getRecommendations()">AI 도구 추천받기</button>
+        </div>
+
+        <!-- Loading -->
+        <div class="loading" id="loading" style="display: none;">
+            <div class="loading-spinner"></div>
+            <p>맞춤형 AI 도구를 분석하고 있습니다...</p>
+        </div>
+
+        <!-- Results Section -->
+        <div class="results-section" id="resultsSection">
+            <div class="results-header">
+                <h2>맞춤 AI 도구 추천 결과</h2>
+                <p id="activitySummary"></p>
+            </div>
+
+            <div id="toolsContainer">
+                <!-- Tool cards will be inserted here -->
+            </div>
+
+            <button class="new-search-btn" onclick="newSearch()">다른 활동으로 새로 검색하기</button>
+        </div>
+    </div>
+
+    <script>
+        let apiKey = '';
+        let isConnected = false;
+
+        // AI 도구 데이터베이스 (PDF 기반)
+        const aiToolsDatabase = {
+            // 대화 및 논리 기획
+            "ChatGPT-4o": { category: "대화 및 논리 기획", icon: "💬", url: "https://chat.openai.com" },
+            "Claude": { category: "대화 및 논리 기획", icon: "🤖", url: "https://claude.ai" },
+            "Perplexity": { category: "대화 및 논리 기획", icon: "🔍", url: "https://perplexity.ai" },
+
+            // 이미지 및 디자인
+            "Midjourney": { category: "이미지 생성", icon: "🎨", url: "https://midjourney.com" },
+            "DALL-E 3": { category: "이미지 생성", icon: "🖼️", url: "https://openai.com/dall-e-3" },
+            "Adobe Firefly": { category: "이미지 생성", icon: "🔥", url: "https://firefly.adobe.com" },
+            "Canva": { category: "디자인", icon: "🎯", url: "https://canva.com" },
+            "Looka": { category: "로고 디자인", icon: "✨", url: "https://looka.com" },
+            "LogoAI": { category: "로고 디자인", icon: "🏷️", url: "https://logoai.com" },
+
+            // 프레젠테이션
+            "Gamma": { category: "프레젠테이션", icon: "📊", url: "https://gamma.app" },
+            "Tome": { category: "프레젠테이션", icon: "📑", url: "https://tome.app" },
+            "Beautiful.ai": { category: "프레젠테이션", icon: "💎", url: "https://beautiful.ai" },
+            "Napkin AI": { category: "시각화", icon: "📝", url: "https://napkin.ai" },
+
+            // 영상 및 오디오
+            "Sora": { category: "영상 생성", icon: "🎬", url: "https://openai.com/sora" },
+            "HeyGen": { category: "영상 생성", icon: "🎥", url: "https://heygen.com" },
+            "Runway": { category: "영상 편집", icon: "🎞️", url: "https://runway.ml" },
+            "Suno": { category: "음악 생성", icon: "🎵", url: "https://suno.ai" },
+            "ElevenLabs": { category: "음성 생성", icon: "🎙️", url: "https://elevenlabs.io" },
+
+            // 여행
+            "GuideGeek": { category: "여행 계획", icon: "🗺️", url: "https://guidegeek.com" },
+            "Roam Around": { category: "여행 계획", icon: "✈️", url: "https://roamaround.io" },
+            "Tripnotes": { category: "여행 계획", icon: "📋", url: "https://tripnotes.ai" },
+
+            // 학습
+            "Khanmigo": { category: "학습", icon: "📚", url: "https://khanacademy.org/khanmigo" },
+            "Wolfram Alpha": { category: "학습/계산", icon: "🧮", url: "https://wolframalpha.com" },
+
+            // 코딩
+            "Replit": { category: "코딩", icon: "💻", url: "https://replit.com" },
+
+            // 스토리/동화
+            "Storybird": { category: "동화 제작", icon: "📖", url: "https://storybird.com" },
+
+            // 생산성
+            "Notion AI": { category: "생산성", icon: "📓", url: "https://notion.so" },
+            "Otter.ai": { category: "기록", icon: "🦦", url: "https://otter.ai" }
+        };
+
+        function connectAPI() {
+            apiKey = document.getElementById('apiKey').value.trim();
+            const statusEl = document.getElementById('apiStatus');
+
+            if (!apiKey) {
+                statusEl.textContent = 'API 키를 입력해 주세요.';
+                statusEl.className = 'api-status error';
+                statusEl.style.display = 'block';
+                return;
+            }
+
+            if (!apiKey.startsWith('sk-ant-')) {
+                statusEl.textContent = 'Claude API 키 형식이 올바르지 않습니다. sk-ant-로 시작해야 합니다.';
+                statusEl.className = 'api-status error';
+                statusEl.style.display = 'block';
+                return;
+            }
+
+            isConnected = true;
+            statusEl.textContent = 'API 연결 완료! 이제 AI 도구 추천을 받을 수 있습니다.';
+            statusEl.className = 'api-status connected';
+            statusEl.style.display = 'block';
+        }
+
+        function setExample(text) {
+            document.getElementById('activityInput').value = text;
+        }
+
+        async function getRecommendations() {
+            const activity = document.getElementById('activityInput').value.trim();
+
+            if (!activity) {
+                alert('활동 내용을 입력해 주세요.');
+                return;
+            }
+
+            if (!isConnected) {
+                alert('먼저 API 키를 입력하고 연결해 주세요.');
+                return;
+            }
+
+            // Show loading
+            document.getElementById('activitySection').style.display = 'none';
+            document.getElementById('loading').style.display = 'block';
+            document.getElementById('resultsSection').style.display = 'none';
+
+            const systemPrompt = `당신은 부모와 아이가 함께 활동할 때 유용한 AI 도구를 추천해주는 전문 컨설턴트입니다.
+
+사용 가능한 AI 도구 목록:
+${Object.entries(aiToolsDatabase).map(([name, info]) => `- ${name} (${info.category})`).join('\n')}
+
+사용자가 입력한 활동에 대해 가장 적합한 AI 도구 3-5개를 추천해 주세요.
+
+반드시 아래 JSON 형식으로만 응답하세요. 다른 텍스트는 포함하지 마세요:
+
+{
+  "summary": "활동에 대한 한 줄 요약",
+  "recommendations": [
+    {
+      "toolName": "도구 이름 (위 목록에서 정확히)",
+      "reason": "이 활동에 이 도구를 추천하는 이유 (2-3문장)",
+      "howToUse": [
+        "사용 방법 1단계",
+        "사용 방법 2단계",
+        "사용 방법 3단계"
+      ],
+      "activityGuide": "이 도구를 활용한 구체적인 활동 가이드 (3-4문장)",
+      "parentTip": "부모가 아이와 함께 사용할 때 팁 (1-2문장)"
+    }
+  ]
+}
+
+중요 지침:
+1. 도구 이름은 위 목록에 있는 것만 정확히 사용하세요
+2. 각 도구마다 해당 활동에 맞춘 구체적인 활용 방법을 제시하세요
+3. 아이의 창의성을 키우고 부모와 함께 협업할 수 있는 방향으로 안내하세요
+4. JSON 형식 외의 텍스트는 절대 포함하지 마세요`;
+
+            try {
+                const response = await fetch('https://api.anthropic.com/v1/messages', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'x-api-key': apiKey,
+                        'anthropic-version': '2023-06-01',
+                        'anthropic-dangerous-direct-browser-access': 'true'
+                    },
+                    body: JSON.stringify({
+                        model: 'claude-sonnet-4-20250514',
+                        max_tokens: 2048,
+                        system: systemPrompt,
+                        messages: [{
+                            role: 'user',
+                            content: `다음 활동에 적합한 AI 도구들을 추천해 주세요:\n\n${activity}`
+                        }]
+                    })
+                });
+
+                if (!response.ok) {
+                    const error = await response.json();
+                    throw new Error(error.error?.message || 'API 요청 실패');
+                }
+
+                const data = await response.json();
+                const responseText = data.content[0].text;
+
+                // Parse JSON response
+                let recommendations;
+                try {
+                    recommendations = JSON.parse(responseText);
+                } catch (e) {
+                    // Try to extract JSON from response
+                    const jsonMatch = responseText.match(/\{[\s\S]*\}/);
+                    if (jsonMatch) {
+                        recommendations = JSON.parse(jsonMatch[0]);
+                    } else {
+                        throw new Error('응답을 파싱할 수 없습니다.');
+                    }
+                }
+
+                displayResults(activity, recommendations);
+
+            } catch (error) {
+                document.getElementById('loading').style.display = 'none';
+                document.getElementById('activitySection').style.display = 'block';
+                alert(`오류가 발생했습니다: ${error.message}`);
+            }
+        }
+
+        function displayResults(activity, recommendations) {
+            document.getElementById('loading').style.display = 'none';
+            document.getElementById('resultsSection').style.display = 'block';
+
+            document.getElementById('activitySummary').innerHTML = `
+                <strong>입력하신 활동:</strong> ${activity}<br>
+                <strong>분석 결과:</strong> ${recommendations.summary}
+            `;
+
+            const container = document.getElementById('toolsContainer');
+            container.innerHTML = '';
+
+            recommendations.recommendations.forEach((rec, index) => {
+                const toolInfo = aiToolsDatabase[rec.toolName] || {
+                    category: "AI 도구",
+                    icon: "🤖",
+                    url: "#"
+                };
+
+                const card = document.createElement('div');
+                card.className = 'tool-card';
+                card.innerHTML = `
+                    <div class="tool-header">
+                        <div class="tool-icon">${toolInfo.icon}</div>
+                        <div class="tool-info">
+                            <h3>${rec.toolName}</h3>
+                            <div class="category">${toolInfo.category}</div>
+                        </div>
+                    </div>
+
+                    <div class="tool-section">
+                        <h4>추천 이유</h4>
+                        <p>${rec.reason}</p>
+                    </div>
+
+                    <div class="tool-section">
+                        <h4>사용 방법</h4>
+                        <ul>
+                            ${rec.howToUse.map(step => `<li>${step}</li>`).join('')}
+                        </ul>
+                    </div>
+
+                    <div class="tool-section">
+                        <h4>활용 가이드</h4>
+                        <p>${rec.activityGuide}</p>
+                    </div>
+
+                    <div class="tips-box">
+                        <h5>부모님을 위한 TIP</h5>
+                        <p>${rec.parentTip}</p>
+                    </div>
+
+                    <a href="${toolInfo.url}" target="_blank" class="tool-link">
+                        ${rec.toolName} 바로가기 →
+                    </a>
+                `;
+
+                container.appendChild(card);
+            });
+        }
+
+        function newSearch() {
+            document.getElementById('resultsSection').style.display = 'none';
+            document.getElementById('activitySection').style.display = 'block';
+            document.getElementById('activityInput').value = '';
+        }
+    </script>
+</body>
+</html>

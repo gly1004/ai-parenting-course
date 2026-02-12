@@ -1,0 +1,569 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI 비서 컨설턴트 - 부모와 아이를 위한 AI 비서 추천</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+            min-height: 100vh;
+            color: #fff;
+        }
+
+        .container {
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        header {
+            text-align: center;
+            padding: 40px 0;
+            border-bottom: 2px solid #00d4aa;
+            margin-bottom: 30px;
+        }
+
+        header h1 {
+            font-size: 2.5rem;
+            color: #00d4aa;
+            margin-bottom: 15px;
+        }
+
+        header p {
+            color: #aaa;
+            font-size: 1.1rem;
+            line-height: 1.6;
+        }
+
+        .activity-section {
+            background: rgba(255,255,255,0.05);
+            border-radius: 15px;
+            padding: 30px;
+            margin-bottom: 30px;
+            border: 1px solid rgba(0,212,170,0.3);
+        }
+
+        .activity-section h2 {
+            color: #00d4aa;
+            margin-bottom: 20px;
+            font-size: 1.4rem;
+        }
+
+        .activity-input {
+            width: 100%;
+            padding: 20px;
+            border: 2px solid rgba(0,212,170,0.3);
+            border-radius: 12px;
+            background: rgba(255,255,255,0.1);
+            color: #fff;
+            font-size: 1.1rem;
+            resize: none;
+            height: 120px;
+            font-family: inherit;
+            line-height: 1.6;
+        }
+
+        .activity-input:focus {
+            outline: none;
+            border-color: #00d4aa;
+        }
+
+        .activity-input::placeholder {
+            color: #666;
+        }
+
+        .example-activities {
+            margin-top: 20px;
+        }
+
+        .example-activities h4 {
+            color: #888;
+            font-size: 0.95rem;
+            margin-bottom: 12px;
+        }
+
+        .example-chips {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .example-chip {
+            padding: 10px 18px;
+            background: rgba(0,212,170,0.15);
+            border: 1px solid rgba(0,212,170,0.4);
+            border-radius: 25px;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-size: 0.95rem;
+        }
+
+        .example-chip:hover {
+            background: rgba(0,212,170,0.25);
+            transform: translateY(-2px);
+        }
+
+        .submit-btn {
+            width: 100%;
+            padding: 18px;
+            background: linear-gradient(135deg, #00d4aa, #00a080);
+            border: none;
+            border-radius: 12px;
+            color: #fff;
+            font-weight: bold;
+            font-size: 1.2rem;
+            cursor: pointer;
+            transition: all 0.2s;
+            margin-top: 20px;
+        }
+
+        .submit-btn:hover:not(:disabled) {
+            transform: scale(1.02);
+            box-shadow: 0 5px 20px rgba(0,212,170,0.3);
+        }
+
+        .submit-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 60px;
+        }
+
+        .loading-spinner {
+            width: 60px;
+            height: 60px;
+            border: 4px solid rgba(0,212,170,0.2);
+            border-top-color: #00d4aa;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 20px;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .loading p {
+            color: #00d4aa;
+            font-size: 1.1rem;
+        }
+
+        .results-section {
+            display: none;
+        }
+
+        .results-header {
+            background: linear-gradient(135deg, rgba(0,212,170,0.2), rgba(0,160,128,0.2));
+            border-radius: 15px;
+            padding: 25px;
+            margin-bottom: 25px;
+            border: 1px solid rgba(0,212,170,0.4);
+        }
+
+        .results-header h2 {
+            color: #00d4aa;
+            margin-bottom: 10px;
+        }
+
+        .results-header p {
+            color: #ccc;
+            line-height: 1.6;
+        }
+
+        .tool-card {
+            background: rgba(255,255,255,0.05);
+            border-radius: 15px;
+            padding: 25px;
+            margin-bottom: 20px;
+            border: 1px solid rgba(0,212,170,0.3);
+            transition: all 0.3s;
+        }
+
+        .tool-card:hover {
+            border-color: #00d4aa;
+            transform: translateY(-3px);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+        }
+
+        .tool-header {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid rgba(0,212,170,0.2);
+        }
+
+        .tool-icon {
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(135deg, #00d4aa, #00a080);
+            border-radius: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.8rem;
+        }
+
+        .tool-info h3 {
+            color: #00d4aa;
+            font-size: 1.4rem;
+            margin-bottom: 5px;
+        }
+
+        .tool-info .category {
+            color: #888;
+            font-size: 0.9rem;
+        }
+
+        .tool-section {
+            margin-bottom: 20px;
+        }
+
+        .tool-section:last-child {
+            margin-bottom: 0;
+        }
+
+        .tool-section h4 {
+            color: #00d4aa;
+            font-size: 1.1rem;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .tool-section h4::before {
+            content: "";
+            width: 4px;
+            height: 20px;
+            background: #00d4aa;
+            border-radius: 2px;
+        }
+
+        .tool-section p {
+            color: #ccc;
+            line-height: 1.7;
+        }
+
+        .tool-section ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .tool-section li {
+            padding: 10px 0;
+            padding-left: 25px;
+            position: relative;
+            color: #ccc;
+            line-height: 1.6;
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+        }
+
+        .tool-section li:last-child {
+            border-bottom: none;
+        }
+
+        .tool-section li::before {
+            content: ">";
+            position: absolute;
+            left: 5px;
+            color: #00d4aa;
+            font-weight: bold;
+        }
+
+        .tips-box {
+            background: rgba(102,126,234,0.15);
+            border: 1px solid rgba(102,126,234,0.4);
+            border-radius: 12px;
+            padding: 20px;
+            margin-top: 15px;
+        }
+
+        .tips-box h5 {
+            color: #667eea;
+            margin-bottom: 10px;
+            font-size: 1rem;
+        }
+
+        .tips-box p {
+            color: #aaa;
+            font-size: 0.95rem;
+            line-height: 1.6;
+        }
+
+        .tool-link {
+            display: inline-block;
+            padding: 12px 25px;
+            background: rgba(0,212,170,0.2);
+            border: 1px solid rgba(0,212,170,0.5);
+            border-radius: 8px;
+            color: #00d4aa;
+            text-decoration: none;
+            font-weight: bold;
+            margin-top: 15px;
+            transition: all 0.2s;
+        }
+
+        .tool-link:hover {
+            background: rgba(0,212,170,0.3);
+            transform: translateX(5px);
+        }
+
+        .new-search-btn {
+            width: 100%;
+            padding: 15px;
+            background: transparent;
+            border: 2px solid #00d4aa;
+            border-radius: 12px;
+            color: #00d4aa;
+            font-weight: bold;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: all 0.2s;
+            margin-top: 30px;
+        }
+
+        .new-search-btn:hover {
+            background: rgba(0,212,170,0.1);
+        }
+
+        .error-message {
+            background: rgba(255,100,100,0.2);
+            border: 1px solid rgba(255,100,100,0.4);
+            border-radius: 12px;
+            padding: 20px;
+            margin: 20px 0;
+            color: #ff6464;
+            text-align: center;
+        }
+
+        @media (max-width: 768px) {
+            header h1 {
+                font-size: 1.8rem;
+            }
+
+            .tool-header {
+                flex-direction: column;
+                text-align: center;
+            }
+        }
+
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: rgba(255,255,255,0.05);
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: rgba(0,212,170,0.3);
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: rgba(0,212,170,0.5);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>AI 비서 컨설턴트</h1>
+            <p>부모와 아이가 함께 할 활동을 입력하면<br>최적의 AI 비서를 추천해 드립니다</p>
+        </header>
+
+        <div class="activity-section" id="activitySection">
+            <h2>어떤 활동을 계획하고 계신가요?</h2>
+            <textarea
+                class="activity-input"
+                id="activityInput"
+                placeholder="예: 7살 아이와 함께 동화책을 만들고 싶어요. 아이가 직접 이야기를 구상하고 그림도 넣어서 완성하고 싶습니다."
+            ></textarea>
+
+            <div class="example-activities">
+                <h4>예시 활동 (클릭하면 자동 입력됩니다)</h4>
+                <div class="example-chips">
+                    <div class="example-chip" onclick="setExample('아이와 함께 나만의 동화책을 만들고 싶어요. 스토리도 짜고 삽화도 넣고 싶습니다.')">동화책 만들기</div>
+                    <div class="example-chip" onclick="setExample('초등학생 아이와 주말에 캠핑을 가려고 합니다. 장소 추천과 준비물, 일정을 계획하고 싶어요.')">가족 캠핑 계획</div>
+                    <div class="example-chip" onclick="setExample('아이가 자기만의 캐릭터와 브랜드를 만들고 싶어해요. 로고도 만들고 굿즈 디자인도 해보고 싶습니다.')">브랜드/캐릭터 만들기</div>
+                    <div class="example-chip" onclick="setExample('집에서 아이와 함께 할 수 있는 과학 실험을 찾고 있어요. 재미있으면서 교육적인 것을 원합니다.')">과학 실험하기</div>
+                    <div class="example-chip" onclick="setExample('아이와 함께 간단한 요리를 만들어보려고 해요. 아이가 직접 참여할 수 있는 레시피가 필요합니다.')">함께 요리하기</div>
+                    <div class="example-chip" onclick="setExample('아이가 좋아하는 노래를 직접 만들어보고 싶어해요. 작곡이나 음악 만들기를 해보고 싶습니다.')">음악/노래 만들기</div>
+                    <div class="example-chip" onclick="setExample('아이의 학교 발표 자료를 멋지게 만들고 싶어요. PPT나 영상으로 만들어보려고 합니다.')">발표 자료 만들기</div>
+                    <div class="example-chip" onclick="setExample('아이와 함께 짧은 애니메이션이나 영상을 만들어보고 싶어요.')">영상/애니메이션 만들기</div>
+                </div>
+            </div>
+
+            <button class="submit-btn" id="submitBtn" onclick="getRecommendations()">AI 비서 추천받기</button>
+        </div>
+
+        <div class="loading" id="loading" style="display: none;">
+            <div class="loading-spinner"></div>
+            <p>맞춤형 AI 비서를 분석하고 있습니다...</p>
+        </div>
+
+        <div class="results-section" id="resultsSection">
+            <div class="results-header">
+                <h2>맞춤 AI 비서 추천 결과</h2>
+                <p id="activitySummary"></p>
+            </div>
+
+            <div id="toolsContainer"></div>
+
+            <button class="new-search-btn" onclick="newSearch()">다른 활동으로 새로 검색하기</button>
+        </div>
+    </div>
+
+    <script>
+        const aiToolsDatabase = {
+            "ChatGPT-4o": { category: "대화 및 논리 기획", icon: "💬", url: "https://chat.openai.com" },
+            "Claude": { category: "대화 및 논리 기획", icon: "🤖", url: "https://claude.ai" },
+            "Perplexity": { category: "대화 및 논리 기획", icon: "🔍", url: "https://perplexity.ai" },
+            "Midjourney": { category: "이미지 생성", icon: "🎨", url: "https://midjourney.com" },
+            "DALL-E 3": { category: "이미지 생성", icon: "🖼️", url: "https://openai.com/dall-e-3" },
+            "Adobe Firefly": { category: "이미지 생성", icon: "🔥", url: "https://firefly.adobe.com" },
+            "Canva": { category: "디자인", icon: "🎯", url: "https://canva.com" },
+            "Looka": { category: "로고 디자인", icon: "✨", url: "https://looka.com" },
+            "LogoAI": { category: "로고 디자인", icon: "🏷️", url: "https://logoai.com" },
+            "Gamma": { category: "프레젠테이션", icon: "📊", url: "https://gamma.app" },
+            "Tome": { category: "프레젠테이션", icon: "📑", url: "https://tome.app" },
+            "Beautiful.ai": { category: "프레젠테이션", icon: "💎", url: "https://beautiful.ai" },
+            "Napkin AI": { category: "시각화", icon: "📝", url: "https://napkin.ai" },
+            "Sora": { category: "영상 생성", icon: "🎬", url: "https://openai.com/sora" },
+            "HeyGen": { category: "영상 생성", icon: "🎥", url: "https://heygen.com" },
+            "Runway": { category: "영상 편집", icon: "🎞️", url: "https://runway.ml" },
+            "Suno": { category: "음악 생성", icon: "🎵", url: "https://suno.ai" },
+            "ElevenLabs": { category: "음성 생성", icon: "🎙️", url: "https://elevenlabs.io" },
+            "GuideGeek": { category: "여행 계획", icon: "🗺️", url: "https://guidegeek.com" },
+            "Roam Around": { category: "여행 계획", icon: "✈️", url: "https://roamaround.io" },
+            "Tripnotes": { category: "여행 계획", icon: "📋", url: "https://tripnotes.ai" },
+            "Khanmigo": { category: "학습", icon: "📚", url: "https://khanacademy.org/khanmigo" },
+            "Wolfram Alpha": { category: "학습/계산", icon: "🧮", url: "https://wolframalpha.com" },
+            "Replit": { category: "코딩", icon: "💻", url: "https://replit.com" },
+            "Storybird": { category: "동화 제작", icon: "📖", url: "https://storybird.com" },
+            "Notion AI": { category: "생산성", icon: "📓", url: "https://notion.so" },
+            "Otter.ai": { category: "기록", icon: "🦦", url: "https://otter.ai" }
+        };
+
+        function setExample(text) {
+            document.getElementById('activityInput').value = text;
+        }
+
+        async function getRecommendations() {
+            const activity = document.getElementById('activityInput').value.trim();
+
+            if (!activity) {
+                alert('활동 내용을 입력해 주세요.');
+                return;
+            }
+
+            document.getElementById('activitySection').style.display = 'none';
+            document.getElementById('loading').style.display = 'block';
+            document.getElementById('resultsSection').style.display = 'none';
+
+            try {
+                const response = await fetch('/api/recommend', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ activity })
+                });
+
+                if (!response.ok) {
+                    const error = await response.json();
+                    throw new Error(error.error || 'API 요청 실패');
+                }
+
+                const recommendations = await response.json();
+                displayResults(activity, recommendations);
+
+            } catch (error) {
+                document.getElementById('loading').style.display = 'none';
+                document.getElementById('activitySection').style.display = 'block';
+                alert(`오류가 발생했습니다: ${error.message}`);
+            }
+        }
+
+        function displayResults(activity, recommendations) {
+            document.getElementById('loading').style.display = 'none';
+            document.getElementById('resultsSection').style.display = 'block';
+
+            document.getElementById('activitySummary').innerHTML = `
+                <strong>입력하신 활동:</strong> ${activity}<br>
+                <strong>분석 결과:</strong> ${recommendations.summary}
+            `;
+
+            const container = document.getElementById('toolsContainer');
+            container.innerHTML = '';
+
+            recommendations.recommendations.forEach((rec) => {
+                const toolInfo = aiToolsDatabase[rec.toolName] || {
+                    category: "AI 비서",
+                    icon: "🤖",
+                    url: "#"
+                };
+
+                const card = document.createElement('div');
+                card.className = 'tool-card';
+                card.innerHTML = `
+                    <div class="tool-header">
+                        <div class="tool-icon">${toolInfo.icon}</div>
+                        <div class="tool-info">
+                            <h3>${rec.toolName}</h3>
+                            <div class="category">${toolInfo.category}</div>
+                        </div>
+                    </div>
+
+                    <div class="tool-section">
+                        <h4>추천 이유</h4>
+                        <p>${rec.reason}</p>
+                    </div>
+
+                    <div class="tool-section">
+                        <h4>사용 방법</h4>
+                        <ul>
+                            ${rec.howToUse.map(step => `<li>${step}</li>`).join('')}
+                        </ul>
+                    </div>
+
+                    <div class="tool-section">
+                        <h4>활용 가이드</h4>
+                        <p>${rec.activityGuide}</p>
+                    </div>
+
+                    <div class="tips-box">
+                        <h5>부모님을 위한 TIP</h5>
+                        <p>${rec.parentTip}</p>
+                    </div>
+
+                    <a href="${toolInfo.url}" target="_blank" class="tool-link">
+                        ${rec.toolName} 바로가기 →
+                    </a>
+                `;
+
+                container.appendChild(card);
+            });
+        }
+
+        function newSearch() {
+            document.getElementById('resultsSection').style.display = 'none';
+            document.getElementById('activitySection').style.display = 'block';
+            document.getElementById('activityInput').value = '';
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,471 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI 시대 자녀 미래역량 - 활동 페이지 모음</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: linear-gradient(135deg, #1a2a4a 0%, #2d4a6f 100%);
+            color: #e0e0e0;
+            min-height: 100vh;
+            line-height: 1.6;
+        }
+
+        /* Header */
+        .header {
+            text-align: center;
+            padding: 50px 20px 30px;
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .header h1 {
+            font-size: 2rem;
+            color: #ffffff;
+            margin-bottom: 12px;
+            font-weight: 700;
+            letter-spacing: -0.5px;
+        }
+
+        .header h1 span {
+            color: #4ecca3;
+        }
+
+        .header p {
+            font-size: 1.05rem;
+            color: #a0b4c8;
+            font-weight: 400;
+        }
+
+        /* Stats bar */
+        .stats-bar {
+            text-align: center;
+            padding: 16px 20px;
+            margin: 0 auto 30px;
+            max-width: 900px;
+        }
+
+        .stats-badge {
+            display: inline-block;
+            background: rgba(78, 204, 163, 0.12);
+            border: 1px solid rgba(78, 204, 163, 0.3);
+            color: #4ecca3;
+            padding: 8px 24px;
+            border-radius: 30px;
+            font-size: 0.92rem;
+            font-weight: 600;
+            letter-spacing: 0.3px;
+        }
+
+        /* Card Grid */
+        .card-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 16px;
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 0 20px 40px;
+        }
+
+        @media (min-width: 700px) {
+            .card-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+
+            .header h1 {
+                font-size: 2.4rem;
+            }
+        }
+
+        /* Card */
+        .card {
+            background: #0f1a2e;
+            border-radius: 14px;
+            display: flex;
+            overflow: hidden;
+            border: 1px solid rgba(78, 204, 163, 0.1);
+            transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
+            cursor: default;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 32px rgba(0, 0, 0, 0.35);
+            border-color: rgba(78, 204, 163, 0.3);
+        }
+
+        .card.current-page {
+            border-color: rgba(78, 204, 163, 0.5);
+            background: linear-gradient(135deg, #0f1a2e 0%, #142236 100%);
+        }
+
+        /* Card Left - 번호 */
+        .card-num {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-width: 72px;
+            padding: 20px 8px;
+            background: rgba(78, 204, 163, 0.07);
+            border-right: 1px solid rgba(78, 204, 163, 0.1);
+            flex-shrink: 0;
+        }
+
+        .card-num span {
+            font-size: 1.7rem;
+            font-weight: 800;
+            color: #4ecca3;
+            line-height: 1;
+        }
+
+        .card-num small {
+            font-size: 0.7rem;
+            color: #4ecca3;
+            opacity: 0.7;
+            display: block;
+            text-align: center;
+            margin-top: 2px;
+            font-weight: 600;
+        }
+
+        /* Card Right - 내용 */
+        .card-body {
+            padding: 18px 20px;
+            flex: 1;
+            min-width: 0;
+        }
+
+        .card-topic {
+            font-size: 1.05rem;
+            font-weight: 700;
+            color: #ffffff;
+            margin-bottom: 10px;
+        }
+
+        .activity-list {
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .activity-list li {
+            font-size: 0.88rem;
+            line-height: 1.5;
+        }
+
+        .activity-list li::before {
+            content: "\25B8";
+            color: #4ecca3;
+            margin-right: 6px;
+            font-size: 0.75rem;
+        }
+
+        .activity-list a {
+            color: #4ecca3;
+            text-decoration: underline;
+            text-decoration-color: rgba(78, 204, 163, 0.35);
+            text-underline-offset: 3px;
+            transition: color 0.2s, text-decoration-color 0.2s;
+        }
+
+        .activity-list a:hover {
+            color: #7eecc3;
+            text-decoration-color: #7eecc3;
+        }
+
+        .badge-preparing {
+            display: inline-block;
+            font-size: 0.78rem;
+            color: #8899aa;
+            background: rgba(136, 153, 170, 0.1);
+            padding: 2px 10px;
+            border-radius: 10px;
+            border: 1px solid rgba(136, 153, 170, 0.2);
+        }
+
+        .badge-current {
+            display: inline-block;
+            font-size: 0.78rem;
+            color: #4ecca3;
+            background: rgba(78, 204, 163, 0.1);
+            padding: 2px 10px;
+            border-radius: 10px;
+            border: 1px solid rgba(78, 204, 163, 0.25);
+        }
+
+        /* Footer */
+        .footer {
+            text-align: center;
+            padding: 40px 20px 50px;
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .footer-message {
+            font-size: 1.05rem;
+            color: #a0b4c8;
+            margin-bottom: 28px;
+            font-weight: 500;
+        }
+
+        .footer-quote {
+            font-size: 0.92rem;
+            color: #6a7f94;
+            font-style: italic;
+            line-height: 1.7;
+            border-top: 1px solid rgba(78, 204, 163, 0.15);
+            padding-top: 24px;
+            max-width: 520px;
+            margin: 0 auto;
+        }
+
+        .footer-quote .author {
+            display: block;
+            margin-top: 8px;
+            font-style: normal;
+            color: #4ecca3;
+            font-weight: 600;
+            font-size: 0.85rem;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Header -->
+    <header class="header">
+        <h1>AI 시대 자녀 미래역량<br><span>활동 페이지 모음</span></h1>
+        <p>각 강의의 활동 페이지를 한눈에 확인하세요</p>
+    </header>
+
+    <!-- Stats -->
+    <div class="stats-bar">
+        <span class="stats-badge" id="statsCount"></span>
+    </div>
+
+    <!-- Card Grid -->
+    <main class="card-grid" id="cardGrid"></main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <p class="footer-message">AI 시대, 부모가 먼저 배우고 자녀와 함께 성장합니다</p>
+        <div class="footer-quote">
+            "교육은 세상을 바꾸기 위해 쓸 수 있는 가장 강력한 무기이다."
+            <span class="author">- 넬슨 만델라</span>
+        </div>
+    </footer>
+
+    <script>
+        const lectures = [
+            {
+                num: 0,
+                topic: "자녀 미래역량",
+                activities: [
+                    { name: "자녀의 미래 역량", url: "#" },
+                    { name: "AI 시대 자녀 핵심 역량 검사", url: "#" }
+                ]
+            },
+            {
+                num: 1,
+                topic: "질문",
+                activities: [
+                    { name: "AI 시대 질문 훈련 - 3단계 질문법", url: "#" }
+                ]
+            },
+            {
+                num: 2,
+                topic: "비판적사고",
+                activities: [
+                    { name: "비판적 사고를 기르는 부모 체크리스트", url: "#" },
+                    { name: "비판적 사고 연습기", url: "#" }
+                ]
+            },
+            {
+                num: 3,
+                topic: "창의적 문제해결",
+                activities: [
+                    { name: "창의적 해결사로 키우는 부모 체크리스트", url: "#" },
+                    { name: "불편함에서 기회 찾기", url: "#" }
+                ]
+            },
+            {
+                num: 4,
+                topic: "회복탄력성",
+                activities: [
+                    { name: "내 아이의 회복탄력성 알아보기", url: "#" },
+                    { name: "실패를 성장 자산으로 바꾸는 3단계 질문법", url: "#" },
+                    { name: "AI와 함께하는 3단계 질문법", url: "#" }
+                ]
+            },
+            {
+                num: 5,
+                topic: "마음근육",
+                activities: [
+                    { name: "마음근육 강점 찾기", url: "#" }
+                ]
+            },
+            {
+                num: 6,
+                topic: "자기조절능력",
+                activities: [
+                    { name: "우리 아이 자기조절능력 테스트", url: "#" }
+                ]
+            },
+            {
+                num: 7,
+                topic: "공감",
+                activities: [
+                    { name: "내 아이 공감 역량 알아보기", url: "#" }
+                ]
+            },
+            {
+                num: 8,
+                topic: "협력",
+                activities: [
+                    { name: "우리 아이 협력 역량 테스트", url: "#" }
+                ]
+            },
+            {
+                num: 9,
+                topic: "실천",
+                activities: [
+                    { name: "자녀의 실천 역량 테스트", url: "#" }
+                ]
+            },
+            {
+                num: 10,
+                topic: "메타AI역량",
+                activities: [
+                    { name: "우리 아이 메타 AI 역량 진단", url: "#" }
+                ]
+            },
+            {
+                num: 11,
+                topic: "AI비서",
+                activities: [
+                    { name: "AI 도구 추천 컨설턴트", url: "#" },
+                    { name: "AI 비서 컨설턴트 (무료 버전)", url: "#" }
+                ]
+            },
+            {
+                num: 12,
+                topic: "디지털윤리",
+                activities: [
+                    { name: "우리 아이의 디지털 윤리 테스트", url: "#" }
+                ]
+            },
+            {
+                num: 13,
+                topic: "자기주도학습",
+                activities: [
+                    { name: "내 아이의 자기주도 학습능력 테스트", url: "#" }
+                ]
+            },
+            {
+                num: 14,
+                topic: "평생학습",
+                activities: [
+                    { name: "우리 아이는 '평생 학습자'인가?", url: "#" }
+                ]
+            },
+            {
+                num: 15,
+                topic: "진로로드맵",
+                activities: [
+                    { name: "진로성격강점검사", url: "#" }
+                ]
+            },
+            {
+                num: 16,
+                topic: "AI시대 부모",
+                activities: [
+                    { name: "꿈의 안내자 자가진단 테스트", url: "#" }
+                ]
+            },
+            {
+                num: 17,
+                topic: "미래역량선언문",
+                activities: [
+                    { name: "우리 가족 미래역량 선언문 만들기", url: "#" }
+                ]
+            },
+            {
+                num: 18,
+                topic: "총정리",
+                activities: [],
+                isCurrent: true
+            }
+        ];
+
+        // Count total activities
+        let totalActivities = 0;
+        lectures.forEach(l => {
+            if (!l.isCurrent) {
+                totalActivities += l.activities.length;
+            }
+        });
+
+        document.getElementById('statsCount').textContent =
+            `전체 ${lectures.length}개 강의 | 활동 페이지 ${totalActivities}개`;
+
+        // Build cards
+        const grid = document.getElementById('cardGrid');
+
+        lectures.forEach(lecture => {
+            const card = document.createElement('div');
+            card.className = 'card' + (lecture.isCurrent ? ' current-page' : '');
+
+            // Number section
+            const numDiv = document.createElement('div');
+            numDiv.className = 'card-num';
+            numDiv.innerHTML = `<div><span>${lecture.num}</span><small>강</small></div>`;
+
+            // Body section
+            const bodyDiv = document.createElement('div');
+            bodyDiv.className = 'card-body';
+
+            const topicEl = document.createElement('div');
+            topicEl.className = 'card-topic';
+            topicEl.textContent = lecture.topic;
+            bodyDiv.appendChild(topicEl);
+
+            if (lecture.isCurrent) {
+                const badge = document.createElement('span');
+                badge.className = 'badge-current';
+                badge.textContent = '지금 보고 있는 페이지입니다';
+                bodyDiv.appendChild(badge);
+            } else if (lecture.activities.length === 0) {
+                const badge = document.createElement('span');
+                badge.className = 'badge-preparing';
+                badge.textContent = '준비 중';
+                bodyDiv.appendChild(badge);
+            } else {
+                const ul = document.createElement('ul');
+                ul.className = 'activity-list';
+                lecture.activities.forEach(act => {
+                    const li = document.createElement('li');
+                    const a = document.createElement('a');
+                    a.href = act.url;
+                    a.textContent = act.name;
+                    li.appendChild(a);
+                    ul.appendChild(li);
+                });
+                bodyDiv.appendChild(ul);
+            }
+
+            card.appendChild(numDiv);
+            card.appendChild(bodyDiv);
+            grid.appendChild(card);
+        });
+    </script>
+
+</body>
+</html>

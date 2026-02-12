@@ -1,0 +1,9 @@
+{
+  "name": "ai-question-training",
+  "version": "1.0.0",
+  "description": "AI 시대 질문 훈련 - 3단계 질문법",
+  "private": true,
+  "engines": {
+    "node": ">=18"
+  }
+}

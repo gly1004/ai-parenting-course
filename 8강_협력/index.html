@@ -1,0 +1,1410 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>우리 아이 협력 역량 테스트</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            min-height: 100vh;
+            color: #fff;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        /* 헤더 */
+        .header {
+            text-align: center;
+            padding: 40px 20px;
+            background: linear-gradient(135deg, #0f3460 0%, #16213e 100%);
+            border-radius: 20px;
+            margin-bottom: 30px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.3);
+        }
+
+        .header h1 {
+            font-size: 2.2rem;
+            margin-bottom: 10px;
+            color: #00d9ff;
+        }
+
+        .header p {
+            color: #aaa;
+            font-size: 1rem;
+        }
+
+        .subtitle {
+            display: inline-block;
+            background: linear-gradient(90deg, #00d9ff, #00ffc8);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            font-weight: bold;
+            margin-top: 10px;
+        }
+
+        /* 진행바 */
+        .progress-container {
+            background: #0f3460;
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.2);
+        }
+
+        .progress-bar {
+            height: 10px;
+            background: #1a1a2e;
+            border-radius: 5px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #00d9ff, #00ffc8);
+            border-radius: 5px;
+            transition: width 0.5s ease;
+            width: 0%;
+        }
+
+        .progress-text {
+            text-align: center;
+            margin-top: 10px;
+            color: #00d9ff;
+            font-weight: bold;
+        }
+
+        /* 질문 카드 */
+        .question-card {
+            background: linear-gradient(135deg, #0f3460 0%, #1a1a2e 100%);
+            border-radius: 20px;
+            padding: 30px;
+            margin-bottom: 20px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.3);
+            border: 1px solid #00d9ff33;
+            display: none;
+        }
+
+        .question-card.active {
+            display: block;
+            animation: fadeIn 0.5s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .category-badge {
+            display: inline-block;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: bold;
+            margin-bottom: 15px;
+        }
+
+        .category-communication { background: linear-gradient(90deg, #00d9ff, #0099cc); }
+        .category-coordination { background: linear-gradient(90deg, #00ffc8, #00cc99); }
+        .category-contribution { background: linear-gradient(90deg, #ff6b6b, #ee5a5a); }
+
+        .question-number {
+            font-size: 0.9rem;
+            color: #888;
+            margin-bottom: 10px;
+        }
+
+        .question-text {
+            font-size: 1.3rem;
+            font-weight: bold;
+            margin-bottom: 10px;
+            color: #fff;
+        }
+
+        .question-desc {
+            font-size: 0.95rem;
+            color: #aaa;
+            margin-bottom: 25px;
+        }
+
+        /* 점수 선택 */
+        .score-options {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .score-option {
+            width: calc(33.333% - 10px);
+            text-align: center;
+        }
+
+        .score-option:nth-child(4),
+        .score-option:nth-child(5) {
+            width: calc(33.333% - 10px);
+        }
+
+        .score-option input {
+            display: none;
+        }
+
+        .score-option label {
+            display: block;
+            padding: 15px 10px;
+            background: #1a1a2e;
+            border: 2px solid #333;
+            border-radius: 15px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .score-option label:hover {
+            border-color: #00d9ff;
+            transform: translateY(-3px);
+        }
+
+        .score-option input:checked + label {
+            background: linear-gradient(135deg, #00d9ff, #00ffc8);
+            border-color: #00d9ff;
+            color: #1a1a2e;
+            font-weight: bold;
+            transform: scale(1.05);
+        }
+
+        .score-number {
+            font-size: 1.5rem;
+            font-weight: bold;
+            display: block;
+        }
+
+        .score-label {
+            font-size: 0.75rem;
+            margin-top: 5px;
+            display: block;
+        }
+
+        /* 네비게이션 버튼 */
+        .nav-buttons {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 30px;
+            gap: 15px;
+        }
+
+        .nav-btn {
+            flex: 1;
+            padding: 15px 30px;
+            border: none;
+            border-radius: 10px;
+            font-size: 1rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .nav-btn.prev {
+            background: #333;
+            color: #fff;
+        }
+
+        .nav-btn.prev:hover {
+            background: #444;
+        }
+
+        .nav-btn.next {
+            background: linear-gradient(90deg, #00d9ff, #00ffc8);
+            color: #1a1a2e;
+        }
+
+        .nav-btn.next:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 20px rgba(0, 217, 255, 0.4);
+        }
+
+        .nav-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none !important;
+        }
+
+        /* 시작 화면 */
+        .start-screen {
+            text-align: center;
+            padding: 40px;
+        }
+
+        .start-screen h2 {
+            font-size: 1.8rem;
+            margin-bottom: 20px;
+            color: #00d9ff;
+        }
+
+        .start-screen p {
+            color: #aaa;
+            margin-bottom: 30px;
+        }
+
+        .info-box {
+            background: #1a1a2e;
+            border-radius: 15px;
+            padding: 20px;
+            margin: 20px 0;
+            text-align: left;
+        }
+
+        .info-box h3 {
+            color: #00ffc8;
+            margin-bottom: 15px;
+            font-size: 1.1rem;
+        }
+
+        .info-box ul {
+            list-style: none;
+        }
+
+        .info-box li {
+            padding: 8px 0;
+            border-bottom: 1px solid #333;
+            color: #ccc;
+        }
+
+        .info-box li:last-child {
+            border-bottom: none;
+        }
+
+        .info-box li strong {
+            color: #00d9ff;
+        }
+
+        .start-btn {
+            padding: 20px 60px;
+            font-size: 1.2rem;
+            background: linear-gradient(90deg, #00d9ff, #00ffc8);
+            color: #1a1a2e;
+            border: none;
+            border-radius: 15px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            margin-top: 20px;
+        }
+
+        .start-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 30px rgba(0, 217, 255, 0.4);
+        }
+
+        /* 결과 화면 */
+        .result-screen {
+            display: none;
+        }
+
+        .result-header {
+            text-align: center;
+            padding: 30px;
+            background: linear-gradient(135deg, #0f3460 0%, #16213e 100%);
+            border-radius: 20px;
+            margin-bottom: 20px;
+        }
+
+        .result-header h2 {
+            color: #00d9ff;
+            margin-bottom: 10px;
+        }
+
+        .total-score {
+            font-size: 4rem;
+            font-weight: bold;
+            background: linear-gradient(90deg, #00d9ff, #00ffc8);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .total-score span {
+            font-size: 1.5rem;
+            color: #888;
+            -webkit-text-fill-color: #888;
+        }
+
+        .result-level {
+            display: inline-block;
+            padding: 10px 30px;
+            border-radius: 25px;
+            font-weight: bold;
+            margin-top: 15px;
+            font-size: 1.2rem;
+        }
+
+        .level-excellent { background: linear-gradient(90deg, #00d9ff, #00ffc8); color: #1a1a2e; }
+        .level-good { background: linear-gradient(90deg, #4ecdc4, #44a08d); color: #1a1a2e; }
+        .level-developing { background: linear-gradient(90deg, #f9d423, #ff4e50); color: #1a1a2e; }
+        .level-basic { background: linear-gradient(90deg, #ff6b6b, #ee5a5a); color: #fff; }
+
+        /* 영역별 결과 */
+        .category-results {
+            display: grid;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .category-result {
+            background: #0f3460;
+            border-radius: 15px;
+            padding: 20px;
+        }
+
+        .category-result h3 {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .category-result h3 span:first-child {
+            color: #00d9ff;
+        }
+
+        .category-result h3 span:last-child {
+            color: #00ffc8;
+            font-size: 1.3rem;
+        }
+
+        .category-bar {
+            height: 8px;
+            background: #1a1a2e;
+            border-radius: 4px;
+            overflow: hidden;
+        }
+
+        .category-bar-fill {
+            height: 100%;
+            border-radius: 4px;
+            transition: width 1s ease;
+        }
+
+        .bar-communication { background: linear-gradient(90deg, #00d9ff, #0099cc); }
+        .bar-coordination { background: linear-gradient(90deg, #00ffc8, #00cc99); }
+        .bar-contribution { background: linear-gradient(90deg, #ff6b6b, #ee5a5a); }
+
+        /* 해석 및 가이드 */
+        .interpretation {
+            background: #0f3460;
+            border-radius: 15px;
+            padding: 25px;
+            margin-bottom: 20px;
+        }
+
+        .interpretation h3 {
+            color: #00d9ff;
+            margin-bottom: 15px;
+        }
+
+        .interpretation p {
+            color: #ccc;
+            line-height: 1.8;
+        }
+
+        .guide-section {
+            background: #0f3460;
+            border-radius: 15px;
+            padding: 25px;
+            margin-bottom: 20px;
+        }
+
+        .guide-section h3 {
+            color: #00ffc8;
+            margin-bottom: 15px;
+        }
+
+        .guide-item {
+            background: #1a1a2e;
+            border-radius: 10px;
+            padding: 15px;
+            margin-bottom: 10px;
+        }
+
+        .guide-item h4 {
+            color: #00d9ff;
+            margin-bottom: 8px;
+        }
+
+        .guide-item ul {
+            list-style: none;
+            color: #aaa;
+        }
+
+        .guide-item li {
+            padding: 5px 0;
+            padding-left: 20px;
+            position: relative;
+        }
+
+        .guide-item li:before {
+            content: ">";
+            position: absolute;
+            left: 0;
+            color: #00ffc8;
+        }
+
+        /* 명언 */
+        .quote {
+            text-align: center;
+            padding: 30px;
+            background: linear-gradient(135deg, #0f3460 0%, #16213e 100%);
+            border-radius: 15px;
+            margin-bottom: 20px;
+            border: 1px solid #00d9ff33;
+        }
+
+        .quote p {
+            font-size: 1.3rem;
+            font-style: italic;
+            color: #00ffc8;
+            margin-bottom: 10px;
+        }
+
+        .quote span {
+            color: #888;
+        }
+
+        /* 다시하기 버튼 */
+        .retry-btn {
+            display: block;
+            width: 100%;
+            padding: 20px;
+            font-size: 1.1rem;
+            background: linear-gradient(90deg, #00d9ff, #00ffc8);
+            color: #1a1a2e;
+            border: none;
+            border-radius: 15px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s ease;
+        }
+
+        .retry-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 30px rgba(0, 217, 255, 0.4);
+        }
+
+        /* 반응형 */
+        @media (max-width: 600px) {
+            .container {
+                padding: 10px;
+            }
+
+            .header {
+                padding: 25px 15px;
+                border-radius: 15px;
+                margin-bottom: 15px;
+            }
+
+            .header h1 {
+                font-size: 1.5rem;
+            }
+
+            .question-card {
+                padding: 20px 15px;
+                border-radius: 15px;
+            }
+
+            .start-screen {
+                padding: 15px 5px;
+            }
+
+            .start-screen h2 {
+                font-size: 1.4rem;
+            }
+
+            .start-screen > p {
+                font-size: 0.95rem;
+                margin-bottom: 20px;
+            }
+
+            .info-box {
+                padding: 15px;
+                margin: 15px 0;
+                border-radius: 12px;
+            }
+
+            .info-box h3 {
+                font-size: 1rem;
+            }
+
+            .info-box li {
+                font-size: 0.9rem;
+                padding: 6px 0;
+            }
+
+            .start-btn {
+                padding: 15px 40px;
+                font-size: 1.1rem;
+                width: 100%;
+            }
+
+            .question-text {
+                font-size: 1.1rem;
+            }
+
+            .score-options {
+                gap: 8px;
+            }
+
+            .score-option {
+                width: calc(33.333% - 8px);
+            }
+
+            .score-option:nth-child(4),
+            .score-option:nth-child(5) {
+                width: calc(40% - 8px);
+            }
+
+            .score-option label {
+                padding: 12px 8px;
+            }
+
+            .score-number {
+                font-size: 1.3rem;
+            }
+
+            .score-label {
+                font-size: 0.7rem;
+            }
+
+            .total-score {
+                font-size: 3rem;
+            }
+
+            .nav-buttons {
+                flex-direction: column;
+            }
+
+            .result-header {
+                padding: 20px 15px;
+            }
+
+            .interpretation,
+            .guide-section {
+                padding: 20px 15px;
+            }
+
+            .quote {
+                padding: 20px 15px;
+            }
+
+            .quote p {
+                font-size: 1.1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- 헤더 -->
+        <div class="header">
+            <h1>우리 아이 협력 역량 테스트</h1>
+            <p>부모용 체크리스트</p>
+            <p class="subtitle">AI 시대, 함께 가는 아이로 키우기</p>
+        </div>
+
+        <!-- 시작 화면 -->
+        <div class="question-card active" id="startScreen">
+            <div class="start-screen">
+                <h2>테스트 안내</h2>
+                <p>아래 10개의 질문을 통해 우리 아이의 협력 역량을 알아보세요.</p>
+
+                <div class="info-box">
+                    <h3>평가 영역 (3C)</h3>
+                    <ul>
+                        <li><strong>Communication (의사소통)</strong> - 경청하고 전달하는 능력</li>
+                        <li><strong>Coordination (조율)</strong> - 목표 이해와 갈등 해결 능력</li>
+                        <li><strong>Contribution (기여)</strong> - 팀에 기여하고 성과 공유 능력</li>
+                    </ul>
+                </div>
+
+                <div class="info-box">
+                    <h3>점수 기준</h3>
+                    <ul>
+                        <li><strong>1점</strong> - 전혀 그렇지 않다</li>
+                        <li><strong>2점</strong> - 별로 그렇지 않다</li>
+                        <li><strong>3점</strong> - 보통이다</li>
+                        <li><strong>4점</strong> - 대체로 그렇다</li>
+                        <li><strong>5점</strong> - 매우 그렇다</li>
+                    </ul>
+                </div>
+
+                <button class="start-btn" onclick="startTest()">테스트 시작하기</button>
+            </div>
+        </div>
+
+        <!-- 진행바 (테스트 중에만 표시) -->
+        <div class="progress-container" id="progressContainer" style="display: none;">
+            <div class="progress-bar">
+                <div class="progress-fill" id="progressFill"></div>
+            </div>
+            <div class="progress-text" id="progressText">0 / 10</div>
+        </div>
+
+        <!-- 질문 카드들 -->
+        <div class="question-card" id="q1">
+            <span class="category-badge category-communication">의사소통 (Communication)</span>
+            <div class="question-number">질문 1 / 10</div>
+            <div class="question-text">아이가 친구나 가족의 이야기를 끝까지 듣고 반응하나요?</div>
+            <div class="question-desc">상대의 의도를 경청하는 능력을 평가합니다.</div>
+            <div class="score-options">
+                <div class="score-option">
+                    <input type="radio" name="q1" id="q1_1" value="1">
+                    <label for="q1_1">
+                        <span class="score-number">1</span>
+                        <span class="score-label">전혀 아니다</span>
+                    </label>
+                </div>
+                <div class="score-option">
+                    <input type="radio" name="q1" id="q1_2" value="2">
+                    <label for="q1_2">
+                        <span class="score-number">2</span>
+                        <span class="score-label">별로 아니다</span>
+                    </label>
+                </div>
+                <div class="score-option">
+                    <input type="radio" name="q1" id="q1_3" value="3">
+                    <label for="q1_3">
+                        <span class="score-number">3</span>
+                        <span class="score-label">보통이다</span>
+                    </label>
+                </div>
+                <div class="score-option">
+                    <input type="radio" name="q1" id="q1_4" value="4">
+                    <label for="q1_4">
+                        <span class="score-number">4</span>
+                        <span class="score-label">대체로 그렇다</span>
+                    </label>
+                </div>
+                <div class="score-option">
+                    <input type="radio" name="q1" id="q1_5" value="5">
+                    <label for="q1_5">
+                        <span class="score-number">5</span>
+                        <span class="score-label">매우 그렇다</span>
+                    </label>
+                </div>
+            </div>
+            <div class="nav-buttons">
+                <button class="nav-btn prev" onclick="prevQuestion(1)">이전</button>
+                <button class="nav-btn next" onclick="nextQuestion(1)">다음</button>
+            </div>
+        </div>
+
+        <div class="question-card" id="q2">
+            <span class="category-badge category-communication">의사소통 (Communication)</span>
+            <div class="question-number">질문 2 / 10</div>
+            <div class="question-text">아이가 자신의 생각이나 의견을 상대방에게 명확하게 전달하나요?</div>
+            <div class="question-desc">나의 의견을 명확히 전달하는 능력을 평가합니다.</div>
+            <div class="score-options">
+                <div class="score-option">
+                    <input type="radio" name="q2" id="q2_1" value="1">
+                    <label for="q2_1">
+                        <span class="score-number">1</span>
+                        <span class="score-label">전혀 아니다</span>
+                    </label>
+                </div>
+                <div class="score-option">
+                    <input type="radio" name="q2" id="q2_2" value="2">
+                    <label for="q2_2">
+                        <span class="score-number">2</span>
+                        <span class="score-label">별로 아니다</span>
+                    </label>
+                </div>
+                <div class="score-option">
+                    <input type="radio" name="q2" id="q2_3" value="3">
+                    <label for="q2_3">
+                        <span class="score-number">3</span>
+                        <span class="score-label">보통이다</span>
+                    </label>
+                </div>
+                <div class="score-option">
+                    <input type="radio" name="q2" id="q2_4" value="4">
+                    <label for="q2_4">
+                        <span class="score-number">4</span>
+                        <span class="score-label">대체로 그렇다</span>
+                    </label>
+                </div>
+                <div class="score-option">
+                    <input type="radio" name="q2" id="q2_5" value="5">
+                    <label for="q2_5">
+                        <span class="score-number">5</span>
+                        <span class="score-label">매우 그렇다</span>
+                    </label>
+                </div>
+            </div>
+            <div class="nav-buttons">
+                <button class="nav-btn prev" onclick="prevQuestion(2)">이전</button>
+                <button class="nav-btn next" onclick="nextQuestion(2)">다음</button>
+            </div>
+        </div>
+
+        <div class="question-card" id="q3">
+            <span class="category-badge category-communication">의사소통 (Communication)</span>
+            <div class="question-number">질문 3 / 10</div>
+            <div class="question-text">아이가 자신과 다른 의견을 들었을 때 "그런 생각도 있구나"라고 받아들이나요?</div>
+            <div class="question-desc">다름을 인정하는 유연한 사고를 평가합니다.</div>
+            <div class="score-options">
+                <div class="score-option">
+                    <input type="radio" name="q3" id="q3_1" value="1">
+                    <label for="q3_1">
+                        <span class="score-number">1</span>
+                        <span class="score-label">전혀 아니다</span>
+                    </label>
+                </div>
+                <div class="score-option">
+                    <input type="radio" name="q3" id="q3_2" value="2">
+                    <label for="q3_2">
+                        <span class="score-number">2</span>
+                        <span class="score-label">별로 아니다</span>
+                    </label>
+                </div>
+                <div class="score-option">
+                    <input type="radio" name="q3" id="q3_3" value="3">
+                    <label for="q3_3">
+                        <span class="score-number">3</span>
+                        <span class="score-label">보통이다</span>
+                    </label>
+                </div>
+                <div class="score-option">
+                    <input type="radio" name="q3" id="q3_4" value="4">
+                    <label for="q3_4">
+                        <span class="score-number">4</span>
+                        <span class="score-label">대체로 그렇다</span>
+                    </label>
+                </div>
+                <div class="score-option">
+                    <input type="radio" name="q3" id="q3_5" value="5">
+                    <label for="q3_5">
+                        <span class="score-number">5</span>
+                        <span class="score-label">매우 그렇다</span>
+                    </label>
+                </div>
+            </div>
+            <div class="nav-buttons">
+                <button class="nav-btn prev" onclick="prevQuestion(3)">이전</button>
+                <button class="nav-btn next" onclick="nextQuestion(3)">다음</button>
+            </div>
+        </div>
+
+        <div class="question-card" id="q4">
+            <span class="category-badge category-coordination">조율 (Coordination)</span>
+            <div class="question-number">질문 4 / 10</div>
+            <div class="question-text">아이가 모둠 활동이나 가족 활동에서 공동의 목표를 이해하고 따르려고 노력하나요?</div>
+            <div class="question-desc">공동의 목표를 이해하는 능력을 평가합니다.</div>
+            <div class="score-options">
+                <div class="score-option">
+                    <input type="radio" name="q4" id="q4_1" value="1">
+                    <label for="q4_1">
+                        <span class="score-number">1</span>
+                        <span class="score-label">전혀 아니다</span>
+                    </label>
+                </div>
+                <div class="score-option">
+                    <input type="radio" name="q4" id="q4_2" value="2">
+                    <label for="q4_2">
+                        <span class="score-number">2</span>
+                        <span class="score-label">별로 아니다</span>
+                    </label>
+                </div>
+                <div class="score-option">
+                    <input type="radio" name="q4" id="q4_3" value="3">
+                    <label for="q4_3">
+                        <span class="score-number">3</span>
+                        <span class="score-label">보통이다</span>
+                    </label>
+                </div>
+                <div class="score-option">
+                    <input type="radio" name="q4" id="q4_4" value="4">
+                    <label for="q4_4">
+                        <span class="score-number">4</span>
+                        <span class="score-label">대체로 그렇다</span>
+                    </label>
+                </div>
+                <div class="score-option">
+                    <input type="radio" name="q4" id="q4_5" value="5">
+                    <label for="q4_5">
+                        <span class="score-number">5</span>
+                        <span class="score-label">매우 그렇다</span>
+                    </label>
+                </div>
+            </div>
+            <div class="nav-buttons">
+                <button class="nav-btn prev" onclick="prevQuestion(4)">이전</button>
+                <button class="nav-btn next" onclick="nextQuestion(4)">다음</button>
+            </div>
+        </div>
+
+        <div class="question-card" id="q5">
+            <span class="category-badge category-coordination">조율 (Coordination)</span>
+            <div class="question-number">질문 5 / 10</div>
+            <div class="question-text">아이가 친구와 갈등이 생겼을 때 "어떻게 해결할지"를 먼저 생각하나요?</div>
+            <div class="question-desc">갈등 조율 및 타협안 도출 능력을 평가합니다.</div>
+            <div class="score-options">
+                <div class="score-option">
+                    <input type="radio" name="q5" id="q5_1" value="1">
+                    <label for="q5_1">
+                        <span class="score-number">1</span>
+                        <span class="score-label">전혀 아니다</span>
+                    </label>
+                </div>
+                <div class="score-option">
+                    <input type="radio" name="q5" id="q5_2" value="2">
+                    <label for="q5_2">
+                        <span class="score-number">2</span>
+                        <span class="score-label">별로 아니다</span>
+                    </label>
+                </div>
+                <div class="score-option">
+                    <input type="radio" name="q5" id="q5_3" value="3">
+                    <label for="q5_3">
+                        <span class="score-number">3</span>
+                        <span class="score-label">보통이다</span>
+                    </label>
+                </div>
+                <div class="score-option">
+                    <input type="radio" name="q5" id="q5_4" value="4">
+                    <label for="q5_4">
+                        <span class="score-number">4</span>
+                        <span class="score-label">대체로 그렇다</span>
+                    </label>
+                </div>
+                <div class="score-option">
+                    <input type="radio" name="q5" id="q5_5" value="5">
+                    <label for="q5_5">
+                        <span class="score-number">5</span>
+                        <span class="score-label">매우 그렇다</span>
+                    </label>
+                </div>
+            </div>
+            <div class="nav-buttons">
+                <button class="nav-btn prev" onclick="prevQuestion(5)">이전</button>
+                <button class="nav-btn next" onclick="nextQuestion(5)">다음</button>
+            </div>
+        </div>
+
+        <div class="question-card" id="q6">
+            <span class="category-badge category-coordination">조율 (Coordination)</span>
+            <div class="question-number">질문 6 / 10</div>
+            <div class="question-text">아이가 놀이나 활동에서 차례를 지키고 기다릴 줄 아나요?</div>
+            <div class="question-desc">자기 조절 및 인내심을 평가합니다.</div>
+            <div class="score-options">
+                <div class="score-option">
+                    <input type="radio" name="q6" id="q6_1" value="1">
+                    <label for="q6_1">
+                        <span class="score-number">1</span>
+                        <span class="score-label">전혀 아니다</span>
+                    </label>
+                </div>
+                <div class="score-option">
+                    <input type="radio" name="q6" id="q6_2" value="2">
+                    <label for="q6_2">
+                        <span class="score-number">2</span>
+                        <span class="score-label">별로 아니다</span>
+                    </label>
+                </div>
+                <div class="score-option">
+                    <input type="radio" name="q6" id="q6_3" value="3">
+                    <label for="q6_3">
+                        <span class="score-number">3</span>
+                        <span class="score-label">보통이다</span>
+                    </label>
+                </div>
+                <div class="score-option">
+                    <input type="radio" name="q6" id="q6_4" value="4">
+                    <label for="q6_4">
+                        <span class="score-number">4</span>
+                        <span class="score-label">대체로 그렇다</span>
+                    </label>
+                </div>
+                <div class="score-option">
+                    <input type="radio" name="q6" id="q6_5" value="5">
+                    <label for="q6_5">
+                        <span class="score-number">5</span>
+                        <span class="score-label">매우 그렇다</span>
+                    </label>
+                </div>
+            </div>
+            <div class="nav-buttons">
+                <button class="nav-btn prev" onclick="prevQuestion(6)">이전</button>
+                <button class="nav-btn next" onclick="nextQuestion(6)">다음</button>
+            </div>
+        </div>
+
+        <div class="question-card" id="q7">
+            <span class="category-badge category-coordination">조율 (Coordination)</span>
+            <div class="question-number">질문 7 / 10</div>
+            <div class="question-text">아이가 공동의 목표를 위해 자신이 하고 싶은 것을 양보하거나 조절할 수 있나요?</div>
+            <div class="question-desc">자신의 욕구를 조절하는 능력을 평가합니다.</div>
+            <div class="score-options">
+                <div class="score-option">
+                    <input type="radio" name="q7" id="q7_1" value="1">
+                    <label for="q7_1">
+                        <span class="score-number">1</span>
+                        <span class="score-label">전혀 아니다</span>
+                    </label>
+                </div>
+                <div class="score-option">
+                    <input type="radio" name="q7" id="q7_2" value="2">
+                    <label for="q7_2">
+                        <span class="score-number">2</span>
+                        <span class="score-label">별로 아니다</span>
+                    </label>
+                </div>
+                <div class="score-option">
+                    <input type="radio" name="q7" id="q7_3" value="3">
+                    <label for="q7_3">
+                        <span class="score-number">3</span>
+                        <span class="score-label">보통이다</span>
+                    </label>
+                </div>
+                <div class="score-option">
+                    <input type="radio" name="q7" id="q7_4" value="4">
+                    <label for="q7_4">
+                        <span class="score-number">4</span>
+                        <span class="score-label">대체로 그렇다</span>
+                    </label>
+                </div>
+                <div class="score-option">
+                    <input type="radio" name="q7" id="q7_5" value="5">
+                    <label for="q7_5">
+                        <span class="score-number">5</span>
+                        <span class="score-label">매우 그렇다</span>
+                    </label>
+                </div>
+            </div>
+            <div class="nav-buttons">
+                <button class="nav-btn prev" onclick="prevQuestion(7)">이전</button>
+                <button class="nav-btn next" onclick="nextQuestion(7)">다음</button>
+            </div>
+        </div>
+
+        <div class="question-card" id="q8">
+            <span class="category-badge category-contribution">기여 (Contribution)</span>
+            <div class="question-number">질문 8 / 10</div>
+            <div class="question-text">아이가 가족 활동이나 모둠 과제에서 자신의 역할을 책임감 있게 수행하나요?</div>
+            <div class="question-desc">팀의 결과물에 기여하는 능력을 평가합니다.</div>
+            <div class="score-options">
+                <div class="score-option">
+                    <input type="radio" name="q8" id="q8_1" value="1">
+                    <label for="q8_1">
+                        <span class="score-number">1</span>
+                        <span class="score-label">전혀 아니다</span>
+                    </label>
+                </div>
+                <div class="score-option">
+                    <input type="radio" name="q8" id="q8_2" value="2">
+                    <label for="q8_2">
+                        <span class="score-number">2</span>
+                        <span class="score-label">별로 아니다</span>
+                    </label>
+                </div>
+                <div class="score-option">
+                    <input type="radio" name="q8" id="q8_3" value="3">
+                    <label for="q8_3">
+                        <span class="score-number">3</span>
+                        <span class="score-label">보통이다</span>
+                    </label>
+                </div>
+                <div class="score-option">
+                    <input type="radio" name="q8" id="q8_4" value="4">
+                    <label for="q8_4">
+                        <span class="score-number">4</span>
+                        <span class="score-label">대체로 그렇다</span>
+                    </label>
+                </div>
+                <div class="score-option">
+                    <input type="radio" name="q8" id="q8_5" value="5">
+                    <label for="q8_5">
+                        <span class="score-number">5</span>
+                        <span class="score-label">매우 그렇다</span>
+                    </label>
+                </div>
+            </div>
+            <div class="nav-buttons">
+                <button class="nav-btn prev" onclick="prevQuestion(8)">이전</button>
+                <button class="nav-btn next" onclick="nextQuestion(8)">다음</button>
+            </div>
+        </div>
+
+        <div class="question-card" id="q9">
+            <span class="category-badge category-contribution">기여 (Contribution)</span>
+            <div class="question-number">질문 9 / 10</div>
+            <div class="question-text">아이가 함께 이룬 성과에 대해 "우리가 해냈다"라고 기뻐하며 공동의 성취감을 느끼나요?</div>
+            <div class="question-desc">공동의 성과를 함께 누리는 태도를 평가합니다.</div>
+            <div class="score-options">
+                <div class="score-option">
+                    <input type="radio" name="q9" id="q9_1" value="1">
+                    <label for="q9_1">
+                        <span class="score-number">1</span>
+                        <span class="score-label">전혀 아니다</span>
+                    </label>
+                </div>
+                <div class="score-option">
+                    <input type="radio" name="q9" id="q9_2" value="2">
+                    <label for="q9_2">
+                        <span class="score-number">2</span>
+                        <span class="score-label">별로 아니다</span>
+                    </label>
+                </div>
+                <div class="score-option">
+                    <input type="radio" name="q9" id="q9_3" value="3">
+                    <label for="q9_3">
+                        <span class="score-number">3</span>
+                        <span class="score-label">보통이다</span>
+                    </label>
+                </div>
+                <div class="score-option">
+                    <input type="radio" name="q9" id="q9_4" value="4">
+                    <label for="q9_4">
+                        <span class="score-number">4</span>
+                        <span class="score-label">대체로 그렇다</span>
+                    </label>
+                </div>
+                <div class="score-option">
+                    <input type="radio" name="q9" id="q9_5" value="5">
+                    <label for="q9_5">
+                        <span class="score-number">5</span>
+                        <span class="score-label">매우 그렇다</span>
+                    </label>
+                </div>
+            </div>
+            <div class="nav-buttons">
+                <button class="nav-btn prev" onclick="prevQuestion(9)">이전</button>
+                <button class="nav-btn next" onclick="nextQuestion(9)">다음</button>
+            </div>
+        </div>
+
+        <div class="question-card" id="q10">
+            <span class="category-badge category-contribution">기여 (Contribution)</span>
+            <div class="question-number">질문 10 / 10</div>
+            <div class="question-text">아이가 자신만의 강점(아이디어, 능력 등)을 팀 활동에 적극적으로 활용하려고 하나요?</div>
+            <div class="question-desc">자신만의 고유한 강점으로 기여하는 능력을 평가합니다.</div>
+            <div class="score-options">
+                <div class="score-option">
+                    <input type="radio" name="q10" id="q10_1" value="1">
+                    <label for="q10_1">
+                        <span class="score-number">1</span>
+                        <span class="score-label">전혀 아니다</span>
+                    </label>
+                </div>
+                <div class="score-option">
+                    <input type="radio" name="q10" id="q10_2" value="2">
+                    <label for="q10_2">
+                        <span class="score-number">2</span>
+                        <span class="score-label">별로 아니다</span>
+                    </label>
+                </div>
+                <div class="score-option">
+                    <input type="radio" name="q10" id="q10_3" value="3">
+                    <label for="q10_3">
+                        <span class="score-number">3</span>
+                        <span class="score-label">보통이다</span>
+                    </label>
+                </div>
+                <div class="score-option">
+                    <input type="radio" name="q10" id="q10_4" value="4">
+                    <label for="q10_4">
+                        <span class="score-number">4</span>
+                        <span class="score-label">대체로 그렇다</span>
+                    </label>
+                </div>
+                <div class="score-option">
+                    <input type="radio" name="q10" id="q10_5" value="5">
+                    <label for="q10_5">
+                        <span class="score-number">5</span>
+                        <span class="score-label">매우 그렇다</span>
+                    </label>
+                </div>
+            </div>
+            <div class="nav-buttons">
+                <button class="nav-btn prev" onclick="prevQuestion(10)">이전</button>
+                <button class="nav-btn next" onclick="showResult()">결과 보기</button>
+            </div>
+        </div>
+
+        <!-- 결과 화면 -->
+        <div class="result-screen" id="resultScreen">
+            <div class="result-header">
+                <h2>테스트 결과</h2>
+                <div class="total-score"><span id="totalScore">0</span><span> / 50점</span></div>
+                <div class="result-level" id="resultLevel">협력 역량 우수</div>
+            </div>
+
+            <div class="category-results">
+                <div class="category-result">
+                    <h3>
+                        <span>의사소통 (Communication)</span>
+                        <span id="commScore">0/15</span>
+                    </h3>
+                    <div class="category-bar">
+                        <div class="category-bar-fill bar-communication" id="commBar" style="width: 0%"></div>
+                    </div>
+                </div>
+                <div class="category-result">
+                    <h3>
+                        <span>조율 (Coordination)</span>
+                        <span id="coordScore">0/20</span>
+                    </h3>
+                    <div class="category-bar">
+                        <div class="category-bar-fill bar-coordination" id="coordBar" style="width: 0%"></div>
+                    </div>
+                </div>
+                <div class="category-result">
+                    <h3>
+                        <span>기여 (Contribution)</span>
+                        <span id="contribScore">0/15</span>
+                    </h3>
+                    <div class="category-bar">
+                        <div class="category-bar-fill bar-contribution" id="contribBar" style="width: 0%"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="interpretation">
+                <h3>결과 해석</h3>
+                <p id="interpretationText"></p>
+            </div>
+
+            <div class="guide-section" id="guideSection">
+                <h3>영역별 보완 가이드</h3>
+                <div id="guideContent"></div>
+            </div>
+
+            <div class="quote">
+                <p>"혼자 가면 빨리 가지만, 함께 가면 멀리 간다."</p>
+                <span>- 아프리카 속담</span>
+            </div>
+
+            <button class="retry-btn" onclick="retryTest()">다시 테스트하기</button>
+        </div>
+    </div>
+
+    <script>
+        let currentQuestion = 0;
+        const totalQuestions = 10;
+
+        function startTest() {
+            document.getElementById('startScreen').classList.remove('active');
+            document.getElementById('progressContainer').style.display = 'block';
+            document.getElementById('q1').classList.add('active');
+            currentQuestion = 1;
+            updateProgress();
+        }
+
+        function updateProgress() {
+            const answered = countAnswered();
+            const percentage = (answered / totalQuestions) * 100;
+            document.getElementById('progressFill').style.width = percentage + '%';
+            document.getElementById('progressText').textContent = answered + ' / ' + totalQuestions;
+        }
+
+        function countAnswered() {
+            let count = 0;
+            for (let i = 1; i <= totalQuestions; i++) {
+                if (document.querySelector('input[name="q' + i + '"]:checked')) {
+                    count++;
+                }
+            }
+            return count;
+        }
+
+        function nextQuestion(current) {
+            const selected = document.querySelector('input[name="q' + current + '"]:checked');
+            if (!selected) {
+                alert('점수를 선택해 주세요.');
+                return;
+            }
+
+            document.getElementById('q' + current).classList.remove('active');
+            if (current < totalQuestions) {
+                document.getElementById('q' + (current + 1)).classList.add('active');
+                currentQuestion = current + 1;
+            }
+            updateProgress();
+        }
+
+        function prevQuestion(current) {
+            document.getElementById('q' + current).classList.remove('active');
+            if (current > 1) {
+                document.getElementById('q' + (current - 1)).classList.add('active');
+                currentQuestion = current - 1;
+            } else {
+                document.getElementById('startScreen').classList.add('active');
+                document.getElementById('progressContainer').style.display = 'none';
+                currentQuestion = 0;
+            }
+        }
+
+        function showResult() {
+            const selected = document.querySelector('input[name="q10"]:checked');
+            if (!selected) {
+                alert('점수를 선택해 주세요.');
+                return;
+            }
+
+            // 점수 계산
+            let commScore = 0; // 의사소통 (q1, q2, q3)
+            let coordScore = 0; // 조율 (q4, q5, q6, q7)
+            let contribScore = 0; // 기여 (q8, q9, q10)
+
+            for (let i = 1; i <= 3; i++) {
+                const val = document.querySelector('input[name="q' + i + '"]:checked');
+                if (val) commScore += parseInt(val.value);
+            }
+
+            for (let i = 4; i <= 7; i++) {
+                const val = document.querySelector('input[name="q' + i + '"]:checked');
+                if (val) coordScore += parseInt(val.value);
+            }
+
+            for (let i = 8; i <= 10; i++) {
+                const val = document.querySelector('input[name="q' + i + '"]:checked');
+                if (val) contribScore += parseInt(val.value);
+            }
+
+            const totalScore = commScore + coordScore + contribScore;
+
+            // 화면 전환
+            document.getElementById('q10').classList.remove('active');
+            document.getElementById('progressContainer').style.display = 'none';
+            document.getElementById('resultScreen').style.display = 'block';
+
+            // 결과 표시
+            document.getElementById('totalScore').textContent = totalScore;
+            document.getElementById('commScore').textContent = commScore + '/15';
+            document.getElementById('coordScore').textContent = coordScore + '/20';
+            document.getElementById('contribScore').textContent = contribScore + '/15';
+
+            // 애니메이션으로 바 채우기
+            setTimeout(() => {
+                document.getElementById('commBar').style.width = (commScore / 15 * 100) + '%';
+                document.getElementById('coordBar').style.width = (coordScore / 20 * 100) + '%';
+                document.getElementById('contribBar').style.width = (contribScore / 15 * 100) + '%';
+            }, 100);
+
+            // 레벨 및 해석
+            const levelEl = document.getElementById('resultLevel');
+            const interpretEl = document.getElementById('interpretationText');
+
+            if (totalScore >= 40) {
+                levelEl.textContent = '협력 역량 우수';
+                levelEl.className = 'result-level level-excellent';
+                interpretEl.textContent = '아이가 의사소통, 조율, 기여 능력을 골고루 갖추고 있습니다. 팀 활동에서 긍정적인 역할을 할 가능성이 높습니다. 현재의 강점을 유지하며 더 다양한 협력 경험을 제공해 주세요.';
+            } else if (totalScore >= 30) {
+                levelEl.textContent = '협력 역량 양호';
+                levelEl.className = 'result-level level-good';
+                interpretEl.textContent = '협력의 기본기를 갖추고 있으나 일부 영역에서 성장이 필요합니다. 낮은 점수가 나온 영역을 확인하고 해당 부분을 가정에서 연습해 보세요.';
+            } else if (totalScore >= 20) {
+                levelEl.textContent = '협력 역량 발달 중';
+                levelEl.className = 'result-level level-developing';
+                interpretEl.textContent = '협력에 대한 이해와 경험이 더 필요한 단계입니다. 가정에서 작은 협업 기회(가사 분담, 함께 요리하기 등)를 자주 만들어 주세요. 협동 보드게임 등 함께 목표를 달성하는 놀이를 권장합니다.';
+            } else {
+                levelEl.textContent = '협력 역량 기초 단계';
+                levelEl.className = 'result-level level-basic';
+                interpretEl.textContent = '협력보다 개인 활동을 선호하는 경향이 있습니다. 갈등 상황에서 "서로 어떤 마음이었을까?"라며 관점 전환을 도와주세요. 결과보다 함께한 과정을 칭찬해 주세요.';
+            }
+
+            // 가이드 생성
+            let guideHTML = '';
+
+            if (commScore < 10) {
+                guideHTML += `
+                    <div class="guide-item">
+                        <h4>의사소통 영역 보완</h4>
+                        <ul>
+                            <li>"네 생각 조각은 뭐야?"라고 물으며 대화 연습</li>
+                            <li>밸런스 게임으로 서로의 취향 이야기하기</li>
+                            <li>가족 회의에서 아이의 의견을 경청하고 반영하기</li>
+                        </ul>
+                    </div>
+                `;
+            }
+
+            if (coordScore < 13) {
+                guideHTML += `
+                    <div class="guide-item">
+                        <h4>조율 영역 보완</h4>
+                        <ul>
+                            <li>일주일에 한 번 가족 팀 미팅 진행하기</li>
+                            <li>의견 충돌 시 스스로 해결하도록 질문하며 지켜보기</li>
+                            <li>"우리가 모두 동의하는 점은 무엇일까?" 함께 찾기</li>
+                        </ul>
+                    </div>
+                `;
+            }
+
+            if (contribScore < 10) {
+                guideHTML += `
+                    <div class="guide-item">
+                        <h4>기여 영역 보완</h4>
+                        <ul>
+                            <li>'식탁 매니저', '분리수거 대장' 등 재미있는 역할 부여</li>
+                            <li>작은 성공 경험을 칭찬하여 기여의 즐거움 느끼게 하기</li>
+                            <li>모두가 역할을 완수했을 때 '팀 보상' 함께 즐기기</li>
+                        </ul>
+                    </div>
+                `;
+            }
+
+            if (guideHTML === '') {
+                guideHTML = `
+                    <div class="guide-item">
+                        <h4>모든 영역에서 고른 발달을 보이고 있습니다!</h4>
+                        <ul>
+                            <li>현재의 협력 습관을 유지해 주세요</li>
+                            <li>지역사회 활동이나 팀 프로젝트에 참여 기회를 제공해 주세요</li>
+                            <li>부모가 이웃, 배우자와 협력하는 모습을 보여주세요</li>
+                        </ul>
+                    </div>
+                `;
+            }
+
+            document.getElementById('guideContent').innerHTML = guideHTML;
+        }
+
+        function retryTest() {
+            // 모든 선택 초기화
+            for (let i = 1; i <= totalQuestions; i++) {
+                const radios = document.querySelectorAll('input[name="q' + i + '"]');
+                radios.forEach(radio => radio.checked = false);
+            }
+
+            // 화면 초기화
+            document.getElementById('resultScreen').style.display = 'none';
+            document.getElementById('startScreen').classList.add('active');
+
+            // 바 초기화
+            document.getElementById('commBar').style.width = '0%';
+            document.getElementById('coordBar').style.width = '0%';
+            document.getElementById('contribBar').style.width = '0%';
+            document.getElementById('progressFill').style.width = '0%';
+
+            currentQuestion = 0;
+        }
+
+        // 라디오 버튼 선택 시 진행바 업데이트
+        document.querySelectorAll('input[type="radio"]').forEach(radio => {
+            radio.addEventListener('change', updateProgress);
+        });
+    </script>
+</body>
+</html>
