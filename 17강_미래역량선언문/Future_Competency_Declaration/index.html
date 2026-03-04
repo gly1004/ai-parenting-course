@@ -1,0 +1,1208 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>내 자녀의 미래역량 선언문</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Malgun Gothic', '맑은 고딕', 'Segoe UI', sans-serif;
+            background: linear-gradient(145deg, #0b1c33 0%, #0f2545 55%, #162d52 100%);
+            min-height: 100vh;
+            color: #fff;
+            padding: 20px;
+        }
+
+        .container { max-width: 780px; margin: 0 auto; }
+
+        /* ── Header ── */
+        header { text-align: center; padding: 40px 20px 28px; }
+
+        header h1 { font-size: 1.85rem; color: #fff; margin-bottom: 10px; letter-spacing: 1px; }
+        header h1 span { color: #64d8cb; }
+        header p { color: #8aacbf; font-size: 0.9rem; line-height: 1.75; }
+
+        /* ── Progress ── */
+        .progress-wrap { margin-bottom: 28px; }
+
+        .progress-steps { display: flex; align-items: center; justify-content: center; }
+
+        .ps-item { display: flex; flex-direction: column; align-items: center; gap: 5px; min-width: 64px; }
+
+        .ps-circle {
+            width: 34px; height: 34px; border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 0.85rem; font-weight: bold;
+            border: 2px solid rgba(255,255,255,0.12);
+            color: rgba(255,255,255,0.28);
+            background: rgba(255,255,255,0.04);
+            transition: all 0.4s;
+        }
+        .ps-circle.active {
+            background: linear-gradient(135deg, #2ec4b6, #64d8cb);
+            border-color: #2ec4b6; color: #fff;
+            box-shadow: 0 0 16px rgba(46,196,182,0.5);
+        }
+        .ps-circle.done { background: rgba(46,196,182,0.2); border-color: #2ec4b6; color: #2ec4b6; }
+
+        .ps-label { font-size: 0.68rem; color: rgba(255,255,255,0.3); text-align: center; }
+        .ps-label.active { color: #64d8cb; font-weight: bold; }
+        .ps-label.done { color: #2ec4b6; }
+
+        .ps-line { flex: 1; height: 2px; background: rgba(255,255,255,0.08); margin: 0 2px; margin-top: -18px; }
+        .ps-line.done { background: #2ec4b6; }
+
+        /* ── Steps ── */
+        .step { display: none; animation: fadeIn 0.4s ease; }
+        .step.active { display: block; }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(12px); }
+            to   { opacity: 1; transform: translateY(0); }
+        }
+
+        .step-card {
+            background: rgba(255,255,255,0.04);
+            border: 1px solid rgba(46,196,182,0.18);
+            border-radius: 18px; padding: 32px;
+            backdrop-filter: blur(10px);
+        }
+
+        .step-heading { display: flex; align-items: flex-start; gap: 14px; margin-bottom: 24px; }
+
+        .step-num {
+            min-width: 40px; height: 40px;
+            background: linear-gradient(135deg, #1a4a6e, #2ec4b6);
+            border-radius: 12px;
+            display: flex; align-items: center; justify-content: center;
+            font-weight: bold; font-size: 1.1rem; flex-shrink: 0;
+        }
+
+        .step-heading-text h2 { font-size: 1.2rem; color: #64d8cb; margin-bottom: 4px; }
+        .step-heading-text p { font-size: 0.84rem; color: #7da8be; line-height: 1.6; }
+
+        /* ── Forms ── */
+        .form-group { margin-bottom: 20px; }
+        .form-group label { display: block; margin-bottom: 8px; font-size: 0.9rem; color: #b8d4e4; font-weight: bold; }
+
+        .form-group input, .form-group textarea {
+            width: 100%; padding: 14px 16px;
+            border: 1px solid rgba(46,196,182,0.3);
+            border-radius: 10px;
+            background: rgba(255,255,255,0.05);
+            color: #fff; font-size: 1rem; font-family: inherit;
+            outline: none; transition: border-color 0.3s, box-shadow 0.3s;
+        }
+        .form-group input:focus, .form-group textarea:focus {
+            border-color: #2ec4b6; box-shadow: 0 0 12px rgba(46,196,182,0.22);
+        }
+        .form-group input::placeholder, .form-group textarea::placeholder { color: rgba(255,255,255,0.26); }
+
+        .date-box {
+            background: rgba(46,196,182,0.1); border: 1px solid rgba(46,196,182,0.28);
+            border-radius: 10px; padding: 14px 16px; color: #64d8cb; font-weight: bold;
+        }
+
+        /* ── Info Box ── */
+        .info-box {
+            background: rgba(46,196,182,0.06);
+            border: 1px solid rgba(46,196,182,0.2);
+            border-radius: 12px; padding: 16px 18px; margin-top: 10px;
+        }
+        .info-box-title { font-size: 0.82rem; color: #64d8cb; font-weight: bold; margin-bottom: 8px; }
+        .info-box-body { font-size: 0.82rem; color: #8aacbf; line-height: 1.9; }
+        .info-box-body strong { color: #64d8cb; }
+
+        /* ── Category Section ── */
+        .cat-section { margin-bottom: 16px; }
+        .cat-section-header {
+            display: flex; align-items: center; gap: 10px;
+            padding: 7px 14px; margin-bottom: 8px;
+            background: linear-gradient(135deg, rgba(26,74,110,0.55), rgba(15,37,69,0.35));
+            border-radius: 10px; border-left: 3px solid #2ec4b6;
+        }
+        .cat-section-icon { font-size: 1.05rem; }
+        .cat-section-name { font-size: 0.88rem; font-weight: bold; color: #64d8cb; letter-spacing: 1px; }
+
+        /* ── Keyword Grid ── */
+        .kw-cat { display: grid; grid-template-columns: repeat(5, 1fr); gap: 8px; }
+
+        .kw-card {
+            background: rgba(255,255,255,0.04);
+            border: 2px solid rgba(255,255,255,0.08);
+            border-radius: 12px; padding: 14px 6px;
+            cursor: pointer; transition: all 0.3s;
+            text-align: center; user-select: none; position: relative;
+        }
+        .kw-card:hover { background: rgba(46,196,182,0.1); border-color: rgba(46,196,182,0.4); transform: translateY(-2px); }
+        .kw-card.disabled { opacity: 0.3; cursor: not-allowed; }
+        .kw-card.disabled:hover { transform: none; background: rgba(255,255,255,0.04); border-color: rgba(255,255,255,0.08); }
+
+        .kw-card.sel-1 { background: rgba(46,196,182,0.18); border-color: #2ec4b6; }
+        .kw-card.sel-2 { background: rgba(26,74,110,0.55); border-color: #4a8ab0; }
+        .kw-card.sel-3 { background: rgba(100,216,203,0.13); border-color: #64d8cb; }
+
+        .kw-badge {
+            position: absolute; top: -9px; right: -9px;
+            width: 22px; height: 22px; border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 0.65rem; font-weight: bold; color: #fff;
+        }
+        .kw-badge.b1 { background: #2ec4b6; }
+        .kw-badge.b2 { background: #1a4a6e; }
+        .kw-badge.b3 { background: #64d8cb; color: #0a3a38; }
+
+        .kw-icon { font-size: 1.45rem; margin-bottom: 6px; display: block; }
+        .kw-name { font-size: 0.78rem; color: #d8eaf4; font-weight: bold; line-height: 1.3; }
+        .kw-desc { font-size: 0.65rem; color: rgba(255,255,255,0.32); margin-top: 3px; line-height: 1.2; }
+
+        .kw-card.sel-1 .kw-name { color: #64d8cb; }
+        .kw-card.sel-2 .kw-name { color: #7ab4d4; }
+        .kw-card.sel-3 .kw-name { color: #64d8cb; }
+
+        /* ── Selection Slots ── */
+        .sel-preview {
+            background: rgba(46,196,182,0.04);
+            border: 1px solid rgba(46,196,182,0.14);
+            border-radius: 12px; padding: 16px; margin-bottom: 14px;
+        }
+        .sel-preview-title { font-size: 0.78rem; color: #7da8be; margin-bottom: 10px; }
+
+        /* 관점·행동·정체성 설명 배너 */
+        .slot-explain {
+            display: flex; align-items: stretch; gap: 0;
+            background: rgba(15,37,69,0.5); border: 1px solid rgba(46,196,182,0.18);
+            border-radius: 10px; margin-bottom: 12px; overflow: hidden;
+        }
+        .slot-explain-item { flex: 1; padding: 10px 10px; text-align: center; }
+        .slot-explain-item:nth-child(1) { border-right: 1px solid rgba(46,196,182,0.15); }
+        .slot-explain-item:nth-child(3) { border-left: 1px solid rgba(46,196,182,0.15); }
+        .slot-explain-num {
+            font-size: 0.72rem; font-weight: bold; letter-spacing: 1px; margin-bottom: 4px;
+        }
+        .slot-explain-item:nth-child(1) .slot-explain-num { color: #2ec4b6; }
+        .slot-explain-item:nth-child(3) .slot-explain-num { color: #7ab4d4; }
+        .slot-explain-item:nth-child(5) .slot-explain-num { color: #64d8cb; }
+        .slot-explain-question {
+            font-size: 0.7rem; color: rgba(255,255,255,0.72); line-height: 1.55;
+            margin-top: 4px;
+        }
+        .slot-explain-arrow {
+            display: flex; align-items: center; padding: 0 4px;
+            font-size: 0.9rem; color: rgba(46,196,182,0.4);
+        }
+
+        .sel-slots { display: flex; gap: 10px; }
+
+        .sel-slot {
+            flex: 1; text-align: center;
+            background: rgba(255,255,255,0.02);
+            border-radius: 10px; padding: 12px 8px;
+            border: 1px dashed rgba(255,255,255,0.1);
+        }
+        .sel-slot.f1 { border-color: #2ec4b6; background: rgba(46,196,182,0.08); }
+        .sel-slot.f2 { border-color: #4a8ab0; background: rgba(26,74,110,0.25); }
+        .sel-slot.f3 { border-color: #64d8cb; background: rgba(100,216,203,0.07); }
+
+        .sel-role { font-size: 0.68rem; color: rgba(255,255,255,0.36); margin-bottom: 5px; }
+        .sel-slot.f1 .sel-role { color: #2ec4b6; font-weight: bold; }
+        .sel-slot.f2 .sel-role { color: #7ab4d4; font-weight: bold; }
+        .sel-slot.f3 .sel-role { color: #64d8cb; font-weight: bold; }
+
+        .sel-name { font-size: 0.9rem; font-weight: bold; color: rgba(255,255,255,0.2); }
+        .sel-slot.f1 .sel-name { color: #64d8cb; }
+        .sel-slot.f2 .sel-name { color: #7ab4d4; }
+        .sel-slot.f3 .sel-name { color: #64d8cb; }
+
+        .sel-hint {
+            font-size: 0.62rem; color: rgba(255,255,255,0.68); margin-top: 5px; line-height: 1.5;
+        }
+
+        .sel-count-info { text-align: center; font-size: 0.85rem; color: #8aacbf; margin-bottom: 12px; }
+        .sel-count-info span { color: #2ec4b6; font-weight: bold; font-size: 1.05rem; }
+
+        /* ── Step 3 Writing ── */
+        .kw-ref-row { display: flex; gap: 8px; margin-bottom: 18px; flex-wrap: wrap; }
+
+        .kw-ref-chip { padding: 7px 14px; border-radius: 20px; font-size: 0.82rem; font-weight: bold; }
+        .kw-ref-chip.c1 { background: rgba(46,196,182,0.18); border: 1px solid #2ec4b6; color: #64d8cb; }
+        .kw-ref-chip.c2 { background: rgba(26,74,110,0.45); border: 1px solid #4a8ab0; color: #7ab4d4; }
+        .kw-ref-chip.c3 { background: rgba(100,216,203,0.13); border: 1px solid #64d8cb; color: #64d8cb; }
+
+        .template-box {
+            background: rgba(46,196,182,0.05);
+            border: 1px solid rgba(46,196,182,0.22);
+            border-radius: 12px; padding: 16px 20px; margin-bottom: 18px;
+        }
+        .template-box-title { font-size: 0.8rem; color: #64d8cb; font-weight: bold; margin-bottom: 10px; }
+        .template-sentence { font-size: 0.93rem; color: #b8d4e4; line-height: 2; }
+        .tpl-h1 { color: #64d8cb; font-weight: bold; border-bottom: 1px dashed #2ec4b6; }
+        .tpl-h2 { color: #7ab4d4; font-weight: bold; border-bottom: 1px dashed #4a8ab0; }
+        .tpl-h3 { color: #64d8cb; font-weight: bold; border-bottom: 1px dashed #2ec4b6; }
+
+        .examples-box {
+            background: rgba(255,255,255,0.02);
+            border: 1px solid rgba(46,196,182,0.12);
+            border-radius: 12px; padding: 14px 18px; margin-bottom: 20px;
+        }
+        .examples-title { font-size: 0.78rem; color: #7da8be; margin-bottom: 10px; }
+        .ex-item {
+            font-size: 0.82rem; color: #8aacbf; line-height: 1.75;
+            padding-left: 14px; position: relative; margin-bottom: 6px;
+        }
+        .ex-item::before { content: '✦'; position: absolute; left: 0; color: #2ec4b6; font-size: 0.6rem; top: 4px; }
+
+        .write-label { display: flex; align-items: center; gap: 8px; margin-bottom: 10px; font-size: 0.9rem; color: #b8d4e4; font-weight: bold; }
+
+        #declText {
+            width: 100%; min-height: 130px;
+            padding: 16px; border: 2px solid rgba(46,196,182,0.3);
+            border-radius: 12px; background: rgba(255,255,255,0.05);
+            color: #fff; font-size: 1rem; font-family: inherit;
+            line-height: 1.85; resize: vertical; outline: none; transition: all 0.3s;
+        }
+        #declText:focus { border-color: #2ec4b6; box-shadow: 0 0 16px rgba(46,196,182,0.22); }
+
+        /* ── Buttons ── */
+        .btn-group { display: flex; gap: 12px; margin-top: 28px; }
+
+        .btn {
+            flex: 1; padding: 14px 24px; border: none; border-radius: 10px;
+            font-size: 1rem; font-weight: bold; cursor: pointer;
+            font-family: inherit; transition: all 0.3s;
+        }
+        .btn-prev { background: rgba(255,255,255,0.07); color: #8aacbf; border: 1px solid rgba(255,255,255,0.12); }
+        .btn-prev:hover { background: rgba(255,255,255,0.12); color: #fff; }
+
+        .btn-next { background: linear-gradient(135deg, #1a4a6e, #2ec4b6); color: #fff; box-shadow: 0 4px 15px rgba(46,196,182,0.3); }
+        .btn-next:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(46,196,182,0.45); }
+        .btn-next:disabled { opacity: 0.4; cursor: not-allowed; transform: none; box-shadow: none; }
+
+        /* ── Errors ── */
+        .err { color: #ff8585; font-size: 0.82rem; margin-top: 6px; display: none; }
+        .err.show { display: block; }
+        .input-err { border-color: #ff8585 !important; }
+
+        /* ── Result Card ── */
+        .result-card {
+            background: linear-gradient(165deg, #0b1e3d 0%, #0e2a50 38%, #0a3545 68%, #0d2a3f 100%);
+            border-radius: 20px; padding: 9px; color: #fff;
+            position: relative; overflow: hidden;
+            box-shadow: 0 24px 90px rgba(0,0,0,0.65), 0 0 0 1px rgba(200,162,78,0.35);
+            animation: cardIn 0.7s ease;
+        }
+
+        @keyframes cardIn {
+            from { opacity: 0; transform: scale(0.93) translateY(20px); }
+            to   { opacity: 1; transform: scale(1) translateY(0); }
+        }
+
+        .result-card::before {
+            content: ''; position: absolute; top: 0; left: 0; right: 0; height: 10px;
+            background: linear-gradient(90deg, #0a5550, #0f9e96, #2ec4b6, #64d8cb, #c8a24e, #f1c40f, #c8a24e, #64d8cb, #2ec4b6, #0f9e96, #0a5550);
+        }
+        .result-card::after {
+            content: ''; position: absolute; bottom: 0; left: 0; right: 0; height: 10px;
+            background: linear-gradient(90deg, #0a5550, #0f9e96, #2ec4b6, #64d8cb, #c8a24e, #f1c40f, #c8a24e, #64d8cb, #2ec4b6, #0f9e96, #0a5550);
+        }
+
+        .rc-inner {
+            border: 2px solid rgba(200,162,78,0.55); border-radius: 16px;
+            padding: 34px 32px; position: relative;
+            background: rgba(255,255,255,0.03);
+        }
+        .rc-corner { position: absolute; width: 32px; height: 32px; }
+        .rc-corner.tl { top: -2px; left: -2px; border-top: 3px solid #c8a24e; border-left: 3px solid #c8a24e; border-radius: 7px 0 0 0; }
+        .rc-corner.tr { top: -2px; right: -2px; border-top: 3px solid #c8a24e; border-right: 3px solid #c8a24e; border-radius: 0 7px 0 0; }
+        .rc-corner.bl { bottom: -2px; left: -2px; border-bottom: 3px solid #c8a24e; border-left: 3px solid #c8a24e; border-radius: 0 0 0 7px; }
+        .rc-corner.br { bottom: -2px; right: -2px; border-bottom: 3px solid #c8a24e; border-right: 3px solid #c8a24e; border-radius: 0 0 7px 0; }
+
+        .rc-header { text-align: center; margin-bottom: 20px; }
+        .rc-title {
+            font-size: 2.2rem; letter-spacing: 13px;
+            font-weight: 900; margin-bottom: 4px;
+            color: #f1c40f;
+            text-shadow: 0 0 24px rgba(241,196,15,0.45);
+        }
+        .rc-title-en {
+            font-size: 0.75rem; color: #aad4cc; letter-spacing: 3px;
+            margin-bottom: 12px; font-style: italic;
+        }
+
+        .rc-ornament { display: flex; align-items: center; justify-content: center; gap: 7px; margin: 10px 0 4px; }
+        .rc-ornament .line { width: 72px; height: 1px; background: linear-gradient(90deg, transparent, #c8a24e, transparent); }
+        .rc-ornament .dmd-mint { width: 9px; height: 9px; background: #2ec4b6; transform: rotate(45deg); }
+        .rc-ornament .dmd-gold { width: 6px; height: 6px; background: #c8a24e; transform: rotate(45deg); }
+
+        .rc-info {
+            text-align: center; margin-bottom: 20px; padding-bottom: 18px;
+            border-bottom: 1px dashed rgba(200,162,78,0.4);
+            position: relative;
+        }
+        .rc-info::after {
+            content: '✦'; position: absolute; bottom: -9px; left: 50%; transform: translateX(-50%);
+            background: #0d2748; padding: 0 10px; font-size: 0.7rem; color: #c8a24e;
+        }
+        .rc-name { font-size: 1.5rem; color: #64d8cb; font-weight: 700; margin-bottom: 5px; letter-spacing: 2px; }
+        .rc-date { font-size: 0.88rem; color: #8ac8c0; }
+
+        .rc-section { margin-bottom: 18px; }
+        .rc-section-title {
+            display: flex; align-items: center; gap: 8px;
+            font-size: 0.92rem; color: #c8a24e; font-weight: bold; margin-bottom: 12px; letter-spacing: 1px;
+        }
+        .rc-section-title .dot {
+            width: 8px; height: 8px; flex-shrink: 0;
+            background: linear-gradient(135deg, #2ec4b6, #c8a24e); border-radius: 50%;
+        }
+
+        .rc-kw-list { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; }
+        .rc-kw-tag { padding: 9px 24px; border-radius: 20px; font-size: 0.95rem; font-weight: bold; letter-spacing: 1px; }
+        .rc-kw-tag.t1 { background: rgba(46,196,182,0.18); border: 1px solid #2ec4b6; color: #64d8cb; }
+        .rc-kw-tag.t2 { background: rgba(74,138,176,0.18); border: 1px solid #4a8ab0; color: #7ab4d4; }
+        .rc-kw-tag.t3 { background: rgba(200,162,78,0.18); border: 1px solid #c8a24e; color: #f1c40f; }
+
+        /* Declaration */
+        .rc-decl {
+            background: rgba(46,196,182,0.07);
+            border-radius: 14px; padding: 28px 28px;
+            text-align: center; position: relative;
+            box-shadow: 0 0 0 1px rgba(200,162,78,0.28), 0 0 0 5px rgba(200,162,78,0.06);
+        }
+        .rc-decl::before {
+            content: '\275D'; position: absolute; top: 8px; left: 14px;
+            font-size: 3rem; color: rgba(200,162,78,0.28); line-height: 1; font-family: serif;
+        }
+        .rc-decl::after {
+            content: '\275E'; position: absolute; bottom: 4px; right: 14px;
+            font-size: 3rem; color: rgba(200,162,78,0.28); line-height: 1; font-family: serif;
+        }
+        .rc-decl-text {
+            font-size: 1.2rem; color: #f0f8f6; line-height: 2.3;
+            font-weight: 500; white-space: pre-wrap;
+            text-align: center; display: block;
+        }
+
+        /* Footer */
+        .rc-footer {
+            padding-top: 18px; border-top: 1px solid rgba(200,162,78,0.28); margin-top: 18px;
+            position: relative;
+        }
+        .rc-footer::before {
+            content: '✦  ✦  ✦'; position: absolute; top: -9px; left: 50%; transform: translateX(-50%);
+            background: #0c2848; padding: 0 12px; font-size: 0.55rem; color: rgba(200,162,78,0.75); letter-spacing: 6px;
+        }
+        .rc-pledge {
+            font-size: 0.88rem; color: #8ac8c0; line-height: 1.9;
+            text-align: center; margin-bottom: 18px; font-style: italic;
+        }
+
+        /* 서명 영역 */
+        .sig-area { }
+
+        .sig-child-row {
+            display: flex; justify-content: center;
+            padding: 10px 16px;
+            background: rgba(46,196,182,0.08);
+            border: 1px solid rgba(46,196,182,0.3); border-radius: 10px;
+            margin-bottom: 10px;
+        }
+        .sig-child-inner { display: flex; align-items: center; gap: 10px; }
+        .sig-badge {
+            font-size: 0.65rem; font-weight: bold; color: #64d8cb; white-space: nowrap;
+            background: rgba(46,196,182,0.13); border: 1px solid rgba(46,196,182,0.4);
+            padding: 3px 10px; border-radius: 8px;
+        }
+        .sig-name-text { font-size: 0.88rem; font-weight: 700; color: #e0f5f3; white-space: nowrap; }
+        .sig-write-line { width: 100px; border-bottom: 1.5px dotted rgba(46,196,182,0.6); min-height: 24px; }
+
+        .sig-family-box {
+            border: 1px solid rgba(200,162,78,0.25); border-radius: 10px;
+            padding: 12px 16px; background: rgba(255,255,255,0.03);
+        }
+        .sig-family-title {
+            font-size: 0.72rem; font-weight: bold; color: #c8a24e;
+            letter-spacing: 1px; margin-bottom: 10px;
+        }
+        .sig-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+        .sig-person { text-align: center; }
+        .sig-person-line { border-bottom: 1.5px solid rgba(200,162,78,0.4); min-height: 36px; margin-bottom: 6px; }
+        .sig-person-role { font-size: 0.68rem; color: #8ac8c0; }
+
+        .rc-watermark { display: none; font-size: 0.72rem; color: #aad4cc; text-align: center; margin-top: 14px; }
+
+        /* ── Result Actions ── */
+        .result-actions { display: flex; gap: 12px; margin-top: 24px; }
+
+        .btn-restart {
+            flex: 1; padding: 14px 24px; border: 2px solid #2ec4b6;
+            border-radius: 10px; background: transparent; color: #2ec4b6;
+            font-size: 1rem; font-weight: bold; cursor: pointer;
+            font-family: inherit; transition: all 0.3s;
+        }
+        .btn-restart:hover { background: rgba(46,196,182,0.1); }
+
+        .btn-print {
+            flex: 2; padding: 14px 24px; border: none; border-radius: 10px;
+            background: linear-gradient(135deg, #b8892e, #f1c40f, #b8892e);
+            color: #0b1e3d; font-size: 1rem; font-weight: bold; cursor: pointer;
+            font-family: inherit; transition: all 0.3s;
+            box-shadow: 0 4px 15px rgba(200,162,78,0.45);
+        }
+        .btn-print:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(200,162,78,0.6); }
+
+        /* ── Footer Quote ── */
+        .footer-quote { text-align: center; margin-top: 40px; padding: 24px 20px; border-top: 1px solid rgba(255,255,255,0.07); }
+        .footer-quote p { color: #78909c; font-size: 0.88rem; line-height: 1.75; font-style: italic; }
+        .footer-quote .author { color: #2ec4b6; font-style: normal; font-weight: bold; margin-top: 5px; display: block; }
+
+        /* ── Responsive ── */
+        @media (max-width: 600px) {
+            body { padding: 12px; }
+            header { padding: 28px 12px 20px; }
+            header h1 { font-size: 1.45rem; }
+            .step-card { padding: 22px 16px; }
+            .kw-cat { grid-template-columns: repeat(3, 1fr); gap: 6px; }
+            .kw-card { padding: 10px 5px; }
+            .kw-icon { font-size: 1.2rem; }
+            .kw-name { font-size: 0.72rem; }
+            .kw-desc { display: none; }
+            .sel-slots { flex-direction: column; gap: 8px; }
+            .result-actions { flex-direction: column; }
+            .btn-group { flex-direction: column; }
+            .rc-title { font-size: 1.45rem; letter-spacing: 5px; }
+            .rc-decl-text { font-size: 1rem; line-height: 2; }
+            .result-card { padding: 5px; }
+            .rc-inner { padding: 20px 14px; }
+            .sig-grid { grid-template-columns: repeat(2, 1fr); }
+            .rc-decl { padding: 18px 14px; }
+        }
+
+        /* ── Print ── */
+        @media print {
+            @page { size: A4; margin: 12mm 15mm; }
+
+            body {
+                background: #0b1e3d !important; padding: 0 !important;
+                -webkit-print-color-adjust: exact; print-color-adjust: exact;
+            }
+
+            header, #progressArea, #step1, #step2, #step3,
+            .result-actions, .footer-quote { display: none !important; }
+
+            #step4 { display: block !important; }
+
+            .result-card {
+                box-shadow: none !important; border-radius: 0 !important;
+                padding: 6px !important; animation: none !important;
+            }
+
+            .rc-inner { border: 2px solid rgba(200,162,78,0.6) !important; border-radius: 14px !important; padding: 28px 26px !important; }
+
+            .result-card::before, .result-card::after,
+            .rc-kw-tag, .rc-decl, .sig-child-row, .sig-family-box {
+                -webkit-print-color-adjust: exact; print-color-adjust: exact;
+            }
+            .rc-watermark { display: block !important; }
+        }
+    </style>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+</head>
+<body>
+<div class="container">
+
+    <header>
+        <h1>내 자녀의 <span>미래역량</span> 선언문</h1>
+        <p>5대 역량 25가지 키워드에서 우리 아이의 북극성을 찾아<br>세상에 단 하나뿐인 선언문을 완성하세요</p>
+    </header>
+
+    <!-- Progress -->
+    <div id="progressArea" class="progress-wrap">
+        <div class="progress-steps">
+            <div class="ps-item">
+                <div class="ps-circle active" id="pc1">1</div>
+                <div class="ps-label active" id="pl1">자녀 정보</div>
+            </div>
+            <div class="ps-line" id="pline1"></div>
+            <div class="ps-item">
+                <div class="ps-circle" id="pc2">2</div>
+                <div class="ps-label" id="pl2">키워드 선택</div>
+            </div>
+            <div class="ps-line" id="pline2"></div>
+            <div class="ps-item">
+                <div class="ps-circle" id="pc3">3</div>
+                <div class="ps-label" id="pl3">선언문 작성</div>
+            </div>
+            <div class="ps-line" id="pline3"></div>
+            <div class="ps-item">
+                <div class="ps-circle" id="pc4">4</div>
+                <div class="ps-label" id="pl4">완성</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ===== STEP 1: 자녀 정보 ===== -->
+    <div class="step active" id="step1">
+        <div class="step-card">
+            <div class="step-heading">
+                <div class="step-num">1</div>
+                <div class="step-heading-text">
+                    <h2>자녀 정보 입력</h2>
+                    <p>선언문의 주인공인 자녀의 이름을 입력해 주세요</p>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label>자녀 이름</label>
+                <input type="text" id="childName" placeholder="예: 김민준" maxlength="20">
+                <div class="err" id="errName">이름을 입력해 주세요.</div>
+            </div>
+
+            <div class="form-group">
+                <label>작성일</label>
+                <div class="date-box" id="todayDate"></div>
+            </div>
+
+            <div class="info-box">
+                <div class="info-box-title">📌 선언문 만들기 3단계</div>
+                <div class="info-box-body">
+                    ① 5대 역량의 25가지 키워드에서 우리 아이에게 어울리는 <strong>단어 3개</strong>를 함께 골라요<br>
+                    ② 선택한 키워드를 참고하여 아이가 <strong>직접 자신만의 선언문</strong>을 작성해요<br>
+                    ③ 완성된 선언문을 인쇄해서 방에 붙이고 <strong>가족 선포식</strong>을 해요!
+                </div>
+            </div>
+
+            <div class="btn-group">
+                <div style="flex:1;"></div>
+                <button class="btn btn-next" onclick="goStep(2)">다음 단계 →</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ===== STEP 2: 키워드 선택 ===== -->
+    <div class="step" id="step2">
+        <div class="step-card">
+            <div class="step-heading">
+                <div class="step-num">2</div>
+                <div class="step-heading-text">
+                    <h2>역량 키워드 선택</h2>
+                    <p>5대 역량의 25가지 키워드 중 우리 아이에게 딱 맞는 단어 <strong style="color:#f1c40f;">3개</strong>를 골라 주세요</p>
+                </div>
+            </div>
+
+            <!-- 선택 슬롯 -->
+            <div class="sel-preview">
+                <div class="sel-preview-title">✨ 선택한 순서대로 관점 → 행동 → 정체성 역할을 맡아요</div>
+
+                <!-- 관점·행동·정체성 부연 설명 (PPT 슬라이드 5 내용) -->
+                <div class="slot-explain">
+                    <div class="slot-explain-item">
+                        <div class="slot-explain-num">① 관점</div>
+                        <div class="slot-explain-question">세상을 어떤 눈으로 바라보는가?</div>
+                    </div>
+                    <div class="slot-explain-arrow">→</div>
+                    <div class="slot-explain-item">
+                        <div class="slot-explain-num">② 행동</div>
+                        <div class="slot-explain-question">문제를 만났을 때 어떻게 해결하는가?</div>
+                    </div>
+                    <div class="slot-explain-arrow">→</div>
+                    <div class="slot-explain-item">
+                        <div class="slot-explain-num">③ 정체성</div>
+                        <div class="slot-explain-question">최종적으로 되고 싶은 모습은?</div>
+                    </div>
+                </div>
+
+                <div class="sel-slots">
+                    <div class="sel-slot" id="slot1">
+                        <div class="sel-role">① 관점</div>
+                        <div class="sel-name" id="sn1">비어 있음</div>
+                        <div class="sel-hint">세상을 대하는 태도·가치관</div>
+                    </div>
+                    <div class="sel-slot" id="slot2">
+                        <div class="sel-role">② 행동</div>
+                        <div class="sel-name" id="sn2">비어 있음</div>
+                        <div class="sel-hint">문제를 해결하는 방식·실천</div>
+                    </div>
+                    <div class="sel-slot" id="slot3">
+                        <div class="sel-role">③ 정체성</div>
+                        <div class="sel-name" id="sn3">비어 있음</div>
+                        <div class="sel-hint">되고 싶은 최종 모습·미래상</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="sel-count-info"><span id="selCount">0</span> / 3개 선택됨 &nbsp;(클릭으로 선택·해제)</div>
+
+            <!-- 키워드 그리드 (분야별 전체 표시) -->
+            <div id="kwGrids"></div>
+
+            <div class="err" id="errKw" style="text-align:center;margin-top:6px;">3개의 키워드를 선택해 주세요.</div>
+
+            <div class="btn-group">
+                <button class="btn btn-prev" onclick="goStep(1)">← 이전</button>
+                <button class="btn btn-next" onclick="goStep(3)">다음 단계 →</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ===== STEP 3: 선언문 작성 ===== -->
+    <div class="step" id="step3">
+        <div class="step-card">
+            <div class="step-heading">
+                <div class="step-num">3</div>
+                <div class="step-heading-text">
+                    <h2>선언문 직접 작성</h2>
+                    <p>아래 템플릿과 예시를 참고하여 <strong style="color:#f1c40f;">아이가 직접</strong> 자신만의 선언문을 써 주세요</p>
+                </div>
+            </div>
+
+            <!-- 선택된 키워드 칩 -->
+            <div id="kwRefRow" class="kw-ref-row"></div>
+
+            <!-- 템플릿 -->
+            <div class="template-box">
+
+                <div class="template-sentence" id="tplSentence">
+                    "나 <strong id="tplName" style="color:#f1c40f;">[이름]</strong>은(는)
+                    세상을 <span class="tpl-h1" id="tplKw1">[관점 키워드]</span>로 바라보며,<br>
+                    언제나 <span class="tpl-h2" id="tplKw2">[행동 키워드]</span>하여<br>
+                    <span class="tpl-h3" id="tplKw3">[정체성 키워드]</span>한 사람이 될 것을 약속합니다."
+                </div>
+            </div>
+
+            <!-- 예시 -->
+            <div class="examples-box">
+                <div class="examples-title">💡 선언문 예시 (참고만 하세요 — 아이만의 문장으로 바꿔 쓰세요!)</div>
+                <div class="ex-item">"나 김민준은 세상을 호기심 가득한 질문으로 바라보며, 언제나 스스로 목표를 세워 공부하여, 지혜로운 평생 학습자가 될 것을 약속합니다."</div>
+                <div class="ex-item">"나 이서아는 세상을 긍정적인 마음으로 바라보며, 언제나 실패를 배움의 기회로 삼아, AI 시대를 이끄는 주인이 될 것을 약속합니다."</div>
+                <div class="ex-item">"나 박지후는 세상을 따뜻한 공감의 시선으로 바라보며, 언제나 사람들과 즐겁게 협력하여, 세상을 밝히는 리더가 될 것을 약속합니다."</div>
+            </div>
+
+            <!-- 직접 작성 -->
+            <div class="write-label" id="writeLabel">✏️ <span id="writeName">자녀</span>의 선언문 (직접 작성)</div>
+            <textarea id="declText" placeholder="아이가 직접 여기에 자신의 선언문을 써 주세요&#10;&#10;예) 나 [이름]은(는) 세상을 __ 으로 바라보며,&#10;언제나 __ 하여 __ 한 사람이 될 것을 약속합니다."></textarea>
+            <div class="err" id="errDecl">선언문을 작성해 주세요.</div>
+
+            <div class="btn-group">
+                <button class="btn btn-prev" onclick="goStep(2)">← 이전</button>
+                <button class="btn btn-next" onclick="showResult()">선언문 완성! →</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ===== STEP 4: 완성된 선언문 ===== -->
+    <div class="step" id="step4">
+        <div class="result-card">
+            <div class="rc-inner">
+                <div class="rc-corner tl"></div>
+                <div class="rc-corner tr"></div>
+                <div class="rc-corner bl"></div>
+                <div class="rc-corner br"></div>
+
+                <div class="rc-header">
+                    <div class="rc-title">미래역량 선언문</div>
+                    <div class="rc-title-en">My Future Competency Declaration</div>
+                    <div class="rc-ornament">
+                        <div class="line"></div>
+                        <div class="dmd-gold"></div>
+                        <div class="dmd-mint"></div>
+                        <div class="dmd-gold"></div>
+                        <div class="line"></div>
+                    </div>
+                </div>
+
+                <div class="rc-info">
+                    <div class="rc-name" id="rcName"></div>
+                    <div class="rc-date" id="rcDate"></div>
+                </div>
+
+                <div class="rc-section">
+                    <div class="rc-section-title">
+                        <div class="dot"></div>
+                        나의 3가지 역량 키워드
+                    </div>
+                    <div class="rc-kw-list" id="rcKwList"></div>
+                </div>
+
+                <div class="rc-section">
+                    <div class="rc-section-title">
+                        <div class="dot"></div>
+                        나의 선언
+                    </div>
+                    <div class="rc-decl">
+                        <div class="rc-decl-text" id="rcDeclText"></div>
+                    </div>
+                </div>
+
+                <div class="rc-footer">
+                    <div class="rc-pledge">
+                        나는 이 선언을 소중히 지키며 매일 한 걸음씩 성장하는 사람이 되겠습니다.
+                    </div>
+
+                    <div class="sig-area">
+                        <!-- 자녀 서명 -->
+                        <div class="sig-child-row">
+                            <div class="sig-child-inner">
+                                <span class="sig-badge">자녀 서명</span>
+                                <span class="sig-name-text" id="sigChildName"></span>
+                                <span class="sig-write-line"></span>
+                            </div>
+                        </div>
+
+                        <!-- 가족 서명 -->
+                        <div class="sig-family-box">
+                            <div class="sig-family-title">✦ 가족 서명</div>
+                            <div class="sig-grid">
+                                <div class="sig-person">
+                                    <div class="sig-person-line"></div>
+                                    <div class="sig-person-role">아버지</div>
+                                </div>
+                                <div class="sig-person">
+                                    <div class="sig-person-line"></div>
+                                    <div class="sig-person-role">어머니</div>
+                                </div>
+                                <div class="sig-person">
+                                    <div class="sig-person-line"></div>
+                                    <div class="sig-person-role">가족</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="rc-watermark">내 자녀의 미래역량 선언문</div>
+
+        <div class="result-actions">
+            <button class="btn-restart" onclick="restart()">다시 만들기</button>
+            <button class="btn-print" onclick="savePDF()">📥 PDF 저장 / 다운로드</button>
+        </div>
+    </div>
+
+    <div class="footer-quote">
+        <p>"아이의 말은 그 아이의 미래가 되고, 아이의 선언은 그 아이의 역량이 된다."<span class="author">— 미래역량 선언문에서</span></p>
+    </div>
+
+</div>
+
+<script>
+// ── PDF / 이미지 저장 ──
+function savePDF() {
+    if (typeof html2canvas === 'undefined') { alert('html2canvas를 불러오지 못했습니다.'); return; }
+
+    const btn = document.querySelector('.btn-print');
+    const orig = btn.innerHTML;
+    btn.innerHTML = '⏳ 생성 중...';
+    btn.disabled = true;
+
+    const card = document.querySelector('.result-card');
+    const cardW = card.scrollWidth;
+    const cardH = card.scrollHeight;
+
+    html2canvas(card, {
+        scale: 3,
+        useCORS: true,
+        allowTaint: true,
+        backgroundColor: '#0b1e3d',
+        logging: false,
+        imageTimeout: 0,
+        width: cardW,
+        height: cardH,
+        windowWidth: cardW,
+        windowHeight: cardH,
+        onclone: (doc) => {
+            doc.querySelectorAll('*').forEach(el => {
+                el.style.backdropFilter = 'none';
+                el.style.webkitBackdropFilter = 'none';
+                el.style.animation = 'none';
+                el.style.transition = 'none';
+            });
+        }
+    }).then(canvas => {
+        const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
+        const hasjsPDF = window.jspdf && window.jspdf.jsPDF;
+
+        if (hasjsPDF) {
+            // ── PDF 저장 (A4) ──
+            const { jsPDF } = window.jspdf;
+            const pdf = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4' });
+            const pdfW = pdf.internal.pageSize.getWidth();   // 210mm
+            const pdfH = pdf.internal.pageSize.getHeight();  // 297mm
+
+            const ratio = canvas.height / canvas.width;
+            const imgH = pdfW * ratio;
+            const yOffset = imgH < pdfH ? (pdfH - imgH) / 2 : 0;
+            const imgData = canvas.toDataURL('image/jpeg', 0.95);
+            pdf.addImage(imgData, 'JPEG', 0, yOffset, pdfW, Math.min(imgH, pdfH));
+
+            const fileName = '미래역량선언문.pdf';
+
+            if (isIOS && navigator.canShare) {
+                // iOS: Web Share API로 PDF 공유
+                const pdfBlob = pdf.output('blob');
+                const file = new File([pdfBlob], fileName, { type: 'application/pdf' });
+                if (navigator.canShare({ files: [file] })) {
+                    navigator.share({ files: [file], title: '미래역량 선언문' })
+                        .catch(() => pdf.save(fileName));
+                } else {
+                    pdf.save(fileName);
+                }
+            } else {
+                // Android / PC: 직접 다운로드
+                pdf.save(fileName);
+            }
+            btn.innerHTML = orig;
+            btn.disabled = false;
+
+        } else {
+            // ── PNG 저장 (fallback) ──
+            const fileName = '미래역량선언문.png';
+            if (isIOS && navigator.canShare) {
+                canvas.toBlob(blob => {
+                    const file = new File([blob], fileName, { type: 'image/png' });
+                    navigator.share({ files: [file], title: '미래역량 선언문' })
+                        .catch(() => window.open(canvas.toDataURL('image/png'), '_blank'));
+                    btn.innerHTML = orig; btn.disabled = false;
+                }, 'image/png');
+            } else {
+                canvas.toBlob(blob => {
+                    const url = URL.createObjectURL(blob);
+                    const a = document.createElement('a');
+                    a.href = url; a.download = fileName;
+                    document.body.appendChild(a); a.click();
+                    document.body.removeChild(a);
+                    setTimeout(() => URL.revokeObjectURL(url), 1000);
+                    btn.innerHTML = orig; btn.disabled = false;
+                }, 'image/png');
+            }
+        }
+    }).catch(err => {
+        alert('저장 오류: ' + err.message);
+        btn.innerHTML = orig;
+        btn.disabled = false;
+    });
+}
+
+// ── 데이터 ──
+const CATEGORIES = [
+    {
+        name: '질문과 사유', icon: '❓',
+        keywords: [
+            { name: '호기심',    icon: '🔍', desc: '왜?라고 묻는 탐구심' },
+            { name: '비판적사고', icon: '💭', desc: '정보를 분석하는 힘' },
+            { name: '통찰력',   icon: '💡', desc: '본질을 꿰뚫는 이해' },
+            { name: '문제발견',  icon: '🎯', desc: '숨겨진 문제 발견하기' },
+            { name: '창의적발상', icon: '🌈', desc: '새로운 아이디어 만들기' }
+        ]
+    },
+    {
+        name: '마음 근력', icon: '💪',
+        keywords: [
+            { name: '회복탄력성', icon: '🌱', desc: '넘어져도 일어나는 힘' },
+            { name: '도전정신',  icon: '🚀', desc: '새로운 것에 뛰어드는 용기' },
+            { name: '끈기',     icon: '🏃', desc: '포기 않고 끝까지 해내기' },
+            { name: '자기조절',  icon: '⚖️', desc: '감정과 행동 스스로 조절' },
+            { name: '긍정성',   icon: '☀️', desc: '어려움 속에서 희망 찾기' }
+        ]
+    },
+    {
+        name: '공감과 연결', icon: '💙',
+        keywords: [
+            { name: '공감지능',   icon: '💙', desc: '타인의 마음 이해하기' },
+            { name: '협력',      icon: '🤝', desc: '함께 목표 이루는 팀워크' },
+            { name: '이타심',    icon: '❤️', desc: '남을 배려하는 따뜻한 마음' },
+            { name: '소통능력',   icon: '💬', desc: '생각을 명확하게 전달하기' },
+            { name: '다양성존중', icon: '🌍', desc: '다름을 인정하는 포용력' }
+        ]
+    },
+    {
+        name: 'AI 리터러시', icon: '🤖',
+        keywords: [
+            { name: '주인의식',     icon: '👑', desc: 'AI를 활용하는 주체적 태도' },
+            { name: '기술활용력',   icon: '🖥️', desc: '디지털 기술 효과적 활용' },
+            { name: '도덕적나침반', icon: '🧭', desc: '옳고 그름을 판단하는 윤리관' },
+            { name: '디지털시민의식', icon: '🛡️', desc: '디지털 세계 책임있는 행동' },
+            { name: '메타AI역량',  icon: '🔬', desc: 'AI를 비판적으로 활용하는 힘' }
+        ]
+    },
+    {
+        name: '학습 주체성', icon: '📚',
+        keywords: [
+            { name: '자기주도성',   icon: '🗺️', desc: '스스로 목표 세우고 실행하기' },
+            { name: '배움의즐거움', icon: '🎓', desc: '배우는 것 자체를 즐기기' },
+            { name: '평생학습',    icon: '📖', desc: '평생 배움을 당연하게 여기기' },
+            { name: '성장마인드셋', icon: '🌟', desc: "'할 수 있다'는 믿음" },
+            { name: '목표의식',    icon: '🎯', desc: '명확한 방향을 향해 나아가기' }
+        ]
+    }
+];
+
+// ── 상태 ──
+let currentStep = 1;
+let selectedKw = []; // 최대 3개: { catIdx, kwIdx, name, icon }
+
+// ── 날짜 ──
+(function () {
+    const now = new Date();
+    const days = ['일', '월', '화', '수', '목', '금', '토'];
+    document.getElementById('todayDate').textContent =
+        now.getFullYear() + '년 ' +
+        String(now.getMonth() + 1).padStart(2, '0') + '월 ' +
+        String(now.getDate()).padStart(2, '0') + '일 (' + days[now.getDay()] + ')';
+})();
+
+// ── 키워드 그리드 생성 (분야별 전체 표시) ──
+(function buildGrids() {
+    const gridsEl = document.getElementById('kwGrids');
+
+    CATEGORIES.forEach((cat, ci) => {
+        // 분야 섹션 감싸기
+        const section = document.createElement('div');
+        section.className = 'cat-section';
+
+        // 분야 헤더
+        const header = document.createElement('div');
+        header.className = 'cat-section-header';
+        header.innerHTML =
+            '<span class="cat-section-icon">' + cat.icon + '</span>' +
+            '<span class="cat-section-name">' + cat.name + '</span>';
+        section.appendChild(header);
+
+        // 키워드 그리드
+        const grid = document.createElement('div');
+        grid.className = 'kw-cat';
+        grid.id = 'cat' + ci;
+
+        cat.keywords.forEach((kw, ki) => {
+            const card = document.createElement('div');
+            card.className = 'kw-card';
+            card.id = 'kw_' + ci + '_' + ki;
+            card.innerHTML =
+                '<span class="kw-icon">' + kw.icon + '</span>' +
+                '<div class="kw-name">' + kw.name + '</div>' +
+                '<div class="kw-desc">' + kw.desc + '</div>';
+            card.onclick = function () { toggleKw(ci, ki, card); };
+            grid.appendChild(card);
+        });
+
+        section.appendChild(grid);
+        gridsEl.appendChild(section);
+    });
+})();
+
+function toggleKw(ci, ki, card) {
+    if (card.classList.contains('disabled')) return;
+
+    const key = ci + '_' + ki;
+    const existing = selectedKw.findIndex(k => k.catIdx === ci && k.kwIdx === ki);
+
+    if (existing >= 0) {
+        // 선택 해제
+        selectedKw.splice(existing, 1);
+    } else {
+        if (selectedKw.length >= 3) return;
+        selectedKw.push({ catIdx: ci, kwIdx: ki, name: CATEGORIES[ci].keywords[ki].name, icon: CATEGORIES[ci].keywords[ki].icon });
+    }
+
+    updateKwUI();
+}
+
+function updateKwUI() {
+    // 모든 카드 상태 초기화
+    document.querySelectorAll('.kw-card').forEach(c => {
+        c.className = 'kw-card';
+        const badge = c.querySelector('.kw-badge');
+        if (badge) badge.remove();
+    });
+
+    // 선택된 카드 스타일 + 뱃지
+    selectedKw.forEach((kw, idx) => {
+        const card = document.getElementById('kw_' + kw.catIdx + '_' + kw.kwIdx);
+        if (!card) return;
+        card.classList.add('sel-' + (idx + 1));
+        const badge = document.createElement('div');
+        badge.className = 'kw-badge b' + (idx + 1);
+        badge.textContent = idx + 1;
+        card.appendChild(badge);
+    });
+
+    // 3개 다 찼으면 나머지 비활성화
+    document.querySelectorAll('.kw-card').forEach(c => {
+        const isSelected = selectedKw.some(k => 'kw_' + k.catIdx + '_' + k.kwIdx === c.id);
+        if (selectedKw.length >= 3 && !isSelected) {
+            c.classList.add('disabled');
+        }
+    });
+
+    // 슬롯 업데이트
+    const slots = ['slot1', 'slot2', 'slot3'];
+    const names = ['sn1', 'sn2', 'sn3'];
+    const fillCls = ['f1', 'f2', 'f3'];
+    slots.forEach((sid, i) => {
+        const el = document.getElementById(sid);
+        const nm = document.getElementById(names[i]);
+        if (selectedKw[i]) {
+            el.className = 'sel-slot ' + fillCls[i];
+            nm.textContent = selectedKw[i].icon + ' ' + selectedKw[i].name;
+        } else {
+            el.className = 'sel-slot';
+            nm.textContent = '비어 있음';
+        }
+    });
+
+    document.getElementById('selCount').textContent = selectedKw.length;
+
+    if (selectedKw.length === 3) {
+        document.getElementById('errKw').classList.remove('show');
+    }
+}
+
+// ── 진행 바 ──
+function updateProgress(step) {
+    for (let i = 1; i <= 4; i++) {
+        const pc = document.getElementById('pc' + i);
+        const pl = document.getElementById('pl' + i);
+        pc.classList.remove('active', 'done');
+        pl.classList.remove('active', 'done');
+        if (i < step) { pc.classList.add('done'); pl.classList.add('done'); }
+        else if (i === step) { pc.classList.add('active'); pl.classList.add('active'); }
+    }
+    for (let i = 1; i <= 3; i++) {
+        const line = document.getElementById('pline' + i);
+        if (line) {
+            line.classList.toggle('done', i < step);
+        }
+    }
+}
+
+// ── 에러 초기화 ──
+function clearErrors() {
+    document.querySelectorAll('.err').forEach(e => e.classList.remove('show'));
+    document.querySelectorAll('.input-err').forEach(e => e.classList.remove('input-err'));
+}
+
+// ── 스텝 이동 ──
+function goStep(next) {
+    clearErrors();
+
+    if (currentStep === 1 && next > 1) {
+        const name = document.getElementById('childName').value.trim();
+        if (!name) {
+            document.getElementById('childName').classList.add('input-err');
+            document.getElementById('errName').classList.add('show');
+            return;
+        }
+    }
+
+    if (currentStep === 2 && next > 2) {
+        if (selectedKw.length !== 3) {
+            document.getElementById('errKw').classList.add('show');
+            return;
+        }
+    }
+
+    // Step 3 진입 시 템플릿 업데이트
+    if (next === 3) {
+        const name = document.getElementById('childName').value.trim();
+        document.getElementById('writeName').textContent = name;
+
+        // 키워드 칩
+        const row = document.getElementById('kwRefRow');
+        row.innerHTML = '';
+        const chipCls = ['c1', 'c2', 'c3'];
+        const roles = ['관점', '행동', '정체성'];
+        selectedKw.forEach((kw, i) => {
+            const chip = document.createElement('span');
+            chip.className = 'kw-ref-chip ' + chipCls[i];
+            chip.textContent = kw.icon + ' ' + kw.name + ' (' + roles[i] + ')';
+            row.appendChild(chip);
+        });
+
+        // 템플릿 문장
+        document.getElementById('tplName').textContent = name;
+        document.getElementById('tplKw1').textContent = selectedKw[0] ? selectedKw[0].name : '[관점 키워드]';
+        document.getElementById('tplKw2').textContent = selectedKw[1] ? selectedKw[1].name : '[행동 키워드]';
+        document.getElementById('tplKw3').textContent = selectedKw[2] ? selectedKw[2].name : '[정체성 키워드]';
+    }
+
+    currentStep = next;
+    document.querySelectorAll('.step').forEach(s => s.classList.remove('active'));
+    document.getElementById('step' + next).classList.add('active');
+
+    if (next <= 3) {
+        document.getElementById('progressArea').style.display = 'block';
+        updateProgress(next);
+    } else {
+        document.getElementById('progressArea').style.display = 'none';
+    }
+
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+// ── 선언문 완성 ──
+function showResult() {
+    clearErrors();
+    const decl = document.getElementById('declText').value.trim();
+    if (!decl) {
+        document.getElementById('declText').classList.add('input-err');
+        document.getElementById('errDecl').classList.add('show');
+        return;
+    }
+
+    const name = document.getElementById('childName').value.trim();
+    const date = document.getElementById('todayDate').textContent;
+
+    document.getElementById('rcName').textContent = name + '  의 선언';
+    document.getElementById('rcDate').textContent = date;
+    document.getElementById('sigChildName').textContent = name;
+
+    // 키워드 태그
+    const kwList = document.getElementById('rcKwList');
+    kwList.innerHTML = '';
+    const tagCls = ['t1', 't2', 't3'];
+    const roles = ['관점', '행동', '정체성'];
+    selectedKw.forEach((kw, i) => {
+        const tag = document.createElement('span');
+        tag.className = 'rc-kw-tag ' + tagCls[i];
+        tag.textContent = kw.icon + ' ' + kw.name + ' · ' + roles[i];
+        kwList.appendChild(tag);
+    });
+
+    // 선언문 본문
+    document.getElementById('rcDeclText').textContent = decl;
+
+    // 서명란은 HTML에서 sigChildName으로 처리됨
+
+    // 스텝 이동
+    currentStep = 4;
+    document.querySelectorAll('.step').forEach(s => s.classList.remove('active'));
+    document.getElementById('step4').classList.add('active');
+    document.getElementById('progressArea').style.display = 'none';
+
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+// ── 다시 만들기 ──
+function restart() {
+    document.getElementById('childName').value = '';
+    document.getElementById('declText').value = '';
+    selectedKw = [];
+    updateKwUI();
+    clearErrors();
+    goStep(1);
+}
+
+// Enter 키
+document.getElementById('childName').addEventListener('keydown', function (e) {
+    if (e.key === 'Enter') { e.preventDefault(); goStep(2); }
+});
+
+// 초기 진행 바
+updateProgress(1);
+</script>
+</body>
+</html>
