@@ -366,22 +366,22 @@
 
         /* Declaration */
         .rc-decl {
-            background: rgba(46,196,182,0.07);
+            background: #ffffff;
             border-radius: 14px; padding: 28px 28px;
             text-align: center; position: relative;
-            box-shadow: 0 0 0 1px rgba(200,162,78,0.28), 0 0 0 5px rgba(200,162,78,0.06);
+            box-shadow: 0 0 0 1px rgba(200,162,78,0.5), 0 0 0 5px rgba(200,162,78,0.08);
         }
         .rc-decl::before {
             content: '\275D'; position: absolute; top: 8px; left: 14px;
-            font-size: 3rem; color: rgba(200,162,78,0.28); line-height: 1; font-family: serif;
+            font-size: 3rem; color: rgba(46,196,182,0.3); line-height: 1; font-family: serif;
         }
         .rc-decl::after {
             content: '\275E'; position: absolute; bottom: 4px; right: 14px;
-            font-size: 3rem; color: rgba(200,162,78,0.28); line-height: 1; font-family: serif;
+            font-size: 3rem; color: rgba(46,196,182,0.3); line-height: 1; font-family: serif;
         }
         .rc-decl-text {
-            font-size: 1.2rem; color: #f0f8f6; line-height: 2.3;
-            font-weight: 500; white-space: pre-wrap;
+            font-size: 1.2rem; color: #0f3a37; line-height: 2.3;
+            font-weight: 600; white-space: pre-wrap;
             text-align: center; display: block;
         }
 
@@ -405,31 +405,31 @@
         .sig-child-row {
             display: flex; justify-content: center;
             padding: 10px 16px;
-            background: rgba(46,196,182,0.08);
-            border: 1px solid rgba(46,196,182,0.3); border-radius: 10px;
+            background: #ffffff;
+            border: 1px solid rgba(46,196,182,0.5); border-radius: 10px;
             margin-bottom: 10px;
         }
         .sig-child-inner { display: flex; align-items: center; gap: 10px; }
         .sig-badge {
-            font-size: 0.65rem; font-weight: bold; color: #64d8cb; white-space: nowrap;
-            background: rgba(46,196,182,0.13); border: 1px solid rgba(46,196,182,0.4);
+            font-size: 0.65rem; font-weight: bold; color: #0f6b64; white-space: nowrap;
+            background: rgba(46,196,182,0.15); border: 1px solid rgba(46,196,182,0.5);
             padding: 3px 10px; border-radius: 8px;
         }
-        .sig-name-text { font-size: 0.88rem; font-weight: 700; color: #e0f5f3; white-space: nowrap; }
-        .sig-write-line { width: 100px; border-bottom: 1.5px dotted rgba(46,196,182,0.6); min-height: 24px; }
+        .sig-name-text { font-size: 0.88rem; font-weight: 700; color: #0f3a37; white-space: nowrap; }
+        .sig-write-line { width: 100px; border-bottom: 1.5px dotted #2ec4b6; min-height: 24px; }
 
         .sig-family-box {
-            border: 1px solid rgba(200,162,78,0.25); border-radius: 10px;
-            padding: 12px 16px; background: rgba(255,255,255,0.03);
+            border: 1px solid rgba(200,162,78,0.5); border-radius: 10px;
+            padding: 12px 16px; background: #ffffff;
         }
         .sig-family-title {
-            font-size: 0.72rem; font-weight: bold; color: #c8a24e;
+            font-size: 0.72rem; font-weight: bold; color: #0f6b64;
             letter-spacing: 1px; margin-bottom: 10px;
         }
         .sig-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
         .sig-person { text-align: center; }
-        .sig-person-line { border-bottom: 1.5px solid rgba(200,162,78,0.4); min-height: 36px; margin-bottom: 6px; }
-        .sig-person-role { font-size: 0.68rem; color: #8ac8c0; }
+        .sig-person-line { border-bottom: 1.5px solid rgba(46,196,182,0.6); min-height: 36px; margin-bottom: 6px; }
+        .sig-person-role { font-size: 0.68rem; color: #1a6a64; font-weight: 600; }
 
         .rc-watermark { display: none; font-size: 0.72rem; color: #aad4cc; text-align: center; margin-top: 14px; }
 
@@ -457,6 +457,7 @@
         .footer-quote { text-align: center; margin-top: 40px; padding: 24px 20px; border-top: 1px solid rgba(255,255,255,0.07); }
         .footer-quote p { color: #78909c; font-size: 0.88rem; line-height: 1.75; font-style: italic; }
         .footer-quote .author { color: #2ec4b6; font-style: normal; font-weight: bold; margin-top: 5px; display: block; }
+
 
         /* ── Responsive ── */
         @media (max-width: 600px) {
@@ -779,7 +780,7 @@
 
         <div class="result-actions">
             <button class="btn-restart" onclick="restart()">다시 만들기</button>
-            <button class="btn-print" onclick="savePDF()">📥 PDF 저장 / 다운로드</button>
+            <button class="btn-print" onclick="savePDF()" id="btnSave">📥 저장 / 다운로드</button>
         </div>
     </div>
 
@@ -799,12 +800,14 @@ function savePDF() {
     btn.innerHTML = '⏳ 생성 중...';
     btn.disabled = true;
 
+    const isMobile = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
     const card = document.querySelector('.result-card');
-    const cardW = card.scrollWidth;
-    const cardH = card.scrollHeight;
+    const rect = card.getBoundingClientRect();
+    const cardW = Math.ceil(rect.width);
+    const cardH = Math.ceil(rect.height);
 
     html2canvas(card, {
-        scale: 3,
+        scale: isMobile ? 2 : 3,   // 모바일은 파일 크기 줄이기
         useCORS: true,
         allowTaint: true,
         backgroundColor: '#0b1e3d',
@@ -812,8 +815,6 @@ function savePDF() {
         imageTimeout: 0,
         width: cardW,
         height: cardH,
-        windowWidth: cardW,
-        windowHeight: cardH,
         onclone: (doc) => {
             doc.querySelectorAll('*').forEach(el => {
                 el.style.backdropFilter = 'none';
@@ -823,63 +824,65 @@ function savePDF() {
             });
         }
     }).then(canvas => {
-        const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
         const hasjsPDF = window.jspdf && window.jspdf.jsPDF;
 
+        const isIOS = /iPhone|iPad|iPod/i.test(navigator.userAgent);
+
+        // ── PDF 생성 (모바일 / PC 공통) ──
         if (hasjsPDF) {
-            // ── PDF 저장 (A4) ──
             const { jsPDF } = window.jspdf;
-            const pdf = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4' });
-            const pdfW = pdf.internal.pageSize.getWidth();   // 210mm
-            const pdfH = pdf.internal.pageSize.getHeight();  // 297mm
+            const pdfW = 210;
+            const margin = 8;
+            const imgW = pdfW - margin * 2;
+            const imgH = imgW * canvas.height / canvas.width;
+            const pageH = imgH + margin * 2;
+            const pdf = new jsPDF({ orientation: 'portrait', unit: 'mm', format: [pdfW, pageH] });
 
-            const ratio = canvas.height / canvas.width;
-            const imgH = pdfW * ratio;
-            const yOffset = imgH < pdfH ? (pdfH - imgH) / 2 : 0;
             const imgData = canvas.toDataURL('image/jpeg', 0.95);
-            pdf.addImage(imgData, 'JPEG', 0, yOffset, pdfW, Math.min(imgH, pdfH));
+            pdf.setFillColor(11, 30, 61);
+            pdf.rect(0, 0, pdfW, pageH, 'F');
+            pdf.addImage(imgData, 'JPEG', margin, margin, imgW, imgH);
 
-            const fileName = '미래역량선언문.pdf';
-
-            if (isIOS && navigator.canShare) {
-                // iOS: Web Share API로 PDF 공유
-                const pdfBlob = pdf.output('blob');
-                const file = new File([pdfBlob], fileName, { type: 'application/pdf' });
-                if (navigator.canShare({ files: [file] })) {
-                    navigator.share({ files: [file], title: '미래역량 선언문' })
-                        .catch(() => pdf.save(fileName));
+            if (isIOS) {
+                // iOS Safari: 새 탭에서 PDF 열기 (공유 메뉴로 저장 가능)
+                const pdfDataUrl = pdf.output('datauristring');
+                const newTab = window.open('', '_blank');
+                if (newTab) {
+                    newTab.document.write(
+                        '<html><head><title>미래역량선언문</title></head>' +
+                        '<body style="margin:0;background:#000;">' +
+                        '<p style="color:#fff;text-align:center;font-family:sans-serif;padding:10px;font-size:14px;">' +
+                        '화면 하단 공유 버튼 → "파일에 저장" 또는 "프린트"를 선택하세요</p>' +
+                        '<iframe src="' + pdfDataUrl + '" style="width:100%;height:calc(100vh - 50px);border:none;"></iframe>' +
+                        '</body></html>'
+                    );
+                    newTab.document.close();
                 } else {
-                    pdf.save(fileName);
+                    alert('팝업이 차단되었습니다.\n브라우저 설정에서 팝업을 허용한 후 다시 시도해 주세요.');
                 }
             } else {
-                // Android / PC: 직접 다운로드
-                pdf.save(fileName);
+                // Android / PC: blob URL로 직접 PDF 다운로드
+                const pdfBlob = pdf.output('blob');
+                const blobUrl = URL.createObjectURL(pdfBlob);
+                const a = document.createElement('a');
+                a.href = blobUrl; a.download = '미래역량선언문.pdf';
+                document.body.appendChild(a); a.click();
+                document.body.removeChild(a);
+                setTimeout(() => URL.revokeObjectURL(blobUrl), 2000);
             }
-            btn.innerHTML = orig;
-            btn.disabled = false;
-
         } else {
-            // ── PNG 저장 (fallback) ──
-            const fileName = '미래역량선언문.png';
-            if (isIOS && navigator.canShare) {
-                canvas.toBlob(blob => {
-                    const file = new File([blob], fileName, { type: 'image/png' });
-                    navigator.share({ files: [file], title: '미래역량 선언문' })
-                        .catch(() => window.open(canvas.toDataURL('image/png'), '_blank'));
-                    btn.innerHTML = orig; btn.disabled = false;
-                }, 'image/png');
-            } else {
-                canvas.toBlob(blob => {
-                    const url = URL.createObjectURL(blob);
-                    const a = document.createElement('a');
-                    a.href = url; a.download = fileName;
-                    document.body.appendChild(a); a.click();
-                    document.body.removeChild(a);
-                    setTimeout(() => URL.revokeObjectURL(url), 1000);
-                    btn.innerHTML = orig; btn.disabled = false;
-                }, 'image/png');
-            }
+            // jsPDF 미로드 시 이미지로 대체 저장
+            canvas.toBlob(blob => {
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url; a.download = '미래역량선언문.png';
+                document.body.appendChild(a); a.click();
+                document.body.removeChild(a);
+                setTimeout(() => URL.revokeObjectURL(url), 2000);
+            }, 'image/png');
         }
+        btn.innerHTML = orig;
+        btn.disabled = false;
     }).catch(err => {
         alert('저장 오류: ' + err.message);
         btn.innerHTML = orig;
