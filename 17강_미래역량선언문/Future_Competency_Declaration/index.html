@@ -848,6 +848,11 @@ function savePDF() {
         imageTimeout: 0,
         width: cardW,
         height: cardH,
+        ignoreElements: (el) => {
+            // 너비/높이가 0인 canvas 요소는 건너뜀 (createPattern 오류 방지)
+            if (el.tagName === 'CANVAS') return el.width === 0 || el.height === 0;
+            return false;
+        },
         onclone: (doc) => {
             doc.querySelectorAll('*').forEach(el => {
                 el.style.backdropFilter = 'none';
