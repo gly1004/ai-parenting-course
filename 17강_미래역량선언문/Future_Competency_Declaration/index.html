@@ -508,8 +508,6 @@
             .rc-watermark { display: block !important; }
         }
     </style>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 </head>
 <body>
 <div class="container">
@@ -790,101 +788,28 @@
 </div>
 
 <script>
-// ── PDF / 이미지 저장 ──
+// ── PDF 저장 (인쇄 방식) ──
 function savePDF() {
-    if (typeof html2canvas === 'undefined') { alert('html2canvas를 불러오지 못했습니다.'); return; }
+    showPrintToast();
+    setTimeout(() => window.print(), 400);
+}
 
-    const btn = document.querySelector('.btn-print');
-    const orig = btn.innerHTML;
-    btn.innerHTML = '⏳ 생성 중...';
-    btn.disabled = true;
+function showPrintToast() {
+    var existing = document.getElementById('printToast');
+    if (existing) existing.remove();
 
-    const card = document.querySelector('.result-card');
-    const cardW = card.scrollWidth;
-    const cardH = card.scrollHeight;
-
-    html2canvas(card, {
-        scale: 3,
-        useCORS: true,
-        allowTaint: true,
-        backgroundColor: '#0b1e3d',
-        logging: false,
-        imageTimeout: 0,
-        width: cardW,
-        height: cardH,
-        windowWidth: cardW,
-        windowHeight: cardH,
-        onclone: (doc) => {
-            doc.querySelectorAll('*').forEach(el => {
-                el.style.backdropFilter = 'none';
-                el.style.webkitBackdropFilter = 'none';
-                el.style.animation = 'none';
-                el.style.transition = 'none';
-            });
-        }
-    }).then(canvas => {
-        const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
-        const hasjsPDF = window.jspdf && window.jspdf.jsPDF;
-
-        if (hasjsPDF) {
-            // ── PDF 저장 (A4) ──
-            const { jsPDF } = window.jspdf;
-            const pdf = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4' });
-            const pdfW = pdf.internal.pageSize.getWidth();   // 210mm
-            const pdfH = pdf.internal.pageSize.getHeight();  // 297mm
-
-            const ratio = canvas.height / canvas.width;
-            const imgH = pdfW * ratio;
-            const yOffset = imgH < pdfH ? (pdfH - imgH) / 2 : 0;
-            const imgData = canvas.toDataURL('image/jpeg', 0.95);
-            pdf.addImage(imgData, 'JPEG', 0, yOffset, pdfW, Math.min(imgH, pdfH));
-
-            const fileName = '미래역량선언문.pdf';
-
-            if (isIOS && navigator.canShare) {
-                // iOS: Web Share API로 PDF 공유
-                const pdfBlob = pdf.output('blob');
-                const file = new File([pdfBlob], fileName, { type: 'application/pdf' });
-                if (navigator.canShare({ files: [file] })) {
-                    navigator.share({ files: [file], title: '미래역량 선언문' })
-                        .catch(() => pdf.save(fileName));
-                } else {
-                    pdf.save(fileName);
-                }
-            } else {
-                // Android / PC: 직접 다운로드
-                pdf.save(fileName);
-            }
-            btn.innerHTML = orig;
-            btn.disabled = false;
-
-        } else {
-            // ── PNG 저장 (fallback) ──
-            const fileName = '미래역량선언문.png';
-            if (isIOS && navigator.canShare) {
-                canvas.toBlob(blob => {
-                    const file = new File([blob], fileName, { type: 'image/png' });
-                    navigator.share({ files: [file], title: '미래역량 선언문' })
-                        .catch(() => window.open(canvas.toDataURL('image/png'), '_blank'));
-                    btn.innerHTML = orig; btn.disabled = false;
-                }, 'image/png');
-            } else {
-                canvas.toBlob(blob => {
-                    const url = URL.createObjectURL(blob);
-                    const a = document.createElement('a');
-                    a.href = url; a.download = fileName;
-                    document.body.appendChild(a); a.click();
-                    document.body.removeChild(a);
-                    setTimeout(() => URL.revokeObjectURL(url), 1000);
-                    btn.innerHTML = orig; btn.disabled = false;
-                }, 'image/png');
-            }
-        }
-    }).catch(err => {
-        alert('저장 오류: ' + err.message);
-        btn.innerHTML = orig;
-        btn.disabled = false;
-    });
+    var toast = document.createElement('div');
+    toast.id = 'printToast';
+    toast.innerHTML = '🖨️ 인쇄 창에서 <strong>대상(프린터)을 "PDF로 저장"</strong>으로 선택하세요';
+    toast.style.cssText = [
+        'position:fixed', 'bottom:80px', 'left:50%', 'transform:translateX(-50%)',
+        'background:#1a4a6e', 'color:#fff', 'padding:14px 22px', 'border-radius:12px',
+        'font-size:0.95rem', 'line-height:1.6', 'text-align:center',
+        'box-shadow:0 4px 20px rgba(0,0,0,0.5)', 'z-index:9999',
+        'border:1px solid #2ec4b6', 'max-width:90vw', 'pointer-events:none'
+    ].join(';');
+    document.body.appendChild(toast);
+    setTimeout(() => { if (toast.parentNode) toast.remove(); }, 6000);
 }
 
 // ── 데이터 ──
