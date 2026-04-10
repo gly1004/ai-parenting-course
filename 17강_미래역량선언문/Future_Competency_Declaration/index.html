@@ -790,6 +790,26 @@
 </div>
 
 <script>
+// ── createPattern 전역 패치 (0 크기 canvas 오류 방지) ──
+(function() {
+    function patchCtx(Ctx) {
+        if (!Ctx || !Ctx.prototype) return;
+        var _orig = Ctx.prototype.createPattern;
+        Ctx.prototype.createPattern = function(image, repetition) {
+            var w = image && (image.width !== undefined ? image.width : -1);
+            var h = image && (image.height !== undefined ? image.height : -1);
+            if ((w === 0 || h === 0)) {
+                var fallback = document.createElement('canvas');
+                fallback.width = 1; fallback.height = 1;
+                try { return _orig.call(this, fallback, repetition || 'repeat'); } catch(e) { return null; }
+            }
+            try { return _orig.call(this, image, repetition); } catch(e) { return null; }
+        };
+    }
+    patchCtx(window.CanvasRenderingContext2D);
+    patchCtx(window.OffscreenCanvasRenderingContext2D);
+})();
+
 // ── PDF / 이미지 저장 ──
 function savePDF() {
     const isMobile = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
