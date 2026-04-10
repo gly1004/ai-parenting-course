@@ -497,13 +497,25 @@
             .result-card {
                 box-shadow: none !important; border-radius: 0 !important;
                 padding: 6px !important; animation: none !important;
+                overflow: visible !important;
             }
 
             .rc-inner { border: 2px solid rgba(200,162,78,0.6) !important; border-radius: 14px !important; padding: 28px 26px !important; }
 
-            .result-card::before, .result-card::after,
+            /* Chrome 인쇄 시 createPattern 0-size canvas 오류 방지 */
+            .result-card::before, .result-card::after {
+                display: block !important;
+                width: 100% !important;
+                min-width: 1px !important;
+                min-height: 1px !important;
+                -webkit-print-color-adjust: exact; print-color-adjust: exact;
+            }
             .rc-kw-tag, .rc-decl, .sig-child-row, .sig-family-box {
                 -webkit-print-color-adjust: exact; print-color-adjust: exact;
+            }
+            /* 인쇄 불필요한 그라디언트 요소 제거 */
+            .ps-circle, .step-num, .cat-section-header, .btn-next, .btn-prev {
+                background: transparent !important;
             }
             .rc-watermark { display: block !important; }
         }
