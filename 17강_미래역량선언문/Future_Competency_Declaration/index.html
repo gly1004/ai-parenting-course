@@ -826,6 +826,15 @@
 <script>
 // ── PDF / 이미지 저장 ──
 function savePDF() {
+    const isMobile = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
+
+    // ── PC: 브라우저 인쇄 → PDF 저장 ──
+    if (!isMobile) {
+        window.print();
+        return;
+    }
+
+    // ── 모바일: html2canvas → 이미지 오버레이 ──
     if (typeof html2canvas === 'undefined') { alert('html2canvas를 불러오지 못했습니다.'); return; }
 
     const btn = document.querySelector('.btn-print');
@@ -833,23 +842,13 @@ function savePDF() {
     btn.innerHTML = '⏳ 생성 중...';
     btn.disabled = true;
 
-    // html2canvas 내부의 createPattern 오류 방지 패치
-    const _origCreatePattern = CanvasRenderingContext2D.prototype.createPattern;
-    CanvasRenderingContext2D.prototype.createPattern = function(image, repetition) {
-        if (image instanceof HTMLCanvasElement && (image.width === 0 || image.height === 0)) {
-            return null;
-        }
-        return _origCreatePattern.call(this, image, repetition);
-    };
-
-    const isMobile = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
     const card = document.querySelector('.result-card');
     const rect = card.getBoundingClientRect();
     const cardW = Math.ceil(rect.width);
     const cardH = Math.ceil(rect.height);
 
     html2canvas(card, {
-        scale: isMobile ? 2 : 3,   // 모바일은 파일 크기 줄이기
+        scale: 2,
         useCORS: true,
         allowTaint: true,
         backgroundColor: '#0b1e3d',
@@ -858,7 +857,6 @@ function savePDF() {
         width: cardW,
         height: cardH,
         onclone: (doc) => {
-            // 너비/높이가 0인 canvas 요소 제거 (createPattern 오류 방지)
             doc.querySelectorAll('canvas').forEach(el => {
                 if (el.width === 0 || el.height === 0) el.remove();
             });
@@ -870,55 +868,13 @@ function savePDF() {
             });
         }
     }).then(canvas => {
-        const hasjsPDF = window.jspdf && window.jspdf.jsPDF;
-
-        // ── 모바일: 이미지 오버레이로 표시 (길게 눌러 저장) ──
-        if (isMobile) {
-            const dataUrl = canvas.toDataURL('image/jpeg', 0.92);
-            const overlayImg = document.getElementById('overlayImg');
-            overlayImg.src = dataUrl;
-            document.getElementById('imgOverlay').classList.add('show');
-            btn.innerHTML = orig; btn.disabled = false;
-            return;
-        }
-
-        // ── PC: PDF 다운로드 ──
-        if (hasjsPDF) {
-            const { jsPDF } = window.jspdf;
-            const pdfW = 210;
-            const margin = 8;
-            const imgW = pdfW - margin * 2;
-            const imgH = imgW * canvas.height / canvas.width;
-            const pageH = imgH + margin * 2;
-            const pdf = new jsPDF({ orientation: 'portrait', unit: 'mm', format: [pdfW, pageH] });
-
-            const imgData = canvas.toDataURL('image/jpeg', 0.95);
-            pdf.setFillColor(11, 30, 61);
-            pdf.rect(0, 0, pdfW, pageH, 'F');
-            pdf.addImage(imgData, 'JPEG', margin, margin, imgW, imgH);
-
-            const pdfBlob = pdf.output('blob');
-            const blobUrl = URL.createObjectURL(pdfBlob);
-            const a = document.createElement('a');
-            a.href = blobUrl; a.download = '미래역량선언문.pdf';
-            document.body.appendChild(a); a.click();
-            document.body.removeChild(a);
-            setTimeout(() => URL.revokeObjectURL(blobUrl), 2000);
-        } else {
-            canvas.toBlob(blob => {
-                const url = URL.createObjectURL(blob);
-                const a = document.createElement('a');
-                a.href = url; a.download = '미래역량선언문.png';
-                document.body.appendChild(a); a.click();
-                document.body.removeChild(a);
-                setTimeout(() => URL.revokeObjectURL(url), 2000);
-            }, 'image/png');
-        }
+        const dataUrl = canvas.toDataURL('image/jpeg', 0.92);
+        const overlayImg = document.getElementById('overlayImg');
+        overlayImg.src = dataUrl;
+        document.getElementById('imgOverlay').classList.add('show');
         btn.innerHTML = orig;
         btn.disabled = false;
-        CanvasRenderingContext2D.prototype.createPattern = _origCreatePattern;
     }).catch(err => {
-        CanvasRenderingContext2D.prototype.createPattern = _origCreatePattern;
         alert('저장 오류: ' + err.message);
         btn.innerHTML = orig;
         btn.disabled = false;
