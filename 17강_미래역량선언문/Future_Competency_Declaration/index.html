@@ -458,30 +458,6 @@
         .footer-quote p { color: #78909c; font-size: 0.88rem; line-height: 1.75; font-style: italic; }
         .footer-quote .author { color: #2ec4b6; font-style: normal; font-weight: bold; margin-top: 5px; display: block; }
 
-        /* ── 모바일 이미지 뷰어 오버레이 ── */
-        .img-overlay {
-            display: none; position: fixed; inset: 0; z-index: 9999;
-            background: rgba(0,0,0,0.92);
-            flex-direction: column; align-items: center; justify-content: center;
-        }
-        .img-overlay.show { display: flex; }
-        .img-overlay img {
-            max-width: 96vw; max-height: 80vh;
-            border-radius: 10px; box-shadow: 0 0 30px rgba(0,0,0,0.6);
-        }
-        .img-overlay-tip {
-            margin-top: 16px; color: #fff; font-size: 0.95rem;
-            text-align: center; line-height: 1.8;
-            background: rgba(255,255,255,0.1); border-radius: 10px;
-            padding: 12px 20px;
-        }
-        .img-overlay-close {
-            margin-top: 14px; padding: 10px 32px;
-            background: rgba(255,255,255,0.15); color: #fff;
-            border: 1px solid rgba(255,255,255,0.3); border-radius: 8px;
-            font-size: 0.95rem; cursor: pointer;
-        }
-
         /* ── Responsive ── */
         @media (max-width: 600px) {
             body { padding: 12px; }
@@ -532,8 +508,7 @@
             .rc-watermark { display: block !important; }
         }
     </style>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+
 </head>
 <body>
 <div class="container">
@@ -807,16 +782,6 @@
         </div>
     </div>
 
-    <!-- 모바일 이미지 뷰어 -->
-    <div class="img-overlay" id="imgOverlay">
-        <img id="overlayImg" src="" alt="미래역량 선언문">
-        <div class="img-overlay-tip">
-            📌 이미지를 <strong>길게 눌러</strong> 저장하세요<br>
-            (사진첩 저장 / 파일 저장)
-        </div>
-        <button class="img-overlay-close" onclick="document.getElementById('imgOverlay').classList.remove('show')">닫기</button>
-    </div>
-
     <div class="footer-quote">
         <p>"아이의 말은 그 아이의 미래가 되고, 아이의 선언은 그 아이의 역량이 된다."<span class="author">— 미래역량 선언문에서</span></p>
     </div>
@@ -826,59 +791,7 @@
 <script>
 // ── PDF / 이미지 저장 ──
 function savePDF() {
-    const isMobile = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
-
-    // ── PC: 브라우저 인쇄 → PDF 저장 ──
-    if (!isMobile) {
-        window.print();
-        return;
-    }
-
-    // ── 모바일: html2canvas → 이미지 오버레이 ──
-    if (typeof html2canvas === 'undefined') { alert('html2canvas를 불러오지 못했습니다.'); return; }
-
-    const btn = document.querySelector('.btn-print');
-    const orig = btn.innerHTML;
-    btn.innerHTML = '⏳ 생성 중...';
-    btn.disabled = true;
-
-    const card = document.querySelector('.result-card');
-    const rect = card.getBoundingClientRect();
-    const cardW = Math.ceil(rect.width);
-    const cardH = Math.ceil(rect.height);
-
-    html2canvas(card, {
-        scale: 2,
-        useCORS: true,
-        allowTaint: true,
-        backgroundColor: '#0b1e3d',
-        logging: false,
-        imageTimeout: 0,
-        width: cardW,
-        height: cardH,
-        onclone: (doc) => {
-            doc.querySelectorAll('canvas').forEach(el => {
-                if (el.width === 0 || el.height === 0) el.remove();
-            });
-            doc.querySelectorAll('*').forEach(el => {
-                el.style.backdropFilter = 'none';
-                el.style.webkitBackdropFilter = 'none';
-                el.style.animation = 'none';
-                el.style.transition = 'none';
-            });
-        }
-    }).then(canvas => {
-        const dataUrl = canvas.toDataURL('image/jpeg', 0.92);
-        const overlayImg = document.getElementById('overlayImg');
-        overlayImg.src = dataUrl;
-        document.getElementById('imgOverlay').classList.add('show');
-        btn.innerHTML = orig;
-        btn.disabled = false;
-    }).catch(err => {
-        alert('저장 오류: ' + err.message);
-        btn.innerHTML = orig;
-        btn.disabled = false;
-    });
+    window.print();
 }
 
 // ── 데이터 ──
