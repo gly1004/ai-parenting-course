@@ -508,7 +508,8 @@
             .rc-watermark { display: block !important; }
         }
     </style>
-
+    <script src="https://cdn.jsdelivr.net/npm/html-to-image@1.11.11/dist/html-to-image.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 </head>
 <body>
 <div class="container">
@@ -791,7 +792,49 @@
 <script>
 // ── PDF / 이미지 저장 ──
 function savePDF() {
-    window.print();
+    const isMobile = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
+
+    // 모바일: 브라우저 인쇄
+    if (isMobile) { window.print(); return; }
+
+    // PC: html-to-image → jsPDF 다운로드
+    if (typeof htmlToImage === 'undefined') { alert('라이브러리를 불러오지 못했습니다. 페이지를 새로고침 해주세요.'); return; }
+
+    const btn = document.querySelector('.btn-print');
+    const orig = btn.innerHTML;
+    btn.innerHTML = '⏳ 생성 중...';
+    btn.disabled = true;
+
+    const card = document.querySelector('.result-card');
+
+    htmlToImage.toJpeg(card, {
+        quality: 0.95,
+        backgroundColor: '#0b1e3d',
+        pixelRatio: 3,
+        style: { backdropFilter: 'none', webkitBackdropFilter: 'none' }
+    }).then(dataUrl => {
+        const { jsPDF } = window.jspdf;
+        const img = new Image();
+        img.onload = () => {
+            const pdfW = 210;
+            const margin = 8;
+            const imgW = pdfW - margin * 2;
+            const imgH = imgW * img.height / img.width;
+            const pageH = imgH + margin * 2;
+            const pdf = new jsPDF({ orientation: 'portrait', unit: 'mm', format: [pdfW, pageH] });
+            pdf.setFillColor(11, 30, 61);
+            pdf.rect(0, 0, pdfW, pageH, 'F');
+            pdf.addImage(dataUrl, 'JPEG', margin, margin, imgW, imgH);
+            pdf.save('미래역량선언문.pdf');
+            btn.innerHTML = orig;
+            btn.disabled = false;
+        };
+        img.src = dataUrl;
+    }).catch(err => {
+        alert('저장 오류: ' + err.message);
+        btn.innerHTML = orig;
+        btn.disabled = false;
+    });
 }
 
 // ── 데이터 ──
