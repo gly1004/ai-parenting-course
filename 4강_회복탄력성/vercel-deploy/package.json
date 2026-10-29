@@ -1,0 +1,9 @@
+{
+  "name": "resilience-3step-ai",
+  "version": "1.0.0",
+  "description": "AI와 함께하는 3단계 질문법 - 실패를 성장으로 바꾸는 부모 가이드",
+  "private": true,
+  "engines": {
+    "node": ">=18"
+  }
+}

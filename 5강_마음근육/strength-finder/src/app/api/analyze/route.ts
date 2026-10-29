@@ -78,8 +78,8 @@ export async function POST(request: NextRequest) {
         'anthropic-version': '2023-06-01',
       },
       body: JSON.stringify({
-        model: 'claude-sonnet-4-20250514',
-        max_tokens: 1024,
+        model: 'claude-sonnet-5-5',
+        max_tokens: 4096,
         messages: [
           {
             role: 'user',
@@ -99,7 +99,7 @@ export async function POST(request: NextRequest) {
     }
 
     const data = await response.json();
-    const content = data.content[0].text;
+    const content = data.content.find((block: { type: string }) => block.type === 'text')?.text || '';
 
     // Parse the JSON response from Claude
     const jsonMatch = content.match(/\{[\s\S]*\}/);

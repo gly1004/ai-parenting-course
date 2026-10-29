@@ -1,0 +1,11 @@
+{
+  "name": "creative-problem-solver",
+  "version": "1.0.0",
+  "description": "불편함에서 기회 찾기 - 창의적 문제 해결 훈련",
+  "scripts": {
+    "dev": "vercel dev"
+  },
+  "dependencies": {
+    "@anthropic-ai/sdk": "^0.52.0"
+  }
+}

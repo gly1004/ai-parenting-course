@@ -87,8 +87,8 @@ module.exports = async function handler(req, res) {
                 'anthropic-version': '2023-06-01'
             },
             body: JSON.stringify({
-                model: 'claude-sonnet-4-20250514',
-                max_tokens: 2048,
+                model: 'claude-sonnet-5-5',
+                max_tokens: 8192,
                 system: systemPrompt,
                 messages: [{
                     role: 'user',
@@ -104,7 +104,7 @@ module.exports = async function handler(req, res) {
         }
 
         const data = await response.json();
-        const responseText = data.content[0].text;
+        const responseText = data.content.find(block => block.type === 'text')?.text || '';
 
         // Parse JSON
         let recommendations;
